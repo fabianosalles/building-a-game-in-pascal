@@ -1,0 +1,99 @@
+unit sdl;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  sysutils,
+  SDL2;
+
+type
+  SDLException = class(Exception);
+
+  { TGame }
+
+  TGame = class
+  private
+    fRunning   : boolean;
+    fWindow    : PSDL_Window;
+    fRenderer  : PSDL_Renderer;
+
+    procedure InitGame;
+    procedure QuitGame;
+    procedure HandleEvents;
+    procedure Render;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    property Running: boolean read fRunning;
+  end;
+
+
+implementation
+
+{ TGame }
+
+procedure TGame.InitGame;
+begin
+  if ( SDL_Init( SDL_INIT_VIDEO ) <> 0 )then
+  	 raise SDLException.Create(SDL_GetError);
+
+  fWindow := SDL_CreateWindow( PAnsiChar( ApplicationName ),
+                             100, 100,
+                             800,
+                             600,
+                             SDL_WINDOW_SHOWN);
+  if fWindow = nil then
+     raise SDLException.Create(SDL_GetError);
+
+  fRenderer := SDL_CreateRenderer(fWindow, -1, SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC);
+  if fRenderer = nil then
+     raise SDLException.Create(SDL_GetError);
+end;
+
+procedure TGame.QuitGame;
+begin
+  SDL_DestroyRenderer(fRenderer);
+  SDL_DestroyWindow(fWindow);
+  SDL_Quit;
+end;
+
+procedure TGame.HandleEvents;
+var
+  event : TSDL_Event;
+begin
+  while SDL_PollEvent(@event) = 1 do
+  begin
+    case event.type_ of
+      SDL_QUITEV  : fRunning := false;
+      SDL_KEYDOWN :
+        case
+          event.key.keysym.sym of
+              SDLK_ESCAPE: fRunning := false;
+        end;
+    end;
+  end;
+end;
+
+procedure TGame.Render;
+begin
+  SDL_SetRenderDrawColor( fRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE );
+  SDL_RenderClear( fRenderer );
+  SDL_RenderPresent( fRenderer );
+end;
+
+constructor TGame.Create;
+begin
+  fRunning:= false;
+  InitGame;
+end;
+
+destructor TGame.Destroy;
+begin
+  inherited Destroy;
+end;
+
+end.
+

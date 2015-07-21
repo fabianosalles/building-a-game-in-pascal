@@ -234,7 +234,7 @@ begin
     enemy.HP:= 1;
     enemy.Position.X := 32 + (i * 32);
     enemy.Position.Y := 100;
-    enemy.SetTexture( fSprites[ Ord(TSpriteKind.EnemyA) ] );
+    enemy.fTexture := fSprites[ Ord(TSpriteKind.EnemyA) ];
     fEnemies[ i ] := enemy;
   end;
 end;

@@ -204,6 +204,7 @@
       <Unit1>
         <Filename Value="units\sdlGame.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="sdlGame"/>
       </Unit1>
     </Units>
   </ProjectOptions>
@@ -235,7 +236,7 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
-        <DebugInfoType Value="dsDwarf2Set"/>
+        <UseExternalDbgSyms Value="True"/>
       </Debugging>
       <Options>
         <Win32>
