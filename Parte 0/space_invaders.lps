@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="9"/>
+    <BuildModes Active="Win32 Debug"/>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="space_invaders.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <CursorPos X="26" Y="13"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="headers\SDL2\sdl2.pas"/>
+        <UnitName Value="SDL2"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="253"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit1>
+    </Units>
+    <JumpHistory Count="8" HistoryIndex="7">
+      <Position1>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="7" Column="3"/>
+      </Position1>
+      <Position2>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="8" Column="7"/>
+      </Position2>
+      <Position3>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="7" Column="33"/>
+      </Position3>
+      <Position4>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="10" Column="5"/>
+      </Position4>
+      <Position5>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="7"/>
+      </Position5>
+      <Position6>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="9"/>
+      </Position6>
+      <Position7>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="10"/>
+      </Position7>
+      <Position8>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="4" Column="13"/>
+      </Position8>
+    </JumpHistory>
+  </ProjectSession>
+</CONFIG>
