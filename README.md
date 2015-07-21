@@ -5,7 +5,6 @@ We will be targeting the Version 2.6.4 of the Free Pascal Compiler.
 
 Regards.
 
------------
 
 # Construindo um Game em Pascal
 Código fonte para a série de artigos publicados em http://delphigames.blogspot.com.br sob o título "Criando um Game Completo".
@@ -14,9 +13,9 @@ Nesta série de artigos vamos partir do zero e criar uma versão do clássico Sp
 
 O jogo é propositalmente simples para que o leitor com pouca experiência na linguagem e no desenvolvimento de games possa acompanhar o texto e o código o início ao fim.
 
-A previsão é de que, a cada semana, uma nova etapa do programa abaixo seja vencida, e tenhamos construído, ao fim de 2 meses, o conhecimento e o código necessário para termos o game finalizado.
+A previsão é de que, a cada semana, uma nova etapa do programa abaixo seja vencida, e tenhamos construído, ao fim de 2 meses, o conhecimento e o código necessário para finalizar o game.
 
-Espero que apreciem.
+Abraços
 
 Parte 0
  - Lazarus
