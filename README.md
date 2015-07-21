@@ -1,11 +1,13 @@
-# building-a-game-in-pascal
+# Building a Game in Pascal
 Source code for the "Building a Complete Game" series of articles published on http://delphigames.blogspot.com.br.
 Those articles will be first written in brazilian portuguese and, after a while, the translations will be available at same address.
+We will be targeting the Version 2.6.4 of the Free Pascal Compiler.
 
 Regards.
 
 -----------
 
+# Construindo um Game em Pascal
 Código fonte para a série de artigos publicados em http://delphigames.blogspot.com.br sob o título "Criando um Game Completo".
 
 Nesta série de artigos vamos partir do zero e criar uma versão do clássico Space Invaders compatível com Windows e Linux, utilizando aceleração de hardware para gráficos 2d, suporte a joystick e tabela de high scores online.
