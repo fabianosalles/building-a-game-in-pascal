@@ -45,7 +45,7 @@ type
   public
     constructor Create( const aRenderer: PSDL_Renderer; const capacity: integer = 512 );
     destructor Destroy; override;
-    function IndexOf(const aText: string; aFont: TGameFont): integer; overload;
+    function IndexOf(const aText: string): integer; overload;
     function Add(const aText: string; aFont: TGameFont): integer;
 
     property Items[index: integer]: TGameFontTexture read GetItems; default;
@@ -110,7 +110,7 @@ begin
   inherited Destroy;
 end;
 
-function TGameFontTextureList.IndexOf(const aText: string; aFont: TGameFont): integer;
+function TGameFontTextureList.IndexOf(const aText: string): integer;
 var
   i : integer;
 begin
@@ -131,7 +131,7 @@ function TGameFontTextureList.Add(const aText: string; aFont: TGameFont): intege
 var
   lSurface    : PSDL_Surface;
 begin
-  result := IndexOf( aText, aFont );
+  result := IndexOf( aText );
   if (result < 0) then
   begin
     if ( fCount >= Length(fList)) then
@@ -173,7 +173,7 @@ var
   i : integer;
   lSource, lDest : TSDL_Rect;
 begin
-  i := fTextures.IndexOf(aText, aFont);
+  i := fTextures.IndexOf(aText);
   if ( i < 0 ) then
      i := fTextures.Add(aText, aFont);
 

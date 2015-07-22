@@ -31,7 +31,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="units"/>
+            <OtherUnitFiles Value="units;headers\sdl2"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -210,9 +210,8 @@
         <IsPartOfProject Value="True"/>
       </Unit2>
       <Unit3>
-        <Filename Value="units\sdlgameobjects.pas"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="sdlGameObjects"/>
       </Unit3>
       <Unit4>
         <Filename Value="units\sdlGameUtils.pas"/>

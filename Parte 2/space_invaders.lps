@@ -8,6 +8,7 @@
       <Unit0>
         <Filename Value="space_invaders.lpr"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <CursorPos Y="19"/>
         <UsageCount Value="140"/>
         <Loaded Value="True"/>
@@ -15,8 +16,6 @@
       <Unit1>
         <Filename Value="units\sdlGame.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="sdlGame"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="310"/>
         <CursorPos Y="331"/>
