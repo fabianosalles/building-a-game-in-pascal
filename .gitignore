@@ -1,0 +1,5 @@
+*.bak
+*.a
+*.o
+*.ppu
+*.compiled
