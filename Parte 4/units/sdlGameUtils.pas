@@ -38,6 +38,7 @@ type
 
 implementation
 
+
 { TFPSCounter }
 
 constructor TFPSCounter.Create;

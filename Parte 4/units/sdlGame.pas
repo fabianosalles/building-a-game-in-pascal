@@ -57,6 +57,7 @@ type
     fPlayer	          : TPlayer;
     fJoystick         : PSDL_Joystick;
     fShots            : TShotList;
+    fExplosions       : TExplosionList;
     fDebugView        : boolean;
     fGameFonts        : TGameFonts;
     fGameText         : TGameTextManager;
@@ -278,6 +279,7 @@ begin
   fPlayer.Update( deltaTime );
   fEnemies.Update( deltaTime );
   fShots.Update( deltaTime );
+  fExplosions.Update( deltaTime );
 end;
 
 procedure TGame.LoadTextures;
@@ -388,7 +390,8 @@ begin
   fPlayer.Position.X := trunc( SCREEN_HALF_WIDTH - ( fPlayer.Sprite.Texture.W / 2 ));
   fPlayer.Position.Y := (DEBUG_CELL_SIZE * 18) - fPlayer.Sprite.CurrentFrame.Rect.h;
 
-  fShots := TShotList.Create(true);
+  fShots      := TShotList.Create(true);
+  fExplosions := TExplosionList.Create(true);
 end;
 
   procedure TGame.CreateFonts;
@@ -409,6 +412,7 @@ begin
   fPlayer.Draw;
   fEnemies.Draw;
   fShots.Draw;
+  fExplosions.Draw;
 end;
 
 
@@ -520,6 +524,7 @@ procedure TGame.FreeGameObjects;
 begin
   fEnemies.Free;
   fShots.Free;
+  fExplosions.Free;;
 end;
 
 procedure TGame.OnFPSCounterUpdated(Sender: TFPSCounter; Counted: word);
@@ -587,8 +592,9 @@ end;
 
 procedure TGame.doShots_OnCollided(Sender, Suspect: TGameObject; var StopChecking: boolean);
 var
-  shot  : TShot;
-  enemy : TEnemy;
+  shot       : TShot;
+  enemy      : TEnemy;
+  explostion : TExplosion;
 begin
   if ( Sender is TShot )  then
   begin
@@ -601,8 +607,14 @@ begin
       if enemy.Alive then
          Inc(fScore, 10)
       else
+        begin
          Inc(fScore, 100);
-
+         explostion := TExplosion.Create(fRenderer);
+         explostion.Sprite.Texture.Assign(fTextures[Ord(TSpriteKind.Explosion)]);
+         explostion.Sprite.InitFrames(1,1);
+         explostion.Position := enemy.Position;
+         fExplosions.Add(explostion);
+        end;
       fShots.Remove( shot );
       StopChecking := true;
     end;

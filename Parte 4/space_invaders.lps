@@ -3,8 +3,8 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="9"/>
-    <BuildModes Active="Win32 Debug"/>
-    <Units Count="37">
+    <BuildModes Active="Win32 Release"/>
+    <Units Count="39">
       <Unit0>
         <Filename Value="space_invaders.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -16,10 +16,11 @@
         <Filename Value="units\sdlGame.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="19"/>
+        <TopLine Value="602"/>
+        <CursorPos X="38" Y="616"/>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
-          <Item0 X="34" Y="94"/>
+          <Item0 X="34" Y="95"/>
         </Bookmarks>
         <Loaded Value="True"/>
       </Unit1>
@@ -27,9 +28,8 @@
         <Filename Value="units\sdlGameText.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="161"/>
-        <CursorPos X="31" Y="176"/>
-        <UsageCount Value="97"/>
+        <TopLine Value="70"/>
+        <UsageCount Value="100"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -37,45 +37,44 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="166"/>
-        <CursorPos Y="184"/>
-        <UsageCount Value="61"/>
+        <TopLine Value="205"/>
+        <CursorPos X="59" Y="217"/>
+        <UsageCount Value="64"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="units\sdlGameUtils.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="7"/>
-        <TopLine Value="42"/>
-        <CursorPos X="3" Y="59"/>
-        <UsageCount Value="60"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="33"/>
+        <CursorPos X="15" Y="39"/>
+        <UsageCount Value="63"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="units\sdlGameTypes.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="4"/>
         <CursorPos X="18" Y="15"/>
-        <UsageCount Value="59"/>
+        <UsageCount Value="62"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="units\sdlGamePlayer.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="18"/>
+        <EditorIndex Value="5"/>
         <CursorPos X="76" Y="48"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="61"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="units\sdlGameEnemies.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="104"/>
         <CursorPos X="16" Y="164"/>
-        <UsageCount Value="57"/>
+        <UsageCount Value="60"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -145,9 +144,9 @@
       <Unit17>
         <Filename Value="C:\lazarus\fpc\2.6.4\source\rtl\objpas\fgl.pp"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="66"/>
-        <CursorPos X="14" Y="79"/>
-        <UsageCount Value="8"/>
+        <TopLine Value="150"/>
+        <CursorPos X="17" Y="166"/>
+        <UsageCount Value="10"/>
       </Unit17>
       <Unit18>
         <Filename Value="headers\sdl2\sdlrect.inc"/>
@@ -173,9 +172,9 @@
       <Unit21>
         <Filename Value="C:\lazarus\fpc\2.6.4\source\rtl\inc\systemh.inc"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="1075"/>
-        <CursorPos X="11" Y="1089"/>
-        <UsageCount Value="7"/>
+        <TopLine Value="480"/>
+        <CursorPos X="3" Y="495"/>
+        <UsageCount Value="10"/>
       </Unit21>
       <Unit22>
         <Filename Value="headers\sdl2\sdltype.inc"/>
@@ -279,127 +278,138 @@
         <CursorPos X="48" Y="267"/>
         <UsageCount Value="10"/>
       </Unit36>
+      <Unit37>
+        <Filename Value="C:\lazarus\fpc\2.6.4\source\rtl\objpas\math.pp"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="70"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="C:\lazarus\fpc\2.6.4\source\rtl\i386\mathu.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="135"/>
+        <CursorPos X="11" Y="84"/>
+        <UsageCount Value="10"/>
+      </Unit38>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="188" Column="47" TopLine="179"/>
+        <Filename Value="units\sdlGame.pas"/>
+        <Caret Line="394" Column="23" TopLine="370"/>
       </Position1>
       <Position2>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="187" TopLine="179"/>
+        <Filename Value="units\sdlGame.pas"/>
+        <Caret Line="611" Column="27" TopLine="597"/>
       </Position2>
       <Position3>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="188" TopLine="179"/>
+        <Filename Value="units\sdlGame.pas"/>
+        <Caret Line="617" Column="21" TopLine="602"/>
       </Position3>
       <Position4>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="190" TopLine="179"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="196" Column="30" TopLine="170"/>
       </Position4>
       <Position5>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="199" TopLine="179"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="235" Column="7" TopLine="211"/>
       </Position5>
       <Position6>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="201" TopLine="185"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="286" Column="24" TopLine="266"/>
       </Position6>
       <Position7>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="204" TopLine="191"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="283" Column="31" TopLine="269"/>
       </Position7>
       <Position8>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="220" TopLine="196"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="16" Column="7"/>
       </Position8>
       <Position9>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="187" TopLine="172"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="283" Column="21" TopLine="268"/>
       </Position9>
       <Position10>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="188" TopLine="175"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="285" Column="16" TopLine="268"/>
       </Position10>
       <Position11>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="190" TopLine="175"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="288" Column="6" TopLine="276"/>
       </Position11>
       <Position12>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="199" TopLine="178"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="286" Column="43" TopLine="270"/>
       </Position12>
       <Position13>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="201" TopLine="184"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="287" TopLine="273"/>
       </Position13>
       <Position14>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="204" TopLine="184"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="286" Column="28" TopLine="271"/>
       </Position14>
       <Position15>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="220" TopLine="205"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="282" Column="36" TopLine="271"/>
       </Position15>
       <Position16>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="251" Column="68" TopLine="227"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="179" Column="32" TopLine="164"/>
       </Position16>
       <Position17>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="180" Column="69" TopLine="166"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="287" Column="70" TopLine="272"/>
       </Position17>
       <Position18>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="195" Column="73" TopLine="182"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="292" Column="38" TopLine="272"/>
       </Position18>
       <Position19>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="242" Column="25" TopLine="227"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="286" TopLine="272"/>
       </Position19>
       <Position20>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="243" Column="47" TopLine="230"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="282" Column="52" TopLine="272"/>
       </Position20>
       <Position21>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="191" Column="11" TopLine="172"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="279" Column="21" TopLine="272"/>
       </Position21>
       <Position22>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="177" Column="9" TopLine="170"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="286" TopLine="272"/>
       </Position22>
       <Position23>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="175" Column="9" TopLine="174"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="287" TopLine="272"/>
       </Position23>
       <Position24>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="182" Column="11" TopLine="174"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="289" Column="25" TopLine="274"/>
       </Position24>
       <Position25>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="217" Column="25" TopLine="205"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="287" TopLine="274"/>
       </Position25>
       <Position26>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="202" Column="3" TopLine="188"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="288" TopLine="274"/>
       </Position26>
       <Position27>
-        <Filename Value="units\sdlGameEnemies.pas"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="289" TopLine="274"/>
       </Position27>
       <Position28>
-        <Filename Value="units\sdlGameEnemies.pas"/>
-        <Caret Line="269" Column="71" TopLine="262"/>
+        <Filename Value="units\sdlGameObjects.pas"/>
+        <Caret Line="287" TopLine="274"/>
       </Position28>
       <Position29>
-        <Filename Value="units\sdlGame.pas"/>
-        <Caret Line="379" Column="10" TopLine="352"/>
-      </Position29>
-      <Position30>
         <Filename Value="units\sdlGameObjects.pas"/>
-        <Caret Line="152" Column="17" TopLine="137"/>
-      </Position30>
+        <Caret Line="289" Column="55" TopLine="274"/>
+      </Position29>
     </JumpHistory>
   </ProjectSession>
   <Debugging>

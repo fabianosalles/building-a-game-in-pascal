@@ -8,10 +8,12 @@ uses
   SDL2,
 
   sdlGameTypes,
+  sdlGameUtils,
 
   sysutils,
   classes,
-  fgl;
+  fgl,
+  math;
 
 type
   { Forwards }
@@ -173,8 +175,8 @@ type
   TExplosion = class( TGameObject )
   strict private
   const
-    LIFE_TIME       = 1000;
-    FADE_OUT_DELAY  = LIFE_TIME div 2;
+    LIFE_TIME   = 500;
+    START_FADE  = 100;
   var
     fCreatedTicks: UInt32;
     fVisible : boolean;
@@ -188,6 +190,14 @@ type
     property Visible: boolean read fVisible;
   end;
 
+  { TExplosionList }
+
+  TExplosionList = class( TGameObjectList )
+  public
+    procedure Update(const deltaTime : real); override;
+    procedure Draw; override;
+  end;
+
   { TBunker }
   TBunker = class ( TGameObject )
   end;
@@ -195,6 +205,38 @@ type
 
 
 implementation
+
+{ TExplosionList }
+
+procedure TExplosionList.Update(const deltaTime: real);
+var
+  i : integer;
+  s : TExplosion;
+begin
+  for i:= Pred(Self.Count) downto 0 do
+  begin
+      s := TExplosion(Self.Items[i]);
+      s.Update( deltaTime );
+      if not s.Visible then
+      begin
+        Self.Remove( s );
+      end;
+  end;
+end;
+
+procedure TExplosionList.Draw;
+var
+  i : integer;
+  s : TExplosion;
+begin
+  for i:= Pred(Self.Count) downto 0 do
+  begin
+      s := TExplosion(Self.Items[i]);
+      s.Draw;
+  end;
+end;
+
+
 
 { TExplosion }
 
@@ -216,6 +258,10 @@ begin
     frame := Self.Sprite.CurrentFrame;
     destination := frame.GetPositionedRect(self.Position);
 
+    SDL_SetTextureColorMod( fSprite.Texture.Data,
+                                       fOpacity,
+                                       fOpacity,
+                                       0);
     SDL_SetTextureAlphaMod( fSprite.Texture.Data, fOpacity);
     SDL_RenderCopy( fRenderer, fSprite.Texture.Data,
                     @frame.Rect,
@@ -233,15 +279,27 @@ end;
 procedure TExplosion.Update(const deltaTime: real);
 var
   elapsed: UInt32;
+  opacity : extended;
+  fadeTime: integer;
 begin
-  elapsed := SDL_GetTicks - fCreatedTicks;
-  if ( elapsed > FADE_OUT_DELAY ) then
-  begin
-    //fOpacity := round(( (LIFE_TIME - FADE_OUT_DELAY) * elapsed) / 255));
-  end;
   if fVisible then
-     fVisible := (SDL_GetTicks - fCreatedTicks) > 500;
+  begin
+    elapsed := SDL_GetTicks - fCreatedTicks;
+    if elapsed > START_FADE then
+    begin
+      elapsed -= START_FADE;
+      fadeTime:= LIFE_TIME-START_FADE;
+      opacity := 255 - ((elapsed  / fadeTime) * 255 );
+      opacity:= Round(opacity);
+      opacity:= Max(opacity, 0);
+      opacity:= Min(255, opacity);
+
+      fOpacity := Trunc(opacity);
+      fVisible := elapsed < LIFE_TIME;
+    end;
+  end;
 end;
+
 
 { TGameObjectList }
 
