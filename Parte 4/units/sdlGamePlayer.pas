@@ -26,16 +26,17 @@ type
 
   TPlayer = class( TGameObject )
   private
+    fLifes: integer;
   const
     DEFAULT_SPEED    = 200.0;
-    DEFAULT_COOLDOWN = 500;
+    DEFAULT_COOLDOWN = 300;
   var
     fSpeed           : real;
     fCooldown        : integer;
     fCooldownCounter : integer;
     fShotSpawnPoint  : TPoint;
     fInput           : array[0..2] of boolean;
-    fOnShotTriggered : TGameObjectNotifyEvent;
+    fOnShot : TGameObjectNotifyEvent;
     function GetInput(index: integer): boolean;
     function GetShotSpawnPoint: TPoint;
     procedure SetInput(index: integer; AValue: boolean);
@@ -49,8 +50,9 @@ type
     property Cooldown: integer read fCooldown write fCooldown;
     property CooldownCounter: integer read fCooldownCounter;
     property ShotSpawnPoint : TPoint read GetShotSpawnPoint;
+    property Lifes: integer read fLifes write fLifes;
 
-    property OnShotTriggered : TGameObjectNotifyEvent read fOnShotTriggered write fOnShotTriggered;
+    property OnShot : TGameObjectNotifyEvent read fOnShot write fOnShot;
   end;
 
 
@@ -92,6 +94,7 @@ begin
   fSpeed    := DEFAULT_SPEED;
   fCooldown := DEFAULT_COOLDOWN;
   fCooldownCounter:= 0;
+  fLifes := 3;
   for i :=0 to High(fInput) do
      fInput[i] := false;
 end;
@@ -135,8 +138,8 @@ begin
 
   if ( (fInput[Ord(TPlayerInput.Shot)]) and ( fCooldownCounter <= 0) ) then
   begin
-    if Assigned(fOnShotTriggered) then
-       fOnShotTriggered(self);
+    if Assigned(fOnShot) then
+       fOnShot(self);
     fCooldownCounter := fCooldown;
     fInput[Ord(TPlayerInput.Shot)] := false;
   end;

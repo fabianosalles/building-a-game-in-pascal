@@ -23,6 +23,7 @@ type
   SDLException = class( Exception );
   SDLImageException = class( SDLException );
   SDLTTFException = class( SDLException );
+  SDLMixerException = class( SDLException );
   IndexOutOfBoundsException = class( Exception );
 
 

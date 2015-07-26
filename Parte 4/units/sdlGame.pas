@@ -10,6 +10,7 @@ uses
 
   SDL2,
   sdl2_ttf,
+  SDL2_mixer,
   sdl2_image,
 
   sdlGameEnemies,
@@ -37,6 +38,13 @@ type
     Leds      = 9
   );
 
+  TSoundKind = (
+    EnemyBullet   = 0,
+    EnemyHit      = 1,
+    PlayerBullet  = 2,
+    PlayerHit     = 3
+  );
+
 
 
 
@@ -53,6 +61,7 @@ type
     fRenderer         : PSDL_Renderer;
     fFrameCounter     : TFPSCounter;
     fTextures         : array of TTexture;
+    fSounds           : array of PMix_Chunk;
     fEnemies          : TEnemyList;
     fPlayer	          : TPlayer;
     fJoystick         : PSDL_Joystick;
@@ -71,6 +80,8 @@ type
     procedure Update(const deltaTime : real);
     procedure LoadTextures;
     procedure FreeTextures;
+    procedure LoadSounds;
+    procedure FreeSounds;
     procedure SetDebugView(const aValue: boolean);
 
     procedure ScreenShot;
@@ -91,8 +102,8 @@ type
     function GetDrawMode: TDrawMode;
     function LoadPNGTexture( const fileName: string ) : TTexture;
 
-    procedure doPlayer_OnShot(Sender: TGameObject);
-    procedure doShots_OnCollided(Sender, Suspect: TGameObject; var StopChecking: boolean);
+    procedure doOnShot(Sender: TGameObject);
+    procedure doOnShotCollided(Sender, Suspect: TGameObject; var StopChecking: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -111,7 +122,7 @@ procedure TGame.Initialize;
 var
   flags, result: integer;
 begin
-  if ( SDL_Init( SDL_INIT_VIDEO or SDL_INIT_TIMER or SDL_INIT_JOYSTICK  ) <> 0 )then
+  if ( SDL_Init( SDL_INIT_VIDEO or SDL_INIT_TIMER or SDL_INIT_JOYSTICK or SDL_INIT_AUDIO  ) <> 0 )then
   	 raise SDLException.Create(SDL_GetError);
 
   fWindow := SDL_CreateWindow( PAnsiChar( WINDOW_TITLE ),
@@ -138,9 +149,15 @@ begin
 
   result := TTF_Init;
   if ( result <> 0 ) then
-    raise SDLTTFException( TTF_GetError );
+    raise SDLTTFException.Create( TTF_GetError );
 
+  result := Mix_OpenAudio(44100 div 2, MIX_DEFAULT_FORMAT, 2, 2048);
+  if result < 0 then
+     raise SDLMixerException.Create( Mix_GetError );
+
+  Randomize;
   LoadTextures;
+  LoadSounds;
   CreateFonts;
   CreateGameObjects;
   fGameText := TGameTextManager.Create( fRenderer );
@@ -151,6 +168,7 @@ begin
   FreeGameObjects;
   FreeTextures;
   FreeFonts;
+  FreeSounds;
   fGameText.Free;
   if fJoystick <> nil then
   begin
@@ -161,6 +179,7 @@ begin
   SDL_DestroyRenderer(fRenderer);
   SDL_DestroyWindow(fWindow);
   IMG_Quit;
+  Mix_Quit;
   SDL_Quit;
 end;
 
@@ -248,8 +267,8 @@ begin
   SDL_RenderClear( fRenderer );
 
   DrawGameObjects;
-  DrawDebugInfo;
   DrawGUI;
+  DrawDebugInfo;
 
   SDL_RenderPresent( fRenderer );
   fFrameCounter.Increment;
@@ -263,14 +282,23 @@ var
 begin
   //check all shots going upwards with all alive enemies
   if (fShots.Count > 0) and ( fEnemies.Count > 0 ) then
-  try
+  begin
     shotList    := fShots.FilterByDirection( TShotDirection.Up );
     suspectList := fEnemies.FilterByLife( true );
     for i:=0 to Pred(shotList.Count) do
       TShot(shotList[i]).CheckCollisions( suspectList );
-  finally
     shotList.Free;
     suspectList.Free;
+  end;
+
+  //check all shots going downwards against the player
+  if (fShots.Count > 0) then
+  begin
+    shotList := fShots.FilterByDirection( TShotDirection.Down );
+    for i:=0 to shotList.Count-1 do
+      TShot(shotList[i]).CheckCollisions( fPlayer );
+
+    shotList.Free;
   end;
 end;
 
@@ -286,16 +314,16 @@ procedure TGame.LoadTextures;
 begin
   SetLength(fTextures, Ord( High( TSpriteKind ) ) +1 );
 
-  fTextures[ ord(TSpriteKind.EnemyA) ]   := LoadPNGTexture( 'enemy_a.png' );
-  fTextures[ ord(TSpriteKind.EnemyB) ]   := LoadPNGTexture( 'enemy_b.png' );
-  fTextures[ ord(TSpriteKind.EnemyC) ]   := LoadPNGTexture( 'enemy_c.png' );
-  fTextures[ ord(TSpriteKind.EnemyD) ]   := LoadPNGTexture( 'enemy_d.png' );
-  fTextures[ ord(TSpriteKind.Player) ]   := LoadPNGTexture( 'player.png' );
-  fTextures[ ord(TSpriteKind.Bunker) ]   := LoadPNGTexture( 'bunker.png' );
-  fTextures[ ord(TSpriteKind.Garbage)]   := LoadPNGTexture( 'garbage.png' );
-  fTextures[ ord(TSpriteKind.Explosion)] := LoadPNGTexture( 'explosion.png' );
-  fTextures[ ord(TSpriteKind.ShotA) ]    := LoadPNGTexture( 'shot_a.png' );
-  fTextures[ ord(TSpriteKind.Leds) ]     := LoadPNGTexture( 'leds.png' );
+  fTextures[ Ord(TSpriteKind.EnemyA) ]   := LoadPNGTexture( 'enemy_a.png' );
+  fTextures[ Ord(TSpriteKind.EnemyB) ]   := LoadPNGTexture( 'enemy_b.png' );
+  fTextures[ Ord(TSpriteKind.EnemyC) ]   := LoadPNGTexture( 'enemy_c.png' );
+  fTextures[ Ord(TSpriteKind.EnemyD) ]   := LoadPNGTexture( 'enemy_d.png' );
+  fTextures[ Ord(TSpriteKind.Player) ]   := LoadPNGTexture( 'player.png' );
+  fTextures[ Ord(TSpriteKind.Bunker) ]   := LoadPNGTexture( 'bunker.png' );
+  fTextures[ Ord(TSpriteKind.Garbage)]   := LoadPNGTexture( 'garbage.png' );
+  fTextures[ Ord(TSpriteKind.Explosion)] := LoadPNGTexture( 'explosion.png' );
+  fTextures[ Ord(TSpriteKind.ShotA) ]    := LoadPNGTexture( 'shot_a.png' );
+  fTextures[ Ord(TSpriteKind.Leds) ]     := LoadPNGTexture( 'leds.png' );
 end;
 
 procedure TGame.FreeTextures;
@@ -305,6 +333,26 @@ begin
   for i:= low(fTextures) to High(fTextures) do
 	  SDL_FreeSurface( fTextures[ i ].Data );
   SetLength(fTextures, 0);
+end;
+
+procedure TGame.LoadSounds;
+const
+  SOUND_DIR = '.\assets\sounds\';
+begin
+  SetLength(fSounds, Ord(High( TSoundKind))+1);
+
+  fSounds[ Ord(TSoundKind.EnemyBullet) ]  := Mix_LoadWAV(SOUND_DIR + 'EnemyBullet.wav');
+  fSounds[ Ord(TSoundKind.EnemyHit) ]     := Mix_LoadWAV(SOUND_DIR + 'EnemyHit.wav');
+  fSounds[ Ord(TSoundKind.PlayerBullet) ] := Mix_LoadWAV(SOUND_DIR + 'PlayerBullet.wav');
+  fSounds[ Ord(TSoundKind.PlayerHit) ]    := Mix_LoadWAV(SOUND_DIR + 'PlayerHit.wav');
+end;
+
+procedure TGame.FreeSounds;
+var
+  i : integer;
+begin
+  for i:=Low(fSounds) to High(fSounds) do
+    Mix_FreeChunk(fSounds[i]);
 end;
 
 procedure TGame.SetDebugView(const aValue: boolean);
@@ -378,6 +426,7 @@ begin
     end;
     enemy.Position.X := DEBUG_CELL_SIZE + ( i mod 20 ) * DEBUG_CELL_SIZE ;
     enemy.Position.Y := 2 * DEBUG_CELL_SIZE + ( i div 20 ) * DEBUG_CELL_SIZE ;
+    enemy.OnShot     := @doOnShot;
     enemy.StartMoving;
     fEnemies.Add( enemy );
   end;
@@ -385,7 +434,7 @@ begin
   fPlayer := TPlayer.Create( fRenderer );
   fPlayer.Sprite.Texture.Assign( fTextures[ integer(TSpriteKind.Player)] );
   fPlayer.Sprite.InitFrames(1,1);
-  fPlayer.OnShotTriggered:= @doPlayer_OnShot;
+  fPlayer.OnShot:= @doOnShot;
 
   fPlayer.Position.X := trunc( SCREEN_HALF_WIDTH - ( fPlayer.Sprite.Texture.W / 2 ));
   fPlayer.Position.Y := (DEBUG_CELL_SIZE * 18) - fPlayer.Sprite.CurrentFrame.Rect.h;
@@ -510,6 +559,8 @@ begin
 end;
 
 procedure TGame.DrawGUI;
+var
+  rect : TSDL_Rect;
 begin
   SDL_SetRenderDrawColor(fRenderer, 255, 255, 0, 255);
   SDL_RenderDrawLine( fRenderer,  0,
@@ -517,7 +568,16 @@ begin
                                   SCREEN_WIDTH,
                                   round(DEBUG_CELL_SIZE * 1.5));
 
+  rect.x:= 0;
+  rect.y:= 0;
+  rect.h:= round(DEBUG_CELL_SIZE * 1.5);
+  rect.w:= SCREEN_WIDTH;
+  SDL_SetRenderDrawColor(fRenderer, 255, 0, 0, 80);
+  SDL_RenderFillRect( fRenderer, @rect );
+
   fGameText.Draw( Format('SCORE %.6d', [fScore]),  290, 12, fGameFonts.GUI  );
+
+
 end;
 
 procedure TGame.FreeGameObjects;
@@ -571,10 +631,11 @@ begin
   end;
 end;
 
-procedure TGame.doPlayer_OnShot(Sender: TGameObject);
+procedure TGame.doOnShot(Sender: TGameObject);
 var
   player : TPlayer;
-  shot : TShot;
+  enemy  : Tenemy;
+  shot   : TShot;
 begin
   if (Sender is TPlayer) then
   begin
@@ -584,13 +645,31 @@ begin
     shot.Sprite.InitFrames( 1,1 );
     shot.Position := player.ShotSpawnPoint;
     shot.Position.X -= (shot.Sprite.CurrentFrame.Rect.w / 2);
-    shot.OnCollided := @doShots_OnCollided;
+    shot.OnCollided := @doOnShotCollided;
     shot.DrawMode  := GetDrawMode;
     fShots.Add( shot );
+    Mix_Volume(1, 30);
+    Mix_PlayChannel(1, fSounds[ Ord(TSoundKind.PlayerBullet) ], 0);
+  end
+  else
+  if (Sender is TEnemy) then
+  begin
+    enemy := TEnemy(Sender);
+    shot := TShot.Create( fRenderer );
+    shot.Sprite.Texture.Assign( fTextures[ Ord(TSpriteKind.ShotA) ] );
+    shot.Sprite.InitFrames( 1,1 );
+    shot.Direction:= TShotDirection.Down;
+    shot.Position := enemy.ShotSpawnPoint;
+    shot.Position.X -= (shot.Sprite.CurrentFrame.Rect.w / 2);
+    shot.OnCollided := @doOnShotCollided;
+    shot.DrawMode  := GetDrawMode;
+    fShots.Add( shot );
+
+    Mix_PlayChannel(1, fSounds[ Ord(TSoundKind.EnemyBullet) ], 0);
   end;
 end;
 
-procedure TGame.doShots_OnCollided(Sender, Suspect: TGameObject; var StopChecking: boolean);
+procedure TGame.doOnShotCollided(Sender, Suspect: TGameObject; var StopChecking: boolean);
 var
   shot       : TShot;
   enemy      : TEnemy;
@@ -603,6 +682,7 @@ begin
       shot  := TShot(Sender);
       enemy := TEnemy(Suspect);
       enemy.Hit( 1 );
+      Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.EnemyHit) ], 0);
 
       if enemy.Alive then
          Inc(fScore, 10)
@@ -617,8 +697,20 @@ begin
         end;
       fShots.Remove( shot );
       StopChecking := true;
+      exit;
     end;
+
+   if ( Suspect is TPlayer ) then
+   begin
+    explostion := TExplosion.Create(fRenderer);
+    explostion.Sprite.Texture.Assign(fTextures[Ord(TSpriteKind.Explosion)]);
+    explostion.Sprite.InitFrames(1,1);
+    explostion.Position := TPlayer(Suspect).Position;
+    fExplosions.Add(explostion);
+    Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.EnemyHit) ], 0);
    end;
+  end;
+
 end;
 
 constructor TGame.Create;

@@ -35,13 +35,20 @@ type
   PEnemy = ^TEnemy;
   TEnemy = class( TGameObject )
   strict private
+  const
+     SHOT_DELAY = 3000; //minimun interval between shots
+  var
+    fLastShotIteration : UInt32;
     fSpeed: real;
     fOldMoveDirection : TEnemyMoveDirection;
     fMoveDirection : TEnemyMoveDirection;
     fMovementOrigin: TPoint;
+    fOnShot : TGameObjectNotifyEvent;
   private
+    fCanShot: boolean;
     fHP : integer;
     function GetAlive: boolean;
+    function GetShotSpawnPoint: TPoint;
   protected
     procedure InitFields; override;
   public
@@ -53,6 +60,10 @@ type
     property Speed: real read fSpeed write fSpeed;
     property HP : integer read fHP;
     property Alive: boolean read GetAlive;
+    property CanShot: boolean read fCanShot write fCanShot;
+    property ShotSpawnPoint : TPoint read GetShotSpawnPoint;
+
+    property OnShot : TGameObjectNotifyEvent read fOnShot write fOnShot;
   end;
 
 
@@ -60,6 +71,7 @@ type
 
   TEnemyList = class(TGameObjectList)
   public
+    procedure Update(const deltaTime: real); override;
     function FilterByLife( aAlive: boolean ): TEnemyList;
   end;
 
@@ -100,6 +112,46 @@ implementation
 
 { TEnemyList }
 
+procedure TEnemyList.Update(const deltaTime: real);
+var
+  i: integer;
+  enemy : TEnemy;
+  linha: integer;
+begin
+  inherited Update(deltaTime);
+
+  //só pode atirar se não houver nenhum outro inimigo na linha de tiro
+  for i:=0 to Pred(Self.Count) do
+  begin
+    enemy:= TEnemy(Self.Items[i]);
+    linha := i div 20;
+    enemy.CanShot := linha = 5;
+    if linha < 5 then
+       case linha of
+         0: enemy.CanShot := (not TEnemy(Self.Items[i+20]).Alive) and
+                             (not TEnemy(Self.Items[i+40]).Alive) and
+                             (not TEnemy(Self.Items[i+60]).Alive) and
+                             (not TEnemy(Self.Items[i+80]).Alive) and
+                             (not TEnemy(Self.Items[i+100]).Alive);
+
+         1: enemy.CanShot := (not TEnemy(Self.Items[i+20]).Alive) and
+                             (not TEnemy(Self.Items[i+40]).Alive) and
+                             (not TEnemy(Self.Items[i+60]).Alive) and
+                             (not TEnemy(Self.Items[i+80]).Alive);
+
+         2: enemy.CanShot := (not TEnemy(Self.Items[i+20]).Alive) and
+                             (not TEnemy(Self.Items[i+40]).Alive) and
+                             (not TEnemy(Self.Items[i+60]).Alive);
+
+         3: enemy.CanShot := (not TEnemy(Self.Items[i+20]).Alive) and
+                             (not TEnemy(Self.Items[i+40]).Alive);
+
+         4: enemy.CanShot := (not TEnemy(Self.Items[i+20]).Alive) ;
+       end;
+
+  end;
+
+end;
 
 function TEnemyList.FilterByLife(aAlive: boolean): TEnemyList;
 var
@@ -158,13 +210,25 @@ begin
   result := fHP > 0;
 end;
 
+function TEnemy.GetShotSpawnPoint: TPoint;
+var
+  pos : TPoint;
+begin
+  pos := Self.Position;
+
+  result.X := pos.X + ( Sprite.CurrentFrame.Rect.w / 2 );
+  result.Y := pos.Y-2;
+end;
+
 procedure TEnemy.InitFields;
 begin
   inherited InitFields;
   fSpeed  := 10;
-  fMoveDirection:= TEnemyMoveDirection.None;
-  fOldMoveDirection:= TEnemyMoveDirection.None;
-  fMovementOrigin := Position;
+  fMoveDirection     := TEnemyMoveDirection.None;
+  fOldMoveDirection  := TEnemyMoveDirection.None;
+  fMovementOrigin    := Position;
+  fLastShotIteration := 0;
+  fCanShot           := false;
 end;
 
 procedure TEnemy.Update(const deltaTime : real);
@@ -172,6 +236,7 @@ const
   OFFSET_X = 3 * DEBUG_CELL_SIZE;
   OFFSET_Y = 16;
 var
+  currTicks : UInt32;
   deltaX : real;
   limitX : real;
   deltaY : real;
@@ -201,6 +266,21 @@ var
 begin
   if Assigned( Sprite ) then
      Sprite.Update(deltaTime);
+
+  if fCanShot and Alive then
+  begin
+    currTicks:= SDL_GetTicks;
+    if (currTicks - fLastShotIteration >= SHOT_DELAY) then
+    begin
+      if Random(100) <= 10 then
+      begin
+        if Assigned(fOnShot) then
+           fOnShot(Self);
+      end;
+      fLastShotIteration:= currTicks;
+    end;
+  end;
+
 
   if ( fMoveDirection <> TEnemyMoveDirection.None ) then
     begin

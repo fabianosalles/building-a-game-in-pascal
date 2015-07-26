@@ -8,7 +8,6 @@ uses
   SDL2,
 
   sdlGameTypes,
-  sdlGameUtils,
 
   sysutils,
   classes,
@@ -127,7 +126,8 @@ type
     procedure Update(const deltaTime : real ); virtual; abstract;
     procedure Draw; virtual; abstract;
 
-    procedure CheckCollisions( Suspects: TGameObjectList);
+    procedure CheckCollisions( Suspects: TGameObjectList); overload;
+    procedure CheckCollisions( Suspect: TGameObject ); overload;
     property DrawMode: TDrawMode read fDrawMode write fDrawMode;
     property Sprite : TSprite read fSprite;
     property SpriteRect : TSDL_Rect read GetSpriteRect;
@@ -415,6 +415,19 @@ begin
 
 end;
 
+procedure TGameObject.CheckCollisions(Suspect: TGameObject);
+var
+  myRect         : TSDL_Rect;
+  suspectRect    : TSDL_Rect;
+  aStopCheckhing : boolean;
+begin
+  myRect := GetSpriteRect;
+  suspectRect := Suspect.SpriteRect;
+    if ( SDL_HasIntersection(@myRect, @suspectRect) ) = SDL_TRUE then
+       if Assigned( fOnCollided ) then
+          fOnCollided( self, Suspect, aStopCheckhing );
+end;
+
 
 { TTexture }
 
@@ -558,9 +571,17 @@ begin
 
     destination := frame.GetPositionedRect(self.Position);
 
-    SDL_RenderCopy( fRenderer, fSprite.Texture.Data,
-                    @frame.Rect,
-                    @destination) ;
+    case fDirection of
+     TShotDirection.Down : SDL_RenderCopy( fRenderer, fSprite.Texture.Data,
+                                          @frame.Rect,
+                                          @destination) ;
+
+     TShotDirection.Up  : SDL_RenderCopyEx( fRenderer, fSprite.Texture.Data,
+                                          @frame.Rect, @destination, 0, nil,
+                                          SDL_FLIP_VERTICAL);
+
+    end;
+
 
     if fDrawMode = TDrawMode.Debug then
     begin
