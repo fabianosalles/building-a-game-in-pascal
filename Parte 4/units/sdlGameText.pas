@@ -60,6 +60,7 @@ type
     fDebugNormal : TGameFont;
     fDebugError  : TGameFont;
     fGUI         : TGameFont;
+    fGUI64       : TGameFont;
     fRenderer    : PSDL_Renderer;
   public
     constructor Create( const aRenderer: PSDL_Renderer );
@@ -69,6 +70,7 @@ type
     property DebugNormal : TGameFont read fDebugNormal;
     property DebugError : TGameFont read fDebugError;
     property GUI: TGameFont read fGUI write fGUI;
+    property GUI64 : TGameFont read fGUI64 write fGUI64;
   end;
 
 
@@ -82,6 +84,7 @@ type
     constructor Create( const aRenderer: PSDL_Renderer );
     destructor Destroy; override;
     procedure Draw( const aText : string; x, y : integer; aFont : TGameFont );
+    procedure DrawModulated( const aText : string; x, y : integer; aFont : TGameFont; mr, mg, mb : UInt8 );
   end;
 
 implementation
@@ -191,6 +194,31 @@ begin
   SDL_RenderCopy( fRenderer, fTextures[i].Textture, @lSource, @lDest );
 end;
 
+procedure TGameTextManager.DrawModulated(const aText: string; x, y: integer;
+  aFont: TGameFont; mr, mg, mb: UInt8);
+var
+  i : integer;
+  lSource, lDest : TSDL_Rect;
+begin
+  i := fTextures.IndexOf(aText);
+  if ( i < 0 ) then
+     i := fTextures.Add(aText, aFont);
+
+  lSource.x := 0;
+  lSource.y := 0;
+  lSource.w := fTextures[i].Width;
+  lSource.h := fTextures[i].Hight;
+
+  lDest.x := x;
+  lDest.y := y;
+  lDest.w := lSource.w;
+  lDest.h := lSource.h;
+
+  SDL_SetRenderDrawBlendMode( fRenderer, SDL_BLENDMODE_BLEND );
+  SDL_SetTextureColorMod(fTextures[i].Textture, mr, mg, mb);
+  SDL_RenderCopy( fRenderer, fTextures[i].Textture, @lSource, @lDest );
+end;
+
 { TGameFonts }
 
 constructor TGameFonts.Create( const aRenderer: PSDL_Renderer );
@@ -234,12 +262,23 @@ begin
   fGUI.FileName := aFontsDirectory + 'Arcade.ttf';
   fGUI.Size     := 32;
   fGUI.Font     := TTF_OpenFont( PAnsiChar(fGUI.FileName), fGUI.Size);
-  fGUI.Color.r := $FF;
-  fGUI.Color.g := $FF;
-  fGUI.Color.b := 0;
-  fGUI.Color.a := $FF;
+  fGUI.Color.r  := $FF;
+  fGUI.Color.g  := $FF;
+  fGUI.Color.b  := 0;
+  fGUI.Color.a  := $FF;
 
   if fGUI.Font = nil then
+     raise GameFontException.Create( TTF_GetError );
+
+  fGUI64.FileName := aFontsDirectory + 'Arcade.ttf';
+  fGUI64.Size     := 64;
+  fGUI64.Font     := TTF_OpenFont( PAnsiChar(fGUI64.FileName), fGUI64.Size);
+  fGUI64.Color.r  := $FF;
+  fGUI64.Color.g  := $FF;
+  fGUI64.Color.b  := 0;
+  fGUI64.Color.a  := $FF;
+
+  if fGUI64.Font = nil then
      raise GameFontException.Create( TTF_GetError );
 
 end;

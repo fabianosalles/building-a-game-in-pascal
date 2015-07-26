@@ -46,6 +46,14 @@ type
   );
 
 
+  TGameState = (
+    Playing,
+    Paused,
+    GameOver
+  );
+
+
+
 
 
   { TGame }
@@ -63,7 +71,7 @@ type
     fTextures         : array of TTexture;
     fSounds           : array of PMix_Chunk;
     fEnemies          : TEnemyList;
-    fPlayer	          : TPlayer;
+    fPlayer	      : TPlayer;
     fJoystick         : PSDL_Joystick;
     fShots            : TShotList;
     fExplosions       : TExplosionList;
@@ -71,6 +79,7 @@ type
     fGameFonts        : TGameFonts;
     fGameText         : TGameTextManager;
     fScore            : integer;
+    fGameState        : TGameState;
 
     procedure Quit;
     procedure CheckDevices;
@@ -86,13 +95,13 @@ type
 
     procedure ScreenShot;
 
+    procedure StartNewGame;
     procedure CreateGameObjects;
     procedure CreateFonts;
     procedure FreeFonts;
     procedure DrawGameObjects;
 
     procedure DrawDebugInfo;
-    procedure DrawDebgText;
     procedure DrawDebugGrid;
     procedure DrawGUI;
 
@@ -161,6 +170,7 @@ begin
   CreateFonts;
   CreateGameObjects;
   fGameText := TGameTextManager.Create( fRenderer );
+  StartNewGame;
 end;
 
 procedure TGame.Quit;
@@ -232,6 +242,16 @@ begin
           SDLK_LEFT, SDLK_A  : fPlayer.Input[Ord(TPlayerInput.Left)] := false;
           SDLK_RIGHT, SDLK_D : fPlayer.Input[Ord(TPlayerInput.Right)]:= false;
           SDLK_SPACE : fPlayer.Input[Ord(TPlayerInput.Shot)] := false;
+          SDLK_r: StartNewGame; //reset the game
+          SDLK_o: fGameState := TGameState.GameOver;
+          SDLK_RETURN :
+            begin
+              case fGameState of
+                TGameState.Paused  : fGameState:= TGameState.Playing;
+                TGameState.Playing : fGameState:= TGameState.Paused;
+                TGameState.GameOver: StartNewGame;
+              end;
+            end;
         end;
 
       SDL_JOYAXISMOTION :
@@ -304,10 +324,26 @@ end;
 
 procedure TGame.Update(const deltaTime : real ) ;
 begin
-  fPlayer.Update( deltaTime );
-  fEnemies.Update( deltaTime );
-  fShots.Update( deltaTime );
-  fExplosions.Update( deltaTime );
+  case fGameState of
+    TGameState.Playing :
+      begin
+        fPlayer.Update( deltaTime );
+        fEnemies.Update( deltaTime );
+        fShots.Update( deltaTime );
+        fExplosions.Update( deltaTime );
+        if ( fPlayer.Lifes <=0)  then fGameState := TGameState.GameOver;
+
+      end;
+    TGameState.Paused  :
+      begin
+
+      end;
+
+    TGameState.GameOver:
+      begin
+
+      end;
+  end;
 end;
 
 procedure TGame.LoadTextures;
@@ -395,6 +431,30 @@ begin
   end;
 end;
 
+procedure TGame.StartNewGame;
+var
+  i: integer;
+  enemy : TEnemy;
+begin
+  fScore        := 0;
+  fPlayer.Lifes := 3;
+  fPlayer.Position.X := trunc( SCREEN_HALF_WIDTH - ( fPlayer.Sprite.Texture.W / 2 ));
+  fPlayer.Position.Y := (DEBUG_CELL_SIZE * 18) - fPlayer.Sprite.CurrentFrame.Rect.h;
+
+  for i:=0 to Pred(fEnemies.Count) do
+  begin
+    enemy := TEnemy(fEnemies.Items[i]);
+    enemy.Position.X := DEBUG_CELL_SIZE + ( i mod 20 ) * DEBUG_CELL_SIZE ;
+    enemy.Position.Y := 2 * DEBUG_CELL_SIZE + ( i div 20 ) * DEBUG_CELL_SIZE ;
+    if enemy is TEnemyA then enemy.HP := 1;
+    if enemy is TEnemyB then enemy.HP := 2;
+    if enemy is TEnemyC then enemy.HP := 3;
+    enemy.StartMoving;
+  end;
+  fShots.Clear;
+  fGameState:= TGameState.Playing;
+end;
+
 procedure TGame.CreateGameObjects;
 var
   i : integer;
@@ -424,10 +484,7 @@ begin
           enemy.Sprite.InitFrames(1, 2);
         end;
     end;
-    enemy.Position.X := DEBUG_CELL_SIZE + ( i mod 20 ) * DEBUG_CELL_SIZE ;
-    enemy.Position.Y := 2 * DEBUG_CELL_SIZE + ( i div 20 ) * DEBUG_CELL_SIZE ;
-    enemy.OnShot     := @doOnShot;
-    enemy.StartMoving;
+    enemy.OnShot := @doOnShot;
     fEnemies.Add( enemy );
   end;
 
@@ -435,9 +492,6 @@ begin
   fPlayer.Sprite.Texture.Assign( fTextures[ integer(TSpriteKind.Player)] );
   fPlayer.Sprite.InitFrames(1,1);
   fPlayer.OnShot:= @doOnShot;
-
-  fPlayer.Position.X := trunc( SCREEN_HALF_WIDTH - ( fPlayer.Sprite.Texture.W / 2 ));
-  fPlayer.Position.Y := (DEBUG_CELL_SIZE * 18) - fPlayer.Sprite.CurrentFrame.Rect.h;
 
   fShots      := TShotList.Create(true);
   fExplosions := TExplosionList.Create(true);
@@ -471,7 +525,7 @@ var
 begin
   DrawDebugGrid;
 
-  //desenha o led do sensor do controle
+  //draw upper left joystick sensor
   dest.x := 10;
   dest.y := DEBUG_CELL_SIZE div 2;
   dest.w := 16;
@@ -491,17 +545,8 @@ begin
     fGameText.Draw('GAME CONTROLLER NOT FOUND', 32, 19, fGameFonts.DebugError);
   end;
   SDL_RenderCopy( fRenderer, fTextures[Ord(TSpriteKind.Leds)].Data, @source, @dest);
-
-
-  DrawDebgText;
 end;
 
-procedure TGame.DrawDebgText;
-begin
-  fGameText.Draw(Format('SHOTS: %d', [fShots.Count]),
-                 SCREEN_WIDTH-80, 20,
-                 fGameFonts.DebugNormal);
-end;
 
 
 procedure TGame.DrawDebugGrid;
@@ -560,7 +605,7 @@ end;
 
 procedure TGame.DrawGUI;
 var
-  rect : TSDL_Rect;
+  rect  : TSDL_Rect;
 begin
   SDL_SetRenderDrawColor(fRenderer, 255, 255, 0, 255);
   SDL_RenderDrawLine( fRenderer,  0,
@@ -574,8 +619,47 @@ begin
   rect.w:= SCREEN_WIDTH;
   SDL_SetRenderDrawColor(fRenderer, 255, 0, 0, 80);
   SDL_RenderFillRect( fRenderer, @rect );
-
   fGameText.Draw( Format('SCORE %.6d', [fScore]),  290, 12, fGameFonts.GUI  );
+
+  rect.x:= 710;
+  rect.y:= 18;
+  rect.h:= 2 *fPlayer.Sprite.Texture.H div 3;
+  rect.w:= 2 *fPlayer.Sprite.Texture.W div 3;
+
+  SDL_RenderCopy(fRenderer,
+                   fPlayer.Sprite.Texture.Data,
+                   @fPlayer.Sprite.CurrentFrame.Rect,
+                   @rect);
+   fGameText.Draw( Format('%.2d', [fPlayer.Lifes]),  738, 12, fGameFonts.GUI  );
+  case fGameState of
+    TGameState.Paused   :
+      begin
+        //obsfuscates the game stage
+        rect.x := 0;
+        rect.y := round( 1.5 * DEBUG_CELL_SIZE) +1;
+        rect.h := SCREEN_HEIGHT - rect.y;
+        rect.w:= SCREEN_WIDTH;
+        SDL_SetRenderDrawColor(fRenderer, 0, 0, 0, 200);
+        SDL_RenderFillRect( fRenderer, @rect );
+
+        fGameText.Draw( '***[ PAUSED ]***' ,  155, SCREEN_HALF_HEIGHT-24, fGameFonts.GUI64  );
+        fGameText.Draw( 'press <enter> to resume', 320, SCREEN_HALF_HEIGHT+25, fGameFonts.DebugNormal  );
+      end;
+    TGameState.GameOver :
+      begin
+        //obsfuscates the game stage
+        rect.x := 0;
+        rect.y := round( 1.5 * DEBUG_CELL_SIZE) +1;
+        rect.h := SCREEN_HEIGHT - rect.y;
+        rect.w:= SCREEN_WIDTH;
+        SDL_SetRenderDrawColor(fRenderer, 50, 0, 0, 200);
+        SDL_RenderFillRect( fRenderer, @rect );
+
+        fGameText.DrawModulated( '***[ GAME OVER ]***' ,  105, SCREEN_HALF_HEIGHT-24, fGameFonts.GUI64, 255,0,0  );
+        fGameText.Draw( 'press <enter> to start a new game', 285, SCREEN_HALF_HEIGHT+25, fGameFonts.DebugNormal  );
+
+      end;
+  end;
 
 
 end;
@@ -677,9 +761,9 @@ var
 begin
   if ( Sender is TShot )  then
   begin
+    shot  := TShot(Sender);
     if (Suspect is TEnemy) and (TEnemy(Suspect).HP > 0) then
     begin
-      shot  := TShot(Sender);
       enemy := TEnemy(Suspect);
       enemy.Hit( 1 );
       Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.EnemyHit) ], 0);
@@ -702,12 +786,14 @@ begin
 
    if ( Suspect is TPlayer ) then
    begin
-    explostion := TExplosion.Create(fRenderer);
-    explostion.Sprite.Texture.Assign(fTextures[Ord(TSpriteKind.Explosion)]);
-    explostion.Sprite.InitFrames(1,1);
-    explostion.Position := TPlayer(Suspect).Position;
-    fExplosions.Add(explostion);
-    Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.EnemyHit) ], 0);
+     fPlayer.Hit( 1 );
+     explostion := TExplosion.Create(fRenderer);
+     explostion.Sprite.Texture.Assign(fTextures[Ord(TSpriteKind.Explosion)]);
+     explostion.Sprite.InitFrames(1,1);
+     explostion.Position := TPlayer(Suspect).Position;
+     fExplosions.Add(explostion);
+     Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.EnemyHit) ], 0);
+     fShots.Remove( shot );
    end;
   end;
 

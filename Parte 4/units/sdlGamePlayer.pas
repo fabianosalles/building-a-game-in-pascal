@@ -51,6 +51,7 @@ type
     property CooldownCounter: integer read fCooldownCounter;
     property ShotSpawnPoint : TPoint read GetShotSpawnPoint;
     property Lifes: integer read fLifes write fLifes;
+    procedure Hit( aDamage: byte );
 
     property OnShot : TGameObjectNotifyEvent read fOnShot write fOnShot;
   end;
@@ -144,6 +145,13 @@ begin
     fInput[Ord(TPlayerInput.Shot)] := false;
   end;
 
+end;
+
+procedure TPlayer.Hit(aDamage: byte);
+begin
+  fLifes -= aDamage;
+  if fLifes < 0 then
+     fLifes :=0;
 end;
 
 

@@ -36,7 +36,7 @@ type
   TEnemy = class( TGameObject )
   strict private
   const
-     SHOT_DELAY = 3000; //minimun interval between shots
+     SHOT_DELAY = 2500; //minimun interval between shots
   var
     fLastShotIteration : UInt32;
     fSpeed: real;
@@ -58,7 +58,7 @@ type
     procedure StartMoving;
 
     property Speed: real read fSpeed write fSpeed;
-    property HP : integer read fHP;
+    property HP : integer read fHP write fHP;
     property Alive: boolean read GetAlive;
     property CanShot: boolean read fCanShot write fCanShot;
     property ShotSpawnPoint : TPoint read GetShotSpawnPoint;
