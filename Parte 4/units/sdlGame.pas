@@ -39,10 +39,13 @@ type
   );
 
   TSoundKind = (
-    EnemyBullet   = 0,
-    EnemyHit      = 1,
-    PlayerBullet  = 2,
-    PlayerHit     = 3
+    sndEnemyBullet,
+    sndEnemyHit,
+    sndPlayerBullet,
+    sndPlayerHit,
+    sndGamePause,
+    sndGameResume,
+    sndGameOver
   );
 
 
@@ -71,7 +74,7 @@ type
     fTextures         : array of TTexture;
     fSounds           : array of PMix_Chunk;
     fEnemies          : TEnemyList;
-    fPlayer	      : TPlayer;
+    fPlayer	          : TPlayer;
     fJoystick         : PSDL_Joystick;
     fShots            : TShotList;
     fExplosions       : TExplosionList;
@@ -92,6 +95,7 @@ type
     procedure LoadSounds;
     procedure FreeSounds;
     procedure SetDebugView(const aValue: boolean);
+    procedure ToggleFullScreen;
 
     procedure ScreenShot;
 
@@ -242,13 +246,27 @@ begin
           SDLK_LEFT, SDLK_A  : fPlayer.Input[Ord(TPlayerInput.Left)] := false;
           SDLK_RIGHT, SDLK_D : fPlayer.Input[Ord(TPlayerInput.Right)]:= false;
           SDLK_SPACE : fPlayer.Input[Ord(TPlayerInput.Shot)] := false;
+
+          SDLK_f: ToggleFullScreen;
+          SDLK_o:
+            begin
+              fGameState := TGameState.GameOver;
+              Mix_PlayChannel(0, fSounds[ Ord(TSoundKind.sndGameOver) ], 0);
+            end;
           SDLK_r: StartNewGame; //reset the game
-          SDLK_o: fGameState := TGameState.GameOver;
           SDLK_RETURN :
             begin
               case fGameState of
-                TGameState.Paused  : fGameState:= TGameState.Playing;
-                TGameState.Playing : fGameState:= TGameState.Paused;
+                TGameState.Paused  :
+                  begin
+                    fGameState:= TGameState.Playing;
+                    Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.sndGameResume) ], 0);
+                  end;
+                TGameState.Playing :
+                  begin
+                    fGameState:= TGameState.Paused;
+                    Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.sndGamePause) ], 0);
+                  end;
                 TGameState.GameOver: StartNewGame;
               end;
             end;
@@ -271,6 +289,24 @@ begin
       SDL_JOYBUTTONUP :
         case  event.jbutton.button of
           0, 1, 2, 3 : fPlayer.Input[Ord(TPlayerInput.Shot)] := false;
+          9: // 9 for stard button
+             //http://wiki.gp2x.org/articles/s/d/l/SDL_Joystick_mapping.html
+          begin
+              case fGameState of
+                TGameState.Paused  :
+                  begin
+                    fGameState:= TGameState.Playing;
+                    Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.sndGameResume) ], 0);
+                  end;
+                TGameState.Playing :
+                  begin
+                    fGameState:= TGameState.Paused;
+                    Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.sndGamePause) ], 0);
+                  end;
+                TGameState.GameOver: StartNewGame;
+              end;
+            end;
+
         end;
 
       SDL_JOYBUTTONDOWN :
@@ -331,8 +367,11 @@ begin
         fEnemies.Update( deltaTime );
         fShots.Update( deltaTime );
         fExplosions.Update( deltaTime );
-        if ( fPlayer.Lifes <=0)  then fGameState := TGameState.GameOver;
-
+        if ( fPlayer.Lifes <=0)  then
+        begin
+         fGameState := TGameState.GameOver;
+         Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.sndGameOver) ], 0);
+        end;
       end;
     TGameState.Paused  :
       begin
@@ -377,10 +416,13 @@ const
 begin
   SetLength(fSounds, Ord(High( TSoundKind))+1);
 
-  fSounds[ Ord(TSoundKind.EnemyBullet) ]  := Mix_LoadWAV(SOUND_DIR + 'EnemyBullet.wav');
-  fSounds[ Ord(TSoundKind.EnemyHit) ]     := Mix_LoadWAV(SOUND_DIR + 'EnemyHit.wav');
-  fSounds[ Ord(TSoundKind.PlayerBullet) ] := Mix_LoadWAV(SOUND_DIR + 'PlayerBullet.wav');
-  fSounds[ Ord(TSoundKind.PlayerHit) ]    := Mix_LoadWAV(SOUND_DIR + 'PlayerHit.wav');
+  fSounds[ Ord(TSoundKind.sndEnemyBullet) ]  := Mix_LoadWAV(SOUND_DIR + 'EnemyBullet.wav');
+  fSounds[ Ord(TSoundKind.sndEnemyHit) ]     := Mix_LoadWAV(SOUND_DIR + 'EnemyHit.wav');
+  fSounds[ Ord(TSoundKind.sndPlayerBullet) ] := Mix_LoadWAV(SOUND_DIR + 'PlayerBullet.wav');
+  fSounds[ Ord(TSoundKind.sndPlayerHit) ]    := Mix_LoadWAV(SOUND_DIR + 'PlayerHit.wav');
+  fSounds[ Ord(TSoundKind.sndGamePause) ]    := Mix_LoadWAV(SOUND_DIR + 'GamePause.wav');
+  fSounds[ Ord(TSoundKind.sndGameResume) ]   := Mix_LoadWAV(SOUND_DIR + 'GameResume.wav');
+  fSounds[ Ord(TSoundKind.sndGameOver) ]     := Mix_LoadWAV(SOUND_DIR + 'GameOver.wav');
 end;
 
 procedure TGame.FreeSounds;
@@ -396,6 +438,22 @@ begin
   fDebugView := aValue;
   fShots.SetDrawMode(GetDrawMode);
   fEnemies.SetDrawMode(GetDrawMode);
+end;
+
+procedure TGame.ToggleFullScreen;
+var
+  flags : UInt32;
+begin
+  flags:= SDL_GetWindowFlags(fWindow);
+  if ((flags and SDL_WINDOW_FULLSCREEN) = 0) then
+  begin
+     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 'best');
+     SDL_RenderSetLogicalSize(fRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+     SDL_SetWindowFullscreen(fWindow, SDL_WINDOW_FULLSCREEN_DESKTOP)
+
+  end
+  else
+     SDL_SetWindowFullscreen(fWindow, 0);
 end;
 
 procedure TGame.ScreenShot;
@@ -643,7 +701,10 @@ begin
         SDL_RenderFillRect( fRenderer, @rect );
 
         fGameText.Draw( '***[ PAUSED ]***' ,  155, SCREEN_HALF_HEIGHT-24, fGameFonts.GUI64  );
-        fGameText.Draw( 'press <enter> to resume', 320, SCREEN_HALF_HEIGHT+25, fGameFonts.DebugNormal  );
+        if SDL_NumJoysticks = 0 then
+           fGameText.Draw( 'press <enter> to resume', 320, SCREEN_HALF_HEIGHT+25, fGameFonts.DebugNormal  )
+        else
+           fGameText.Draw( 'press <start> to resume', 320, SCREEN_HALF_HEIGHT+25, fGameFonts.DebugNormal  );
       end;
     TGameState.GameOver :
       begin
@@ -656,7 +717,10 @@ begin
         SDL_RenderFillRect( fRenderer, @rect );
 
         fGameText.DrawModulated( '***[ GAME OVER ]***' ,  105, SCREEN_HALF_HEIGHT-24, fGameFonts.GUI64, 255,0,0  );
-        fGameText.Draw( 'press <enter> to start a new game', 285, SCREEN_HALF_HEIGHT+25, fGameFonts.DebugNormal  );
+        if SDL_NumJoysticks = 0 then
+           fGameText.Draw( 'press <enter> to start a new game', 285, SCREEN_HALF_HEIGHT+25, fGameFonts.DebugNormal  )
+        else
+           fGameText.Draw( 'press <start> to start a new game', 285, SCREEN_HALF_HEIGHT+25, fGameFonts.DebugNormal  );
 
       end;
   end;
@@ -733,7 +797,7 @@ begin
     shot.DrawMode  := GetDrawMode;
     fShots.Add( shot );
     Mix_Volume(1, 30);
-    Mix_PlayChannel(1, fSounds[ Ord(TSoundKind.PlayerBullet) ], 0);
+    Mix_PlayChannel(1, fSounds[ Ord(TSoundKind.sndPlayerBullet) ], 0);
   end
   else
   if (Sender is TEnemy) then
@@ -749,7 +813,7 @@ begin
     shot.DrawMode  := GetDrawMode;
     fShots.Add( shot );
 
-    Mix_PlayChannel(1, fSounds[ Ord(TSoundKind.EnemyBullet) ], 0);
+    Mix_PlayChannel(1, fSounds[ Ord(TSoundKind.sndEnemyBullet) ], 0);
   end;
 end;
 
@@ -766,7 +830,7 @@ begin
     begin
       enemy := TEnemy(Suspect);
       enemy.Hit( 1 );
-      Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.EnemyHit) ], 0);
+      Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.sndEnemyHit) ], 0);
 
       if enemy.Alive then
          Inc(fScore, 10)
@@ -792,7 +856,7 @@ begin
      explostion.Sprite.InitFrames(1,1);
      explostion.Position := TPlayer(Suspect).Position;
      fExplosions.Add(explostion);
-     Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.EnemyHit) ], 0);
+     Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.sndEnemyHit) ], 0);
      fShots.Remove( shot );
    end;
   end;
