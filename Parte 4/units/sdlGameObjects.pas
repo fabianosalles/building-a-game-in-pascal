@@ -258,14 +258,9 @@ begin
     frame := Self.Sprite.CurrentFrame;
     destination := frame.GetPositionedRect(self.Position);
 
-    SDL_SetTextureColorMod( fSprite.Texture.Data,
-                                       fOpacity,
-                                       fOpacity,
-                                       0);
+    SDL_SetTextureColorMod( fSprite.Texture.Data, fOpacity, fOpacity, 0);
     SDL_SetTextureAlphaMod( fSprite.Texture.Data, fOpacity);
-    SDL_RenderCopy( fRenderer, fSprite.Texture.Data,
-                    @frame.Rect,
-                    @destination) ;
+    SDL_RenderCopy( fRenderer, fSprite.Texture.Data, @frame.Rect, @destination);
 
     if fDrawMode = TDrawMode.Debug then
     begin

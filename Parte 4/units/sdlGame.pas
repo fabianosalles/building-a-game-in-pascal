@@ -780,39 +780,33 @@ begin
 end;
 
 procedure TGame.doOnShot(Sender: TGameObject);
-var
-  player : TPlayer;
-  enemy  : Tenemy;
-  shot   : TShot;
-begin
-  if (Sender is TPlayer) then
+
+  procedure CreateShot(Position: TPoint; Direction: TShotDirection);
+  var
+    shot   : TShot;
   begin
-    player  := TPlayer(Sender);
     shot := TShot.Create( fRenderer );
     shot.Sprite.Texture.Assign( fTextures[ Ord(TSpriteKind.ShotA) ] );
     shot.Sprite.InitFrames( 1,1 );
-    shot.Position := player.ShotSpawnPoint;
+    shot.Position := Position;
     shot.Position.X -= (shot.Sprite.CurrentFrame.Rect.w / 2);
     shot.OnCollided := @doOnShotCollided;
-    shot.DrawMode  := GetDrawMode;
+    shot.DrawMode   := GetDrawMode;
+    shot.Direction:= Direction;
     fShots.Add( shot );
+  end;
+
+begin
+  if (Sender is TPlayer) then
+  begin
+    CreateShot(TPlayer(Sender).ShotSpawnPoint, TShotDirection.Up);
     Mix_Volume(1, 30);
     Mix_PlayChannel(1, fSounds[ Ord(TSoundKind.sndPlayerBullet) ], 0);
   end
   else
   if (Sender is TEnemy) then
   begin
-    enemy := TEnemy(Sender);
-    shot := TShot.Create( fRenderer );
-    shot.Sprite.Texture.Assign( fTextures[ Ord(TSpriteKind.ShotA) ] );
-    shot.Sprite.InitFrames( 1,1 );
-    shot.Direction:= TShotDirection.Down;
-    shot.Position := enemy.ShotSpawnPoint;
-    shot.Position.X -= (shot.Sprite.CurrentFrame.Rect.w / 2);
-    shot.OnCollided := @doOnShotCollided;
-    shot.DrawMode  := GetDrawMode;
-    fShots.Add( shot );
-
+    CreateShot(TEnemy(Sender).ShotSpawnPoint, TShotDirection.Down);
     Mix_PlayChannel(1, fSounds[ Ord(TSoundKind.sndEnemyBullet) ], 0);
   end;
 end;

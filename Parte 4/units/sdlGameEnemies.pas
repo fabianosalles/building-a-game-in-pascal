@@ -234,7 +234,7 @@ end;
 procedure TEnemy.Update(const deltaTime : real);
 const
   OFFSET_X = 3 * DEBUG_CELL_SIZE;
-  OFFSET_Y = 16;
+  OFFSET_Y = DEBUG_CELL_SIZE div 2;
 var
   currTicks : UInt32;
   deltaX : real;
