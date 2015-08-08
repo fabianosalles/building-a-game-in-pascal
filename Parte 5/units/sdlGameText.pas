@@ -53,9 +53,9 @@ type
   end;
 
 
-  { TGameFonts }
+  { TFonts }
 
-  TGameFonts = class
+  TFonts = class
   strict private
     fDebugNormal : TGameFont;
     fDebugError  : TGameFont;
@@ -74,9 +74,9 @@ type
   end;
 
 
-  { TGameTextManager }
+  { TTextManager }
 
-  TGameTextManager = class
+  TTextManager = class
   strict private
     fRenderer  : PSDL_Renderer;
     fTextures  : TGameFontTextureList;
@@ -157,21 +157,21 @@ begin
   end;
 end;
 
-{ TGameTextManager }
+{ TTextManager }
 
-constructor TGameTextManager.Create(const aRenderer: PSDL_Renderer);
+constructor TTextManager.Create(const aRenderer: PSDL_Renderer);
 begin
   fRenderer := aRenderer;
   fTextures := TGameFontTextureList.Create( aRenderer );
 end;
 
-destructor TGameTextManager.Destroy;
+destructor TTextManager.Destroy;
 begin
   fTextures.Free;;
   inherited Destroy;
 end;
 
-procedure TGameTextManager.Draw(const aText: string; x, y: integer; aFont: TGameFont);
+procedure TTextManager.Draw(const aText: string; x, y: integer; aFont: TGameFont);
 var
   i : integer;
   lSource, lDest : TSDL_Rect;
@@ -194,7 +194,7 @@ begin
   SDL_RenderCopy( fRenderer, fTextures[i].Textture, @lSource, @lDest );
 end;
 
-procedure TGameTextManager.DrawModulated(const aText: string; x, y: integer;
+procedure TTextManager.DrawModulated(const aText: string; x, y: integer;
   aFont: TGameFont; mr, mg, mb: UInt8);
 var
   i : integer;
@@ -219,14 +219,14 @@ begin
   SDL_RenderCopy( fRenderer, fTextures[i].Textture, @lSource, @lDest );
 end;
 
-{ TGameFonts }
+{ TFonts }
 
-constructor TGameFonts.Create( const aRenderer: PSDL_Renderer );
+constructor TFonts.Create( const aRenderer: PSDL_Renderer );
 begin
   fRenderer    := aRenderer;
 end;
 
-destructor TGameFonts.Destroy;
+destructor TFonts.Destroy;
 begin
   fRenderer := nil;
   TTF_CloseFont( fDebugNormal.Font );
@@ -235,7 +235,7 @@ begin
   inherited;
 end;
 
-procedure TGameFonts.LoadFonts(const aFontsDirectory: string);
+procedure TFonts.LoadFonts(const aFontsDirectory: string);
 begin
   fDebugNormal.Color.r := 255;
   fDebugNormal.Color.g := 255;

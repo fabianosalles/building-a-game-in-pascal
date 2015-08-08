@@ -68,7 +68,6 @@ type
   var
     fRunning          : boolean;
     fWindow           : PSDL_Window;
-    fWindowSurface    : PSDL_Surface;
     fRenderer         : PSDL_Renderer;
     fFrameCounter     : TFPSCounter;
     fTextures         : array of TTexture;
@@ -79,8 +78,8 @@ type
     fShots            : TShotList;
     fExplosions       : TExplosionList;
     fDebugView        : boolean;
-    fGameFonts        : TGameFonts;
-    fGameText         : TGameTextManager;
+    fGameFonts        : TFonts;
+    fGameText         : TTextManager;
     fScore            : integer;
     fGameState        : TGameState;
 
@@ -147,11 +146,7 @@ begin
   if fWindow = nil then
      raise SDLException.Create(SDL_GetError);
 
-  fWindowSurface := SDL_GetWindowSurface( fWindow );
-  if fWindowSurface = nil then
-     raise SDLException.Create(SDL_GetError);
-
-  fRenderer := SDL_CreateRenderer(fWindow, -1, SDL_RENDERER_ACCELERATED {or SDL_RENDERER_PRESENTVSYNC});
+  fRenderer := SDL_CreateRenderer(fWindow, -1, SDL_RENDERER_ACCELERATED);
   if fRenderer = nil then
      raise SDLException.Create(SDL_GetError);
 
@@ -173,7 +168,7 @@ begin
   LoadSounds;
   CreateFonts;
   CreateGameObjects;
-  fGameText := TGameTextManager.Create( fRenderer );
+  fGameText := TTextManager.Create( fRenderer );
   StartNewGame;
 end;
 
@@ -559,7 +554,7 @@ end;
   const
     FONTS_DIR = '.\assets\fonts\';
   begin
-    fGameFonts := TGameFonts.Create( fRenderer );
+    fGameFonts := TFonts.Create( fRenderer );
     fGameFonts.LoadFonts( FONTS_DIR );
   end;
 
