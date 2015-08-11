@@ -1,4 +1,4 @@
-unit sdlGameEngine;
+unit sdlEngine;
 
 {$mode objfpc}{$H+}
 
@@ -13,53 +13,40 @@ uses
 
   sdlGameText,
   sdlGameTypes,
+  sdlGameTexture,
   sdlGameSound,
+
+  sdlScene,
 
   sysutils;
 
+const
+  ASSETS_DIR  = '.\assets\';
+  FONTS_DIR   = ASSETS_DIR + 'fonts\';
+  SOUND_DIR   = ASSETS_DIR + 'sounds\';
+  IMAGE_DIR    = ASSETS_DIR + 'images\';
+
 
 type
-
-  TEvent = procedure of object;
-  TUpdateEvent = procedure (const deltaTime : real) of object;
-  TRenderEvent = procedure (renderer : PSDL_Renderer) of object;
-  TKeyboardEvent = procedure (key: TSDL_KeyCode) of object;
-  TJoyButtonEvent = procedure(joystick: SInt32; button: UInt8) of object;
-  TJoyAxisMotionEvent = procedure(axis: UInt8; value: SInt32) of object;
-
-
 
   { TEngine }
 
   TEngine = class
   strict private
-    const
-      ASSETS_DIR  = '.\assets\';
-      FONTS_DIR   = ASSETS_DIR + 'fonts\';
-      SOUND_DIR   = ASSETS_DIR + 'sounds\';
-
     class var fInstance : TEngine;
     var
-     fRunning : boolean;
-     fTitle   : string;
+     fRunning     : boolean;
+     fTitle       : string;
+     fActiveScene : TScene;
   private
-    fTJoyButtonEvent: TJoyButtonEvent;
-    fWindow      : PSDL_Window;
-    fRenderer    : PSDL_Renderer;
-    fTextManager : TTextManager;
-    fFonts       : TFonts;
-    fSoundManager: TSoundManager;
-    fFPSCounter  : TFPSCounter;
-    fJoystick    : PSDL_Joystick;
-
-    fOnRender: TRenderEvent;
-    fOnUpdate: TUpdateEvent;
-    fOnKeyUp: TKeyboardEvent;
-    fOnKeyDown: TKeyboardEvent;
-    fOnJoyButtonUp: TJoyButtonEvent;
-    fOnJoyButtonDown: TJoyButtonEvent;
-    fOnJoyAxisMotion: TJoyAxisMotionEvent;
-    fOnCheckCollisions: TEvent;
+    fTextures     : TTextureManager;
+    fWindow       : PSDL_Window;
+    fRenderer     : PSDL_Renderer;
+    fText         : TTextManager;
+    fFonts        : TFonts;
+    fSounds : TSoundManager;
+    fFPSCounter   : TFPSCounter;
+    fJoystick     : PSDL_Joystick;
 
     function GetWindow: TSDL_Window;
     procedure OnFPSCounterUpdated(Sender: TFPSCounter; Counted: word);
@@ -71,7 +58,6 @@ type
     procedure doCheckCollisions;
     constructor Create;
   public
-
     class function GetInstance: TEngine;
 
     procedure Initialize(const width: integer; const height: integer; const title: string);
@@ -80,23 +66,16 @@ type
 
     destructor Destroy; override;
 
+    procedure SetActiveScene(scene: TScene);
     procedure Run;
 
     //instance properties
     property Window: TSDL_Window read GetWindow;
     property Renderer: PSDL_Renderer read fRenderer;
     property Fonts: TFonts read fFonts;
-    property TextManager: TTextManager read fTextManager;
-    property SoundManager: TSoundManager read fSoundManager;
-
-    property OnRender: TRenderEvent read fOnRender write fOnRender;
-    property OnUpdate: TUpdateEvent read fOnUpdate write fOnUpdate;
-    property OnKeyDown: TKeyboardEvent read fOnKeyDown write fOnKeyDown;
-    property OnKeyUp: TKeyboardEvent read fOnKeyUp write fOnKeyUp;
-    property OnJoyButtonUp: TJoyButtonEvent read fOnJoyButtonUp write fOnJoyButtonUp;
-    property OnJoyButtonDown: TJoyButtonEvent read fTJoyButtonEvent write fTJoyButtonEvent;
-    property OnJoyAxisMotion: TJoyAxisMotionEvent read fOnJoyAxisMotion write fOnJoyAxisMotion;
-    property OnCheckCollisions: TEvent read fOnCheckCollisions write fOnCheckCollisions;
+    property Text: TTextManager read fText;
+    property Sounds: TSoundManager read fSounds;
+    property Textures: TTextureManager read fTextures write fTextures;
 
   end;
 
@@ -129,8 +108,8 @@ end;
 
 procedure TEngine.doUpdate(deltaTime: real);
 begin
-  if Assigned(fOnUpdate) then
-     fOnUpdate(deltaTime);
+  if Assigned(fActiveScene.OnUpdate) then
+     fActiveScene.OnUpdate(deltaTime);
 end;
 
 procedure TEngine.doRender;
@@ -139,8 +118,8 @@ begin
   SDL_RenderClear( fRenderer );
 
 
-  if Assigned(fOnRender) then
-     fOnRender( fRenderer );
+  if Assigned(fActiveScene.OnRender) then
+     fActiveScene.OnRender( fRenderer );
 
   SDL_RenderPresent( fRenderer );
   fFPSCounter.Increment;
@@ -154,15 +133,15 @@ begin
     case event.type_ of
       SDL_QUITEV  : fRunning := false;
 
-      SDL_KEYDOWN : if Assigned(fOnKeyDown) then fOnKeyDown(event.key.keysym.sym);
+      SDL_KEYDOWN : if Assigned(fActiveScene.OnKeyDown) then fActiveScene.OnKeyDown(event.key.keysym.sym);
 
-      SDL_KEYUP   : if Assigned(fOnKeyUp) then fOnKeyUp(event.key.keysym.sym);
+      SDL_KEYUP   : if Assigned(fActiveScene.OnKeyUp) then fActiveScene.OnKeyUp(event.key.keysym.sym);
 
-      SDL_JOYAXISMOTION : if Assigned(fOnJoyAxisMotion) then fOnJoyAxisMotion(event.jaxis.axis, event.jaxis.value);
+      SDL_JOYAXISMOTION : if Assigned(fActiveScene.OnJoyAxisMotion) then fActiveScene.OnJoyAxisMotion(event.jaxis.axis, event.jaxis.value);
 
-      SDL_JOYBUTTONUP : if Assigned(fOnJoyButtonUp) then fOnJoyButtonUp(event.jbutton.which, event.jbutton.button);
+      SDL_JOYBUTTONUP : if Assigned(fActiveScene.OnJoyButtonUp) then fActiveScene.OnJoyButtonUp(event.jbutton.which, event.jbutton.button);
 
-      SDL_JOYBUTTONDOWN : if Assigned(fOnJoyButtonDown) then fOnJoyButtonDown(event.jbutton.which, event.jbutton.button);
+      SDL_JOYBUTTONDOWN : if Assigned(fActiveScene.OnJoyButtonDown) then fActiveScene.OnJoyButtonDown(event.jbutton.which, event.jbutton.button);
     end;
 end;
 
@@ -190,8 +169,8 @@ end;
 
 procedure TEngine.doCheckCollisions;
 begin
-  if Assigned(fOnCheckCollisions) then
-     fOnCheckCollisions;
+  if Assigned(fActiveScene.OnCheckCollisions) then
+     fActiveScene.OnCheckCollisions;
 end;
 
 procedure TEngine.Initialize(const width: integer; const height: integer;
@@ -229,13 +208,13 @@ begin
   if result < 0 then
      raise SDLMixerException.Create( Mix_GetError );
 
-  fTextManager := TTextManager.Create( fRenderer );
+  fText := TTextManager.Create( fRenderer );
 
   fFonts := TFonts.Create( fRenderer );
   fFonts.LoadFonts( FONTS_DIR );
 
-  fSoundManager := TSoundManager.Create;
-  fSoundManager.LoadSounds(SOUND_DIR);
+  fSounds := TSoundManager.Create;
+  fSounds.LoadSounds(SOUND_DIR);
 
 end;
 
@@ -292,15 +271,16 @@ begin
   Randomize;
   fFPSCounter := TFPSCounter.Create;
   fFPSCounter.OnNotify:= @OnFPSCounterUpdated;
+  fTextures := TTextureManager.Create;
   fRunning  := false;
 end;
 
 destructor TEngine.Destroy;
 begin
   fFPSCounter.Free;
-  fTextManager.Free;
+  fText.Free;
   fFonts.Free;
-  fSoundManager.Free;
+  fSounds.Free;
   SDL_DestroyRenderer(fRenderer);
   SDL_DestroyWindow(fWindow);
   IMG_Quit;
@@ -309,11 +289,19 @@ begin
   inherited Destroy;
 end;
 
+procedure TEngine.SetActiveScene(scene: TScene);
+begin
+  fActiveScene:= scene;
+end;
+
 procedure TEngine.Run;
 var
   deltaTime : real;
   thisTime, lastTime : UInt32;
 begin
+  if fActiveScene = nil then
+     raise EngineException.Create('There is no scene to proccess.');
+
   deltaTime := 0.0;
   thisTime  := 0;
   lastTime  := 0;

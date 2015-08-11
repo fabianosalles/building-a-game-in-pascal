@@ -3,18 +3,24 @@ program space_invaders;
 {$mode objfpc}{$H+}
 
 uses
-  sdlGame, sdlGameObjects, sdlGameUtils;
+  sdlEngine,
+  siGame;
 
 var
-  Game : TGame;
+  Engine: TEngine;
+  Game  : TSIGame;
 
 begin
   try
-    Game := TGame.Create;
-    Game.Initialize;
-    Game.Run;
+    Engine := TEngine.GetInstance;
+    Engine.Initialize(800, 600, 'Delphi Games - Space Invaders');
+
+    Game := TSIGame.Create;
+    Engine.SetActiveScene(Game.Scenes.CurrentScene);
+    Engine.Run;
   finally
-    Game.Free;
+     Game.Free;
+     Engine.Free;
   end;
 end.
 

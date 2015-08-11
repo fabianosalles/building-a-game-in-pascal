@@ -5,6 +5,7 @@ unit sdlGameTypes;
 interface
 
 uses
+  SDL2,
   sysutils;
 
 const
@@ -25,6 +26,14 @@ type
   SDLTTFException = class( SDLException );
   SDLMixerException = class( SDLException );
   IndexOutOfBoundsException = class( Exception );
+
+  EngineException = class( Exception );
+  TEvent = procedure of object;
+  TUpdateEvent = procedure (const deltaTime : real) of object;
+  TRenderEvent = procedure (renderer : PSDL_Renderer) of object;
+  TKeyboardEvent = procedure (key: TSDL_KeyCode) of object;
+  TJoyButtonEvent = procedure(joystick: SInt32; button: UInt8) of object;
+  TJoyAxisMotionEvent = procedure(axis: UInt8; value: SInt32) of object;
 
 
 implementation

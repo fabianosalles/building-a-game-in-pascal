@@ -61,13 +61,13 @@ var
 begin
   for sound := low(TSound) to High(TSound) do
   case sound of
-    sndEnemyBullet  : fChunks.Add(Mix_LoadWAV(path + 'EnemyBullet.wav'));
-    sndEnemyHit     : fChunks.Add(Mix_LoadWAV(path + 'EnemyHit.wav'));
-    sndPlayerBullet : fChunks.Add(Mix_LoadWAV(path + 'PlayerBullet.wav'));
-    sndPlayerHit    : fChunks.Add(Mix_LoadWAV(path + 'PlayerHit.wav'));
-    sndGamePause    : fChunks.Add(Mix_LoadWAV(path + 'GamePause.wav'));
-    sndGameResume   : fChunks.Add(Mix_LoadWAV(path + 'GameResume.wav'));
-    sndGameOver     : fChunks.Add(Mix_LoadWAV(path + 'GameOver.wav'));
+    sndEnemyBullet  : fChunks.Add(Mix_LoadWAV(PAnsiChar(path + 'EnemyBullet.wav')));
+    sndEnemyHit     : fChunks.Add(Mix_LoadWAV(PAnsiChar(path + 'EnemyHit.wav')));
+    sndPlayerBullet : fChunks.Add(Mix_LoadWAV(PAnsiChar(path + 'PlayerBullet.wav')));
+    sndPlayerHit    : fChunks.Add(Mix_LoadWAV(PAnsiChar(path + 'PlayerHit.wav')));
+    sndGamePause    : fChunks.Add(Mix_LoadWAV(PAnsiChar(path + 'GamePause.wav')));
+    sndGameResume   : fChunks.Add(Mix_LoadWAV(PAnsiChar(path + 'GameResume.wav')));
+    sndGameOver     : fChunks.Add(Mix_LoadWAV(PAnsiChar(path + 'GameOver.wav')));
   end;
 end;
 
@@ -77,8 +77,15 @@ begin
 end;
 
 procedure TSoundManager.Play(sound: TSound; volume: Double);
+const
+  MAX_VOLUME = 128;
+var
+  lVolume : integer;
 begin
-  Mix_VolumeChunk(fChunks[Ord(sound)]);
+  lVolume := round((volume * MAX_VOLUME) / 100);
+  if lVolume > MAX_VOLUME then
+     lVolume:= MAX_VOLUME;
+  Mix_VolumeChunk(fChunks[Ord(sound)], lVolume);
   Play(sound);
 end;
 

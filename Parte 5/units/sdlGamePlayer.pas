@@ -35,15 +35,17 @@ type
     fCooldown        : integer;
     fCooldownCounter : integer;
     fShotSpawnPoint  : TPoint;
+    fScore           : integer;
     fInput           : array[0..2] of boolean;
     fOnShot : TGameObjectNotifyEvent;
     function GetInput(index: integer): boolean;
     function GetShotSpawnPoint: TPoint;
     procedure SetInput(index: integer; AValue: boolean);
   public
-    constructor Create(const aRenderer: PSDL_Renderer); override;
+    constructor Create; override;
     procedure Draw; override;
     procedure Update(const deltaTime : real); override;
+    procedure Hit( aDamage: byte );
 
     property Input[index: integer] : boolean read GetInput write SetInput;
     property Speed : real read fSpeed write fSpeed;  //em pixels por segund
@@ -51,7 +53,8 @@ type
     property CooldownCounter: integer read fCooldownCounter;
     property ShotSpawnPoint : TPoint read GetShotSpawnPoint;
     property Lifes: integer read fLifes write fLifes;
-    procedure Hit( aDamage: byte );
+    property Score: integer read fScore write fScore;
+
 
     property OnShot : TGameObjectNotifyEvent read fOnShot write fOnShot;
   end;
@@ -87,11 +90,11 @@ begin
   fInput[index] := AValue;
 end;
 
-constructor TPlayer.Create(const aRenderer: PSDL_Renderer);
+constructor TPlayer.Create;
 var
   i : integer;
 begin
-  inherited Create(aRenderer);
+  inherited;
   fSpeed    := DEFAULT_SPEED;
   fCooldown := DEFAULT_COOLDOWN;
   fCooldownCounter:= 0;

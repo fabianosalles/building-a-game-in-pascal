@@ -7,7 +7,9 @@ interface
 uses
   SDL2,
 
+  sdlGameTexture,
   sdlGameTypes,
+  sdlEngine,
 
   sysutils,
   classes,
@@ -34,14 +36,6 @@ type
   TPoint = record
     X : real;
     Y : real;
-  end;
-
-
-  TTexture = class
-    W : integer;
-    H : integer;
-    Data: PSDL_Texture;
-    procedure Assign( pTexure: TTexture );
   end;
 
 
@@ -121,7 +115,7 @@ type
     procedure InitFields; virtual;
   public
     Position : TPoint;
-    constructor Create( const aRenderer: PSDL_Renderer ); virtual;
+    constructor Create; virtual;
     destructor Destroy; override;
     procedure Update(const deltaTime : real ); virtual; abstract;
     procedure Draw; virtual; abstract;
@@ -151,7 +145,7 @@ type
     fSpeed         : real;
     fVisible       : boolean;
   public
-    constructor Create(const aRenderer: PSDL_Renderer); override;
+    constructor Create; override;
     procedure Draw; override;
     procedure Update(const deltaTime : real); override;
 
@@ -379,9 +373,9 @@ begin
   fDrawMode  := TDrawMode.Normal;
 end;
 
-constructor TGameObject.Create(const aRenderer: PSDL_Renderer);
+constructor TGameObject.Create;
 begin
-  fRenderer:= aRenderer;
+  fRenderer:= TEngine.GetInstance.Renderer;
   InitFields;
 end;
 
@@ -428,15 +422,6 @@ begin
           fOnCollided( self, Suspect, aStopCheckhing );
 end;
 
-
-{ TTexture }
-
-procedure TTexture.Assign(pTexure: TTexture);
-begin
-  self.W    := pTexure.W;
-  self.H    := pTexure.H;
-  self.Data := pTexure.Data;
-end;
 
 
 { TSprite }
@@ -547,9 +532,9 @@ end;
 
 { TShot }
 
-constructor TShot.Create(const aRenderer: PSDL_Renderer);
+constructor TShot.Create;
 begin
-  inherited Create(aRenderer);
+  inherited;
   fSpeed     := 300.0;
   fDirection := TShotDirection.Up;
   fVisible   := true;

@@ -12,6 +12,7 @@ uses
   sdl2_ttf,
 
   sdlGameText,
+  sdlGameTexture,
   sdlGameTypes,
   sdlGameSound,
 
@@ -44,22 +45,14 @@ type
      fTitle   : string;
   private
     fTJoyButtonEvent: TJoyButtonEvent;
-    fWindow      : PSDL_Window;
-    fRenderer    : PSDL_Renderer;
-    fTextManager : TTextManager;
-    fFonts       : TFonts;
-    fSoundManager: TSoundManager;
-    fFPSCounter  : TFPSCounter;
-    fJoystick    : PSDL_Joystick;
-
-    fOnRender: TRenderEvent;
-    fOnUpdate: TUpdateEvent;
-    fOnKeyUp: TKeyboardEvent;
-    fOnKeyDown: TKeyboardEvent;
-    fOnJoyButtonUp: TJoyButtonEvent;
-    fOnJoyButtonDown: TJoyButtonEvent;
-    fOnJoyAxisMotion: TJoyAxisMotionEvent;
-    fOnCheckCollisions: TEvent;
+    fWindow         : PSDL_Window;
+    fRenderer       : PSDL_Renderer;
+    fTextureManager : TTextureManager;
+    fTextManager    : TTextManager;
+    fFonts          : TFonts;
+    fSoundManager   : TSoundManager;
+    fFPSCounter     : TFPSCounter;
+    fJoystick       : PSDL_Joystick;
 
     function GetWindow: TSDL_Window;
     procedure OnFPSCounterUpdated(Sender: TFPSCounter; Counted: word);
@@ -89,14 +82,6 @@ type
     property TextManager: TTextManager read fTextManager;
     property SoundManager: TSoundManager read fSoundManager;
 
-    property OnRender: TRenderEvent read fOnRender write fOnRender;
-    property OnUpdate: TUpdateEvent read fOnUpdate write fOnUpdate;
-    property OnKeyDown: TKeyboardEvent read fOnKeyDown write fOnKeyDown;
-    property OnKeyUp: TKeyboardEvent read fOnKeyUp write fOnKeyUp;
-    property OnJoyButtonUp: TJoyButtonEvent read fOnJoyButtonUp write fOnJoyButtonUp;
-    property OnJoyButtonDown: TJoyButtonEvent read fTJoyButtonEvent write fTJoyButtonEvent;
-    property OnJoyAxisMotion: TJoyAxisMotionEvent read fOnJoyAxisMotion write fOnJoyAxisMotion;
-    property OnCheckCollisions: TEvent read fOnCheckCollisions write fOnCheckCollisions;
 
   end;
 
@@ -293,6 +278,7 @@ begin
   fFPSCounter := TFPSCounter.Create;
   fFPSCounter.OnNotify:= @OnFPSCounterUpdated;
   fRunning  := false;
+  fTextureManager := TTextManager.Create;
 end;
 
 destructor TEngine.Destroy;
@@ -301,6 +287,7 @@ begin
   fTextManager.Free;
   fFonts.Free;
   fSoundManager.Free;
+  fTextureManager.Free;
   SDL_DestroyRenderer(fRenderer);
   SDL_DestroyWindow(fWindow);
   IMG_Quit;
