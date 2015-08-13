@@ -8,15 +8,15 @@ uses
 
 var
   Engine: TEngine;
-  Game  : TSIGame;
+  Game  : TSpaceInvadersGame;
 
 begin
   try
     Engine := TEngine.GetInstance;
     Engine.Initialize(800, 600, 'Delphi Games - Space Invaders');
 
-    Game := TSIGame.Create;
-    Engine.SetActiveScene(Game.Scenes.CurrentScene);
+    Game := TSpaceInvadersGame.Create;
+    Engine.SetActiveScene(Game.Scenes.Current);
     Engine.Run;
   finally
      Game.Free;

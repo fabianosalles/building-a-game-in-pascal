@@ -68,7 +68,7 @@ type
     destructor Destroy; override;
 
 
-    property CurrentScene: TScene read GetCurrentScene write SetCurrentScene;
+    property Current: TScene read GetCurrentScene write SetCurrentScene;
   end;
 
 implementation

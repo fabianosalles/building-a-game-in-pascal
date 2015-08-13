@@ -45,12 +45,16 @@ type
     procedure DrawGameObjects;
     procedure DrawUI;
 
+    procedure doOnReturnPressed;
     procedure doOnShot(Sender: TGameObject);
     procedure doOnShotCollided(Sender, Suspect: TGameObject; var StopChecking: boolean);
   protected
     procedure doLoadTextures; override;
     procedure doFreeTextures; override;
+    procedure doOnCheckCollitions; override;
 
+    procedure doOnKeyDown(key: TSDL_KeyCode); override;
+    procedure doOnKeyUp(key: TSDL_KeyCode); override;
     procedure doOnRender(renderer: PSDL_Renderer); override;
     procedure doOnUpdate(const deltaTime: real); override;
   public
@@ -188,6 +192,26 @@ begin
 
 end;
 
+procedure TGamePlayScene.doOnReturnPressed;
+begin
+  case fState of
+    Paused:
+      begin
+        fState := TSceneState.Playing;
+        TEngine.GetInstance.Sounds.Play(sndGameResume);
+      end;
+    Playing:
+      begin
+        fState := TSceneState.Paused;
+        TEngine.GetInstance.Sounds.Play(sndGamePause);
+      end;
+    GameOver:
+      begin
+        Reset;
+      end;
+  end;
+end;
+
 procedure TGamePlayScene.doOnShot(Sender: TGameObject);
 var
   enemy  : Tenemy;
@@ -293,6 +317,53 @@ end;
 procedure TGamePlayScene.doFreeTextures;
 begin
 
+end;
+
+procedure TGamePlayScene.doOnCheckCollitions;
+var
+  i           : integer;
+  shotList    : TShotList;
+  suspectList : TEnemyList;
+begin
+  //check all shots going upwards with all alive enemies
+  if (fShots.Count > 0) and ( fEnemies.Count > 0 ) then
+  begin
+    shotList    := fShots.FilterByDirection( TShotDirection.Up );
+    suspectList := fEnemies.FilterByLife( true );
+    for i:=0 to Pred(shotList.Count) do
+      TShot(shotList[i]).CheckCollisions( suspectList );
+    shotList.Free;
+    suspectList.Free;
+  end;
+
+  //check all shots going downwards against the player
+  if (fShots.Count > 0) then
+  begin
+    shotList := fShots.FilterByDirection( TShotDirection.Down );
+    for i:=0 to shotList.Count-1 do
+      TShot(shotList[i]).CheckCollisions( fPlayer );
+
+    shotList.Free;
+  end;
+end;
+
+procedure TGamePlayScene.doOnKeyDown(key: TSDL_KeyCode);
+begin
+  case key of
+    SDLK_LEFT, SDLK_A  : fPlayer.Input[Ord(TPlayerInput.Left)] := true;
+    SDLK_RIGHT, SDLK_D : fPlayer.Input[Ord(TPlayerInput.Right)] := true;
+    SDLK_SPACE : fPlayer.Input[Ord(TPlayerInput.Shot)] := true;
+  end;
+end;
+
+procedure TGamePlayScene.doOnKeyUp(key: TSDL_KeyCode);
+begin
+  case key of
+    SDLK_LEFT, SDLK_A : fPlayer.Input[Ord(TPlayerInput.Left)] := false;
+    SDLK_RIGHT, SDLK_D: fPlayer.Input[Ord(TPlayerInput.Right)] := false;
+    SDLK_SPACE  : fPlayer.Input[Ord(TPlayerInput.Shot)] := false;
+    SDLK_RETURN : doOnReturnPressed;
+  end;
 end;
 
 procedure TGamePlayScene.doOnRender(renderer: PSDL_Renderer);

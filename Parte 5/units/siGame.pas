@@ -14,9 +14,9 @@ uses
 
 type
 
-  { TSIGame }
+  { TSpaceInvadersGame }
 
-  TSIGame = class(TGame)
+  TSpaceInvadersGame = class(TGame)
   strict private
     fPlayer : TPlayer;
   private
@@ -24,32 +24,31 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
   end;
 
 
 implementation
 
 
-{ TSIGame }
+{ TSpaceInvadersGame }
 
-procedure TSIGame.CreateScenes;
+procedure TSpaceInvadersGame.CreateScenes;
 var
   mainScene : TGamePlayScene;
 begin
   mainScene := TGamePlayScene.Create(fPlayer);
   Scenes.Add(mainScene);
-  Scenes.CurrentScene := mainScene;
+  Scenes.Current := mainScene;
 end;
 
-constructor TSIGame.Create;
+constructor TSpaceInvadersGame.Create;
 begin
   inherited;
   fPlayer := TPlayer.Create;
   CreateScenes;
 end;
 
-destructor TSIGame.Destroy;
+destructor TSpaceInvadersGame.Destroy;
 begin
   fPlayer.Free;
   inherited Destroy;
