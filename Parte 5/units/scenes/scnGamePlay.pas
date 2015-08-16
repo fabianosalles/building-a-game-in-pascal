@@ -50,7 +50,6 @@ type
     procedure doOnShotCollided(Sender, Suspect: TGameObject; var StopChecking: boolean);
   protected
     procedure doLoadTextures; override;
-    procedure doFreeTextures; override;
     procedure doOnCheckCollitions; override;
 
     procedure doOnKeyDown(key: TSDL_KeyCode); override;
@@ -62,6 +61,7 @@ type
     destructor Destroy; override;
 
     procedure Reset;
+
 
     property Player : TPlayer read fPlayer;
   end;
@@ -186,11 +186,10 @@ begin
            engine.Text.Draw( 'press <enter> to start a new game', 285, SCREEN_HALF_HEIGHT+25, engine.Fonts.DebugNormal  )
         else
            engine.Text.Draw( 'press <start> to start a new game', 285, SCREEN_HALF_HEIGHT+25, engine.Fonts.DebugNormal  );
-
       end;
   end;
-
 end;
+
 
 procedure TGamePlayScene.doOnReturnPressed;
 begin
@@ -314,10 +313,6 @@ begin
   engine.Textures.Load( 'leds.png' );
 end;
 
-procedure TGamePlayScene.doFreeTextures;
-begin
-
-end;
 
 procedure TGamePlayScene.doOnCheckCollitions;
 var

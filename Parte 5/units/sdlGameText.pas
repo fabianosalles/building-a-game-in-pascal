@@ -84,6 +84,7 @@ type
     constructor Create( const aRenderer: PSDL_Renderer );
     destructor Destroy; override;
     procedure Draw( const aText : string; x, y : integer; aFont : TGameFont );
+    procedure Draw( const aText : string; x, y : integer; aFont : TGameFont; alpha: UInt8 );
     procedure DrawModulated( const aText : string; x, y : integer; aFont : TGameFont; mr, mg, mb : UInt8 );
   end;
 
@@ -194,6 +195,31 @@ begin
   SDL_RenderCopy( fRenderer, fTextures[i].Textture, @lSource, @lDest );
 end;
 
+procedure TTextManager.Draw(const aText: string; x, y: integer;
+  aFont: TGameFont; alpha: UInt8);
+var
+  i : integer;
+  lSource, lDest : TSDL_Rect;
+begin
+  i := fTextures.IndexOf(aText);
+  if ( i < 0 ) then
+     i := fTextures.Add(aText, aFont);
+
+  lSource.x := 0;
+  lSource.y := 0;
+  lSource.w := fTextures[i].Width;
+  lSource.h := fTextures[i].Hight;
+
+  lDest.x := x;
+  lDest.y := y;
+  lDest.w := lSource.w;
+  lDest.h := lSource.h;
+
+  SDL_SetRenderDrawBlendMode( fRenderer, SDL_BLENDMODE_BLEND );
+  SDL_SetTextureAlphaMod( fTextures[i].Textture, alpha );
+  SDL_RenderCopy( fRenderer, fTextures[i].Textture, @lSource, @lDest );
+end;
+
 procedure TTextManager.DrawModulated(const aText: string; x, y: integer;
   aFont: TGameFont; mr, mg, mb: UInt8);
 var
@@ -275,7 +301,7 @@ begin
   fGUI64.Font     := TTF_OpenFont( PAnsiChar(fGUI64.FileName), fGUI64.Size);
   fGUI64.Color.r  := $FF;
   fGUI64.Color.g  := $FF;
-  fGUI64.Color.b  := 0;
+  fGUI64.Color.b  := $FF;
   fGUI64.Color.a  := $FF;
 
   if fGUI64.Font = nil then

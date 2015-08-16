@@ -33,7 +33,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure Load(const AFileName: string);
+    function Load(const AFileName: string): integer;
     property Items[i: integer] : TTexture read GetItems write SetItems; default;
   end;
 
@@ -98,12 +98,12 @@ begin
   fList.Clear;
 end;
 
-procedure TTextureManager.Load(const AFileName: string);
+function TTextureManager.Load(const AFileName: string): integer;
 var
   texture: TTexture;
 begin
   texture := LoadPNGTexture(AFileName);
-  fList.Add(texture);
+  result := fList.Add(texture);
 end;
 
 

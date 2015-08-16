@@ -29,6 +29,7 @@ type
 
   EngineException = class( Exception );
   TEvent = procedure of object;
+  TNotifyEvent = procedure (sender: TObject) of object;
   TUpdateEvent = procedure (const deltaTime : real) of object;
   TRenderEvent = procedure (renderer : PSDL_Renderer) of object;
   TKeyboardEvent = procedure (key: TSDL_KeyCode) of object;

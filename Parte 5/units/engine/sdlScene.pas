@@ -14,6 +14,7 @@ type
 
   TScene = class
   strict private
+    fName: string;
     fOnRender: TRenderEvent;
     fOnUpdate: TUpdateEvent;
     fOnKeyUp: TKeyboardEvent;
@@ -23,7 +24,9 @@ type
     fOnJoyAxisMotion: TJoyAxisMotionEvent;
     fOnCheckCollisions: TEvent;
     fTJoyButtonEvent: TJoyButtonEvent;
+    fOnQuit: TNotifyEvent;
   protected
+    fQuitting : boolean;
 
     procedure doOnRender(renderer : PSDL_Renderer); virtual;
     procedure doOnUpdate(const deltaTime : real); virtual;
@@ -35,11 +38,14 @@ type
     procedure doOnCheckCollitions; virtual;
     procedure WireUpEvents;
 
-    procedure doLoadTextures; virtual abstract;
-    procedure doFreeTextures; virtual; abstract;
+    procedure doLoadTextures; virtual;
+    procedure doFreeTextures; virtual;
+    procedure doQuit;
   public
     constructor Create;
     destructor Destroy; override;
+
+    property Name: string read fName write fName;
 
     property OnRender: TRenderEvent read fOnRender write fOnRender;
     property OnUpdate: TUpdateEvent read fOnUpdate write fOnUpdate;
@@ -49,6 +55,8 @@ type
     property OnJoyButtonDown: TJoyButtonEvent read fTJoyButtonEvent write fTJoyButtonEvent;
     property OnJoyAxisMotion: TJoyAxisMotionEvent read fOnJoyAxisMotion write fOnJoyAxisMotion;
     property OnCheckCollisions: TEvent read fOnCheckCollisions write fOnCheckCollisions;
+
+    property OnQuit: TNotifyEvent read fOnQuit write fOnQuit;
   end;
 
 
@@ -64,6 +72,7 @@ type
     procedure SetCurrentScene(AValue: TScene);
   public
     function Add(scene: TScene): integer;
+    function ByName(const name: string): TScene;
     constructor Create;
     destructor Destroy; override;
 
@@ -72,6 +81,9 @@ type
   end;
 
 implementation
+
+uses
+  sdlEngine;
 
 { TScene }
 
@@ -127,8 +139,26 @@ begin
   fOnCheckCollisions := @doOnCheckCollitions;
 end;
 
+procedure TScene.doLoadTextures;
+begin
+
+end;
+
+procedure TScene.doFreeTextures;
+begin
+  TEngine.GetInstance.Textures.Clear;
+end;
+
+procedure TScene.doQuit;
+begin
+  fQuitting:= true;
+  if Assigned(fOnQuit) then
+     fOnQuit(self);
+end;
+
 constructor TScene.Create;
 begin
+  fQuitting:= false;;
   WireUpEvents;
   doLoadTextures;
 end;
@@ -154,6 +184,19 @@ end;
 function TSceneManager.Add(scene: TScene): integer;
 begin
   result := fScenes.Add(scene);
+end;
+
+function TSceneManager.ByName(const name: string): TScene;
+var
+  i : integer;
+begin
+  result := nil;
+  for i:=0 to Pred(fScenes.Count) do
+   if fScenes[i].Name = name then
+      begin
+        result := fScenes[i];
+        break;
+      end;
 end;
 
 constructor TSceneManager.Create;
