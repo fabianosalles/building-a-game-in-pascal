@@ -67,6 +67,8 @@ type
     destructor Destroy; override;
 
     procedure SetActiveScene(scene: TScene);
+    procedure HideCursor;
+    procedure ShowCursor;
     procedure Run;
 
     //instance properties
@@ -292,6 +294,17 @@ end;
 procedure TEngine.SetActiveScene(scene: TScene);
 begin
   fActiveScene:= scene;
+  scene.Start;
+end;
+
+procedure TEngine.HideCursor;
+begin
+  SDL_ShowCursor(SDL_DISABLE);
+end;
+
+procedure TEngine.ShowCursor;
+begin
+  SDL_ShowCursor(SDL_ENABLE);
 end;
 
 procedure TEngine.Run;

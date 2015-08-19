@@ -61,6 +61,7 @@ type
     fDebugError  : TGameFont;
     fGUI         : TGameFont;
     fGUI64       : TGameFont;
+    fMainMenu    : TGameFont;
     fRenderer    : PSDL_Renderer;
   public
     constructor Create( const aRenderer: PSDL_Renderer );
@@ -71,6 +72,7 @@ type
     property DebugError : TGameFont read fDebugError;
     property GUI: TGameFont read fGUI write fGUI;
     property GUI64 : TGameFont read fGUI64 write fGUI64;
+    property MainMenu : TGameFont read fMainMenu write fMainMenu;
   end;
 
 
@@ -306,6 +308,17 @@ begin
 
   if fGUI64.Font = nil then
      raise GameFontException.Create( TTF_GetError );
+
+  fMainMenu.FileName := aFontsDirectory + 'Arcade.ttf';
+  fMainMenu.Size     := 28;
+  fMainMenu.Font     := TTF_OpenFont( PAnsiChar(fGUI.FileName), fGUI.Size);
+  fMainMenu.Color.r  := $FF;
+  fMainMenu.Color.g  := $FF;
+  fMainMenu.Color.b  := $FF;
+  fMainMenu.Color.a  := $FF;
+  if  fMainMenu.Font = nil then
+     raise GameFontException.Create( TTF_GetError );
+
 
 end;
 

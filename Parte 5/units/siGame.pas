@@ -11,6 +11,7 @@ uses
   sdlGame,
   scnIntro,
   sdlScene,
+  scnMainMenu,
   scnGamePlay,
   sdlGamePlayer;
 
@@ -46,9 +47,9 @@ uses
 procedure TSpaceInvadersGame.CreateScenes;
 var
   gamePlay : TGamePlayScene;
+  menu     : TMainMenuScene;
   intro    : TIntroScene;
 begin
-
   gamePlay := TGamePlayScene.Create(fPlayer);
   gamePlay.Name:= SCENE_GAME_PLAY;
   gamePlay.OnQuit := @doOnSceneQuit;
@@ -60,7 +61,14 @@ begin
   Scenes.Add(intro);
 
 
+  menu := TMainMenuScene.Create;
+  menu.Name:= SCENE_MAIN_MENU;
+  menu.OnQuit:= @doOnSceneQuit;
+  Scenes.Add(menu);
+
+
   Scenes.Current := intro;
+ // Scenes.Current := menu;
 end;
 
 procedure TSpaceInvadersGame.doOnSceneQuit(sender: TObject);
@@ -69,12 +77,23 @@ var
 begin
   if ( sender is TIntroScene ) then
   begin
-    next := Scenes.ByName(SCENE_GAME_PLAY);
+    TIntroScene(sender).Stop;
+    next := Scenes.ByName(SCENE_MAIN_MENU);
     Scenes.Current := next;
   end;
 
+  if ( sender is TMainMenuScene ) then
+  begin
+     TMainMenuScene(sender).Stop;
+     next := Scenes.ByName(SCENE_GAME_PLAY);
+     Scenes.Current := next;
+  end;
+
   if next <> nil then
+  begin
     TEngine.GetInstance.SetActiveScene(next);
+    next.Start;
+  end;
 
 end;
 

@@ -40,10 +40,14 @@ type
 
     procedure doLoadTextures; virtual;
     procedure doFreeTextures; virtual;
+    procedure doBeforeStart; virtual;
     procedure doQuit;
   public
     constructor Create;
     destructor Destroy; override;
+
+    procedure Start;
+    procedure Stop;
 
     property Name: string read fName write fName;
 
@@ -149,6 +153,11 @@ begin
   TEngine.GetInstance.Textures.Clear;
 end;
 
+procedure TScene.doBeforeStart;
+begin
+  doLoadTextures;
+end;
+
 procedure TScene.doQuit;
 begin
   fQuitting:= true;
@@ -158,15 +167,23 @@ end;
 
 constructor TScene.Create;
 begin
-  fQuitting:= false;;
+  fQuitting:= false;
   WireUpEvents;
-  doLoadTextures;
 end;
 
 destructor TScene.Destroy;
 begin
   doFreeTextures;
-  inherited Destroy;
+end;
+
+procedure TScene.Start;
+begin
+  doBeforeStart;
+end;
+
+procedure TScene.Stop;
+begin
+
 end;
 
 { TSceneManager }

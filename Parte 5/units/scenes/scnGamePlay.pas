@@ -56,6 +56,8 @@ type
     procedure doOnKeyUp(key: TSDL_KeyCode); override;
     procedure doOnRender(renderer: PSDL_Renderer); override;
     procedure doOnUpdate(const deltaTime: real); override;
+
+    procedure doBeforeStart; override;
   public
     constructor Create(APlayer: TPlayer);
     destructor Destroy; override;
@@ -82,6 +84,7 @@ var
   textures : TTextureManager;
 begin
   textures := TEngine.GetInstance.Textures;
+  fEnemies.Clear;
   for i:= 0 to 119 do
   begin
     case i of
@@ -395,6 +398,13 @@ begin
   end;
 end;
 
+procedure TGamePlayScene.doBeforeStart;
+begin
+  inherited doBeforeStart;
+  CreateGameObjects;
+  Reset;
+end;
+
 constructor TGamePlayScene.Create(APlayer: TPlayer);
 begin
   inherited Create;
@@ -402,9 +412,7 @@ begin
   fExplosions := TExplosionList.Create;
   fShots      := TShotList.Create;
   fEnemies    := TEnemyList.Create;
-
-  CreateGameObjects;
-  Reset;
+  TEngine.GetInstance.HideCursor;
 end;
 
 destructor TGamePlayScene.Destroy;
