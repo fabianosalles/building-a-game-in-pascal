@@ -21,11 +21,10 @@ type
 
   TSpaceInvadersGame = class(TGame)
   strict private
-  const
-    SCENE_INTRO     = 'intro';
-    SCENE_GAME_PLAY = 'gamePlay';
-    SCENE_MAIN_MENU = 'mainMenu';
-  var
+    fSceneInto: integer;
+    fSceneGamePLay: integer;
+    fSceneMainMenu: integer;
+
     fPlayer : TPlayer;
   private
     procedure CreateScenes;
@@ -51,21 +50,17 @@ var
   intro    : TIntroScene;
 begin
   gamePlay := TGamePlayScene.Create(fPlayer);
-  gamePlay.Name:= SCENE_GAME_PLAY;
   gamePlay.OnQuit := @doOnSceneQuit;
-  Scenes.Add(gamePlay);
+  fSceneGamePLay:= Scenes.Add(gamePlay);
+
 
   intro := TIntroScene.Create;
-  intro.Name := SCENE_INTRO;
   intro.OnQuit:= @doOnSceneQuit;
-  Scenes.Add(intro);
-
+  fSceneInto:= Scenes.Add(intro);
 
   menu := TMainMenuScene.Create;
-  menu.Name:= SCENE_MAIN_MENU;
   menu.OnQuit:= @doOnSceneQuit;
-  Scenes.Add(menu);
-
+  fSceneMainMenu:= Scenes.Add(menu);
 
   Scenes.Current := intro;
  // Scenes.Current := menu;
@@ -78,14 +73,14 @@ begin
   if ( sender is TIntroScene ) then
   begin
     TIntroScene(sender).Stop;
-    next := Scenes.ByName(SCENE_MAIN_MENU);
+    next := Scenes[fSceneMainMenu];
     Scenes.Current := next;
   end;
 
   if ( sender is TMainMenuScene ) then
   begin
      TMainMenuScene(sender).Stop;
-     next := Scenes.ByName(SCENE_GAME_PLAY);
+     next := Scenes[fSceneGamePLay];
      Scenes.Current := next;
   end;
 

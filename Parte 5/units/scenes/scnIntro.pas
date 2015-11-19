@@ -92,6 +92,11 @@ begin
       engine.Text.Draw('presents', dest.x + 49, dest.y + dest.h + 50, engine.Fonts.DebugNormal, fAlpha);
     end;
 
+    stOpenSourceTribute: begin
+      engine.Text.Draw('SPACE INVADRES', 400-230, 280, engine.Fonts.GUI64, fAlpha);
+      engine.Text.Draw('an open souce tribute to', 400-230, 270, engine.Fonts.DebugNormal, fAlpha);
+   end;
+
     stLogoLazarus: begin
 
       source.x:= 0;
@@ -134,11 +139,6 @@ begin
       engine.Text.Draw('built with', dest.x + 75, dest.y + dest.h + 50, engine.Fonts.DebugNormal, fAlpha);
     end;
 
-   stOpenSourceTribute: begin
-      engine.Text.Draw('SPACE INVADRES', 400-230, 280, engine.Fonts.GUI64, fAlpha);
-      engine.Text.Draw('an open souce tribute to', 400-230, 270, engine.Fonts.DebugNormal, fAlpha);
-   end;
-
   end;
 
 end;
@@ -167,6 +167,25 @@ begin
           end;
       end;
 
+    stOpenSourceTribute:
+      begin
+        if fElapsedMS <= LOGO_FADEIN then
+          fAlpha:= round((fElapsedMS/LOGO_FADEIN)*255)
+        else
+          if ( fElapsedMS > LOGO_FADEIN + LOGO_VISIBLE ) then
+             if (fElapsedMS-LOGO_FADEIN-LOGO_VISIBLE) > LOGO_FADEOUT then
+                 fAlpha:= 0
+             else
+               fAlpha:= 255 - round(((fElapsedMS-LOGO_FADEIN-LOGO_VISIBLE)/LOGO_FADEOUT * 255));
+          if (fElapsedMS >= LOGO_FADEIN + LOGO_FADEOUT + LOGO_VISIBLE) then
+          begin
+            fAlpha:= 255;
+            fElapsedMS := 0;
+            fAngle:= 0;
+            fState:= stLogoLazarus;
+          end;
+      end;
+
     stLogoLazarus:
       begin
          fAngle := fAngle + 25 * deltaTime;
@@ -186,25 +205,6 @@ begin
               fState:= stQuit;
               doQuit;
             end;
-      end;
-
-    stOpenSourceTribute:
-      begin
-        if fElapsedMS <= LOGO_FADEIN then
-          fAlpha:= round((fElapsedMS/LOGO_FADEIN)*255)
-        else
-          if ( fElapsedMS > LOGO_FADEIN + LOGO_VISIBLE ) then
-             if (fElapsedMS-LOGO_FADEIN-LOGO_VISIBLE) > LOGO_FADEOUT then
-                 fAlpha:= 0
-             else
-               fAlpha:= 255 - round(((fElapsedMS-LOGO_FADEIN-LOGO_VISIBLE)/LOGO_FADEOUT * 255));
-          if (fElapsedMS >= LOGO_FADEIN + LOGO_FADEOUT + LOGO_VISIBLE) then
-          begin
-            fAlpha:= 255;
-            fElapsedMS := 0;
-            fAngle:= 0;
-            fState:= stLogoLazarus;
-          end;
       end;
 
   end;
