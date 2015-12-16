@@ -4,7 +4,7 @@ program space_invaders;
 
 uses
   sdlEngine,
-  siGame, sdlParticles;
+  siGame;
 
 var
   Engine: TEngine;

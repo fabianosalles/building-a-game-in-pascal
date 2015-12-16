@@ -65,6 +65,7 @@ type
 
 
   TGSceneList = specialize TFPGObjectList<TScene>;
+
   { TSceneManager }
 
   TSceneManager = class
