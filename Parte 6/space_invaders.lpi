@@ -196,7 +196,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="16">
+    <Units Count="17">
       <Unit0>
         <Filename Value="space_invaders.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -261,6 +261,10 @@
         <Filename Value="units\scenes\scnMainMenu.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit15>
+      <Unit16>
+        <Filename Value="units\engine\sdlParticles.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit16>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
