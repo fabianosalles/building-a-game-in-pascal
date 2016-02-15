@@ -36,12 +36,12 @@ type
     fSpeed           : real;
     fCooldown        : integer;
     fCooldownCounter : integer;
-    fShotSpawnPoint  : TPoint;
+    fShotSpawnPoint  : TVector;
     fScore           : integer;
     fInput           : array[0..2] of boolean;
     fOnShot : TGameObjectNotifyEvent;
     function GetInput(index: integer): boolean;
-    function GetShotSpawnPoint: TPoint;
+    function GetShotSpawnPoint: TVector;
     procedure SetInput(index: integer; AValue: boolean);
   public
     constructor Create; override;
@@ -53,7 +53,7 @@ type
     property Speed : real read fSpeed write fSpeed;  //em pixels por segund
     property Cooldown: integer read fCooldown write fCooldown;
     property CooldownCounter: integer read fCooldownCounter;
-    property ShotSpawnPoint : TPoint read GetShotSpawnPoint;
+    property ShotSpawnPoint : TVector read GetShotSpawnPoint;
     property Lifes: integer read fLifes write fLifes;
     property Score: integer read fScore write fScore;
 
@@ -74,9 +74,9 @@ begin
   result := fInput[index];
 end;
 
-function TPlayer.GetShotSpawnPoint: TPoint;
+function TPlayer.GetShotSpawnPoint: TVector;
 var
-  pos : TPoint;
+  pos : TVector;
 begin
   pos := Self.Position;
 

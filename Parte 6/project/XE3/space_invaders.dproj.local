@@ -1,14 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <Transactions>
-    <Transaction>2016/02/15 13:16:08.488,D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\project\XE3\space_invaders.dproj=D:\Documentos\RAD Studio\Projects\Project2.dproj</Transaction>
-    <Transaction>2016/02/15 13:31:52.230,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\project\XE3\Unit1.pas</Transaction>
-    <Transaction>2016/02/15 13:32:50.947,D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\engine\crossCompile.pas=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\project\XE3\Unit1.pas</Transaction>
-    <Transaction>2016/02/15 13:38:05.955,D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\engine\crossCompile.pas=</Transaction>
-    <Transaction>2016/02/15 14:15:08.203,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnGameOver.pas</Transaction>
-    <Transaction>2016/02/15 14:15:08.669,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnGamePlay.pas</Transaction>
-    <Transaction>2016/02/15 14:15:08.707,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnIntro.pas</Transaction>
-    <Transaction>2016/02/15 14:15:08.744,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnMainMenu.pas</Transaction>
-    <Transaction>2016/02/15 14:15:19.345,D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnGameOver.pas=</Transaction>
+	<Transactions>
+    <Transaction>2016/02/15 13:16:08.000.488,D:\Documentos\RAD Studio\Projects\Project2.dproj=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\project\XE3\space_invaders.dproj</Transaction>
+    <Transaction>2016/02/15 13:31:52.000.230,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\project\XE3\Unit1.pas</Transaction>
+    <Transaction>2016/02/15 13:32:50.000.947,D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\project\XE3\Unit1.pas=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\engine\crossCompile.pas</Transaction>
+    <Transaction>2016/02/15 13:38:05.000.955,D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\engine\crossCompile.pas=</Transaction>
+    <Transaction>2016/02/15 14:15:08.000.669,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnGamePlay.pas</Transaction>
+    <Transaction>2016/02/15 14:15:08.000.744,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnMainMenu.pas</Transaction>
+    <Transaction>2016/02/15 14:15:08.000.203,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnGameOver.pas</Transaction>
+    <Transaction>2016/02/15 14:15:08.000.707,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnIntro.pas</Transaction>
+    <Transaction>2016/02/15 14:15:19.000.345,D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnGameOver.pas=</Transaction>
+    <Transaction>2016/02/15 15:51:11.143,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\project\XE3\Unit1.pas</Transaction>
+    <Transaction>2016/02/15 15:51:53.539,D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\scenes\scnParticles.pas=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\project\XE3\Unit1.pas</Transaction>
+    <Transaction>2016/02/15 16:26:37.060,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlGameEnemies.pas</Transaction>
+    <Transaction>2016/02/15 16:26:37.098,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlGameEngine.pas</Transaction>
+    <Transaction>2016/02/15 16:26:37.140,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlGameObjects.pas</Transaction>
+    <Transaction>2016/02/15 16:26:37.180,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlGamePlayer.pas</Transaction>
+    <Transaction>2016/02/15 16:26:37.217,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlgamescreen.pas</Transaction>
+    <Transaction>2016/02/15 16:26:37.254,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlGameSound.pas</Transaction>
+    <Transaction>2016/02/15 16:26:37.292,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlGameText.pas</Transaction>
+    <Transaction>2016/02/15 16:26:37.329,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlGameTexture.pas</Transaction>
+    <Transaction>2016/02/15 16:26:37.367,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlGameTypes.pas</Transaction>
+    <Transaction>2016/02/15 16:26:37.409,=D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlGameUtils.pas</Transaction>
+    <Transaction>2016/02/15 16:26:56.217,D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlGameEngine.pas=</Transaction>
+    <Transaction>2016/02/15 16:27:08.879,D:\Documentos\GitHub\building-a-game-in-pascal\Parte 6\units\sdlgamescreen.pas=</Transaction>
   </Transactions>
 </BorlandProject>

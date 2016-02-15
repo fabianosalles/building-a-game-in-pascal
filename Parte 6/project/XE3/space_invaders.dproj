@@ -97,6 +97,15 @@
         <DCCReference Include="..\..\units\scenes\scnGamePlay.pas"/>
         <DCCReference Include="..\..\units\scenes\scnIntro.pas"/>
         <DCCReference Include="..\..\units\scenes\scnMainMenu.pas"/>
+        <DCCReference Include="..\..\units\scenes\scnParticles.pas"/>
+        <DCCReference Include="..\..\units\sdlGameEnemies.pas"/>
+        <DCCReference Include="..\..\units\sdlGameObjects.pas"/>
+        <DCCReference Include="..\..\units\sdlGamePlayer.pas"/>
+        <DCCReference Include="..\..\units\sdlGameSound.pas"/>
+        <DCCReference Include="..\..\units\sdlGameText.pas"/>
+        <DCCReference Include="..\..\units\sdlGameTexture.pas"/>
+        <DCCReference Include="..\..\units\sdlGameTypes.pas"/>
+        <DCCReference Include="..\..\units\sdlGameUtils.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

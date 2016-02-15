@@ -16,6 +16,7 @@ uses
   sdlScene,
   scnMainMenu,
   scnGamePlay,
+  scnParticles,
   sdlGamePlayer;
 
 type
@@ -25,13 +26,15 @@ type
   TSpaceInvadersGame = class(TGame)
   strict private
   const
-    SCENE_INTRO     = 'intro';
-    SCENE_GAME_PLAY = 'gamePlay';
-    SCENE_MAIN_MENU = 'mainMenu';
+    SCENE_INTRO         = 'intro';
+    SCENE_GAME_PLAY     = 'gamePlay';
+    SCENE_MAIN_MENU     = 'mainMenu';
+    SCENE_MAIN_PARTICLE = 'particle';
   var
     fSceneInto: integer;
     fSceneGamePLay: integer;
     fSceneMainMenu: integer;
+    fSceneParticle: integer;
     fPlayer : TPlayer;
   private
     procedure CreateScenes;
@@ -52,9 +55,10 @@ uses
 
 procedure TSpaceInvadersGame.CreateScenes;
 var
-  gamePlay : TGamePlayScene;
-  menu     : TMainMenuScene;
-  intro    : TIntroScene;
+  gamePlay  : TGamePlayScene;
+  menu      : TMainMenuScene;
+  intro     : TIntroScene;
+  particles : TParticleScene;
 begin
   gamePlay := TGamePlayScene.Create(fPlayer);
 
@@ -70,18 +74,25 @@ begin
   menu.Name:= SCENE_MAIN_MENU;
   Scenes.Add(menu);
 
+
+  particles := TParticleScene.Create;
+  particles.Name := SCENE_MAIN_PARTICLE;
+  Scenes.Add(particles);
+
   {$IFDEF FPC}
-  gamePlay.OnQuit := @doOnSceneQuit;
-  intro.OnQuit    := @doOnSceneQuit;
-  menu.OnQuit     := @doOnSceneQuit;
+  gamePlay.OnQuit  := @doOnSceneQuit;
+  intro.OnQuit     := @doOnSceneQuit;
+  menu.OnQuit      := @doOnSceneQuit;
+  particles.OnQuit := @doOnSceneQuit;
   {$ELSE}
-  gamePlay.OnQuit := doOnSceneQuit;
-  intro.OnQuit    := doOnSceneQuit;
-  menu.OnQuit     := doOnSceneQuit;
+  gamePlay.OnQuit  := doOnSceneQuit;
+  intro.OnQuit     := doOnSceneQuit;
+  menu.OnQuit      := doOnSceneQuit;
+  particles.OnQuit := doOnSceneQuit;
   {$ENDIF}
 
-
-  Scenes.Current := intro;
+  //Scenes.Current := intro;
+  Scenes.Current := particles;
 end;
 
 procedure TSpaceInvadersGame.doOnSceneQuit(sender: TObject);

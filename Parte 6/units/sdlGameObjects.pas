@@ -39,9 +39,54 @@ type
   TGameObjectCollisonEvent = procedure(Sender, Suspect: TGameObject; var StopChecking: boolean) of object;
 
 
-  TPoint = record
-    X : real;
-    Y : real;
+  { TVector }
+
+  TVector = class
+  strict private
+    fX : real;
+    fY : real;
+  public
+    constructor Create; overload;
+    constructor Create(const x, y : real); overload;
+    procedure SetX(Value: real);
+    procedure SetY(Value: real);
+
+    property X: Real read fX write fX;
+    property Y: Real read fY write fY;
+  end;
+
+  { TRange }
+  {$IFDEF FPC}generic{$ENDIF} TRange<T> = class
+  strict private
+    fMin : T;
+    fMax : T;
+  public
+    property Min : T read fMin write fMin;
+    property Max : T read fMax write fMax;
+  end;
+
+  TRangeReal = {$IFDEF FPC}specialize{$ENDIF} TRange<Real>;
+
+
+  TRect = class
+  strict private
+    fX : SInt32;
+    fY : SInt32;
+    fW : SInt32;
+    fH : SInt32;
+  public
+    constructor Create; overload;
+    constructor Create(x,y,w,h: SInt32); overload;
+
+    function ToSDLRect : TSDL_Rect;
+    procedure Assign(Value: TSDL_Rect);
+
+
+    property X : SInt32 read fX write fX;
+    property Y : SInt32 read fY write fY;
+    property W : SInt32 read fW write fW;
+    property H : SInt32 read fH write fH;
+
   end;
 
 
@@ -90,7 +135,7 @@ type
   public
     Rect      : TSDL_Rect;
     TimeSpan  : Cardinal; //em milisegundos
-    function GetPositionedRect( position : TPoint ) : TSDL_Rect; inline;
+    function GetPositionedRect( position : TVector ) : TSDL_Rect; inline;
   end;
 
   {$IFDEF FPC}
@@ -120,18 +165,20 @@ type
     fRenderer   : PSDL_Renderer;
     fDrawMode   : TDrawMode;
     fOnCollided : TGameObjectCollisonEvent;
+    fPosition   : TVector;
   protected
     fSprite     : TSprite;
     procedure InitFields; virtual;
   public
-    Position : TPoint;
     constructor Create; virtual;
     destructor Destroy; override;
+
     procedure Update(const deltaTime : real ); virtual; abstract;
     procedure Draw; virtual; abstract;
-
     procedure CheckCollisions( Suspects: TGameObjectList); overload;
     procedure CheckCollisions( Suspect: TGameObject ); overload;
+
+    property Position : TVector read fPosition write fPosition;
     property DrawMode: TDrawMode read fDrawMode write fDrawMode;
     property Sprite : TSprite read fSprite;
     property SpriteRect : TSDL_Rect read GetSpriteRect;
@@ -209,6 +256,31 @@ type
 
 
 implementation
+
+{ TVector }
+
+constructor TVector.Create;
+begin
+  X := 0;
+  Y := 0;
+end;
+
+constructor TVector.Create(const x, y: real);
+begin
+  Self.X := x;
+  Self.Y := y;
+end;
+
+procedure TVector.SetX(Value: real);
+begin
+  Self.X := Value;
+end;
+
+procedure TVector.SetY(Value: real);
+begin
+  Self.Y := Value;
+end;
+
 
 { TExplosionList }
 
@@ -359,7 +431,7 @@ end;
 
 { TSpriteFrame }
 
-function TSpriteFrame.GetPositionedRect(position : TPoint): TSDL_Rect;
+function TSpriteFrame.GetPositionedRect(position : TVector): TSDL_Rect;
 begin
   result.x := round(position.X);
   result.y := round(position.Y);
@@ -377,8 +449,7 @@ end;
 
 procedure TGameObject.InitFields;
 begin
-  Position.X := 0;
-  Position.Y := 0;
+  fPosition  := TVector.Create;
   fSprite    := TSprite.Create;
   fDrawMode  := TDrawMode.Normal;
 end;
@@ -391,7 +462,9 @@ end;
 
 destructor TGameObject.Destroy;
 begin
-  fSprite.Free;
+  if Assigned(fSprite) then
+     fSprite.Free;
+  fPosition.Free;
   inherited Destroy;
 end;
 
@@ -608,6 +681,42 @@ end;
 
 
 
+
+
+{ TRect }
+
+procedure TRect.Assign(Value: TSDL_Rect);
+begin
+  fX := Value.x;
+  fY := Value.y;
+  fW := Value.w;
+  fH := Value.h;
+end;
+
+constructor TRect.Create;
+begin
+  fX := 0;
+  fY := 0;
+  fW := 0;
+  fH := 0;
+end;
+
+constructor TRect.Create(x, y, w, h: SInt32);
+begin
+  fX := x;
+  fY := y;
+  fW := w;
+  fH := h;
+end;
+
+
+function TRect.ToSDLRect: TSDL_Rect;
+begin
+  result.x := x;
+  result.y := y;
+  result.w := w;
+  result.h := h;
+end;
 
 end.
 

@@ -45,13 +45,13 @@ type
     fSpeed: real;
     fOldMoveDirection : TEnemyMoveDirection;
     fMoveDirection : TEnemyMoveDirection;
-    fMovementOrigin: TPoint;
+    fMovementOrigin: TVector;
     fOnShot : TGameObjectNotifyEvent;
   private
     fCanShot: boolean;
     fHP : integer;
     function GetAlive: boolean;
-    function GetShotSpawnPoint: TPoint;
+    function GetShotSpawnPoint: TVector;
   protected
     procedure InitFields; override;
   public
@@ -64,7 +64,7 @@ type
     property HP : integer read fHP write fHP;
     property Alive: boolean read GetAlive;
     property CanShot: boolean read fCanShot write fCanShot;
-    property ShotSpawnPoint : TPoint read GetShotSpawnPoint;
+    property ShotSpawnPoint : TVector read GetShotSpawnPoint;
 
     property OnShot : TGameObjectNotifyEvent read fOnShot write fOnShot;
   end;
@@ -213,9 +213,9 @@ begin
   result := fHP > 0;
 end;
 
-function TEnemy.GetShotSpawnPoint: TPoint;
+function TEnemy.GetShotSpawnPoint: TVector;
 var
-  pos : TPoint;
+  pos : TVector;
 begin
   pos := Self.Position;
 
