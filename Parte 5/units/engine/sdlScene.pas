@@ -65,7 +65,6 @@ type
 
 
   TGSceneList = specialize TFPGObjectList<TScene>;
-
   { TSceneManager }
 
   TSceneManager = class
@@ -73,6 +72,7 @@ type
     fCurrentScene: integer;
     fScenes: TGSceneList;
     function GetCurrentScene: TScene;
+    function GetScene(index: integer): TScene;
     procedure SetCurrentScene(AValue: TScene);
   public
     function Add(scene: TScene): integer;
@@ -80,7 +80,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
-
+    property Items[index:integer]:TScene read GetScene; default;
     property Current: TScene read GetCurrentScene write SetCurrentScene;
   end;
 
@@ -191,6 +191,11 @@ end;
 function TSceneManager.GetCurrentScene: TScene;
 begin
   result := fScenes[fCurrentScene];
+end;
+
+function TSceneManager.GetScene(index: integer): TScene;
+begin
+  result := fScenes[index];
 end;
 
 procedure TSceneManager.SetCurrentScene(AValue: TScene);

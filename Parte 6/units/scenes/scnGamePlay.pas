@@ -116,7 +116,6 @@ begin
   fPlayer.Sprite.Texture.Assign( textures[ integer(TSpriteKind.Player)] );
   fPlayer.Sprite.InitFrames(1,1);
   fPlayer.OnShot:= {$IFDEF FPC}@{$ENDIF}doOnShot;
-
   fShots      := TShotList.Create(true);
   fExplosions := TExplosionList.Create(true);
 end;

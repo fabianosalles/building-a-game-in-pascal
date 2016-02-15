@@ -4,30 +4,40 @@
     <PathDelim Value="\"/>
     <Version Value="9"/>
     <BuildModes Active="Win32 Debug"/>
-    <Units Count="27">
+    <Units Count="32">
       <Unit0>
         <Filename Value="space_invaders.lpr"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <CursorPos X="35" Y="16"/>
+=======
+        <CursorPos X="66" Y="19"/>
+>>>>>>> origin/master
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="units\sdlGameText.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="3"/>
         <TopLine Value="56"/>
         <CursorPos X="38" Y="84"/>
+=======
+        <EditorIndex Value="-1"/>
+        <TopLine Value="8"/>
+        <CursorPos X="26" Y="21"/>
+>>>>>>> origin/master
         <UsageCount Value="200"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="units\sdlGameObjects.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="308"/>
-        <CursorPos X="3" Y="312"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="29"/>
+        <CursorPos X="7" Y="39"/>
         <UsageCount Value="251"/>
+        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="units\sdlGameUtils.pas"/>
@@ -40,115 +50,195 @@
       <Unit4>
         <Filename Value="units\sdlGameTypes.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="8"/>
         <TopLine Value="18"/>
         <CursorPos X="46" Y="32"/>
+=======
+        <EditorIndex Value="-1"/>
+        <TopLine Value="20"/>
+        <CursorPos X="3" Y="34"/>
+>>>>>>> origin/master
         <UsageCount Value="249"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="units\sdlGamePlayer.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="13"/>
         <TopLine Value="118"/>
         <CursorPos X="24" Y="107"/>
+=======
+        <EditorIndex Value="-1"/>
+        <TopLine Value="16"/>
+        <CursorPos X="3" Y="27"/>
+>>>>>>> origin/master
         <UsageCount Value="248"/>
-        <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="units\sdlGameEnemies.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="12"/>
         <TopLine Value="54"/>
+=======
+        <EditorIndex Value="-1"/>
+        <TopLine Value="31"/>
+>>>>>>> origin/master
         <CursorPos X="22" Y="65"/>
         <UsageCount Value="247"/>
-        <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="units\sdlGameSound.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="2"/>
         <CursorPos X="18" Y="19"/>
         <UsageCount Value="209"/>
         <Loaded Value="True"/>
+=======
+        <EditorIndex Value="-1"/>
+        <TopLine Value="16"/>
+        <CursorPos X="34" Y="34"/>
+        <UsageCount Value="200"/>
+>>>>>>> origin/master
       </Unit7>
       <Unit8>
         <Filename Value="units\engine\sdlEngine.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
+<<<<<<< HEAD
         <TopLine Value="307"/>
         <CursorPos X="3" Y="316"/>
         <UsageCount Value="202"/>
+=======
+        <TopLine Value="10"/>
+        <CursorPos X="5" Y="338"/>
+        <UsageCount Value="194"/>
+>>>>>>> origin/master
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
         <Filename Value="units\engine\sdlGame.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="5"/>
         <TopLine Value="4"/>
         <CursorPos X="3" Y="12"/>
         <UsageCount Value="202"/>
+=======
+        <EditorIndex Value="3"/>
+        <TopLine Value="6"/>
+        <CursorPos X="14" Y="19"/>
+        <UsageCount Value="194"/>
+>>>>>>> origin/master
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="units\engine\sdlScene.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="7"/>
         <TopLine Value="26"/>
         <CursorPos X="15" Y="39"/>
         <UsageCount Value="202"/>
+=======
+        <EditorIndex Value="8"/>
+        <TopLine Value="51"/>
+        <CursorPos X="52" Y="63"/>
+        <UsageCount Value="194"/>
+>>>>>>> origin/master
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
         <Filename Value="units\siGame.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <TopLine Value="47"/>
         <CursorPos X="2" Y="71"/>
         <UsageCount Value="148"/>
+=======
+        <EditorIndex Value="2"/>
+        <TopLine Value="68"/>
+        <CursorPos X="25" Y="94"/>
+        <UsageCount Value="136"/>
+>>>>>>> origin/master
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="units\scenes\scnGamePlay.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="6"/>
         <TopLine Value="22"/>
         <UsageCount Value="147"/>
+=======
+        <EditorIndex Value="4"/>
+        <TopLine Value="332"/>
+        <CursorPos X="33" Y="415"/>
+        <UsageCount Value="135"/>
+>>>>>>> origin/master
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
         <Filename Value="units\sdlGameTexture.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="11"/>
         <CursorPos X="3" Y="14"/>
         <UsageCount Value="144"/>
         <Loaded Value="True"/>
+=======
+        <EditorIndex Value="-1"/>
+        <TopLine Value="87"/>
+        <CursorPos Y="99"/>
+        <UsageCount Value="132"/>
+>>>>>>> origin/master
       </Unit13>
       <Unit14>
         <Filename Value="units\scenes\scnIntro.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="9"/>
         <TopLine Value="168"/>
         <CursorPos X="21" Y="180"/>
         <UsageCount Value="139"/>
+=======
+        <EditorIndex Value="5"/>
+        <CursorPos X="7" Y="6"/>
+        <UsageCount Value="127"/>
+>>>>>>> origin/master
         <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="units\scenes\scnMainMenu.pas"/>
         <IsPartOfProject Value="True"/>
+<<<<<<< HEAD
         <EditorIndex Value="10"/>
         <TopLine Value="70"/>
         <CursorPos X="20" Y="110"/>
         <UsageCount Value="46"/>
         <Loaded Value="True"/>
+=======
+        <EditorIndex Value="-1"/>
+        <TopLine Value="24"/>
+        <CursorPos X="25" Y="105"/>
+        <UsageCount Value="34"/>
+>>>>>>> origin/master
       </Unit15>
       <Unit16>
         <Filename Value="units\sdlGame.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="98"/>
         <CursorPos X="19" Y="107"/>
+<<<<<<< HEAD
         <UsageCount Value="183"/>
+=======
+        <UsageCount Value="184"/>
+>>>>>>> origin/master
         <Bookmarks Count="1">
           <Item0 X="9" Y="839"/>
         </Bookmarks>
@@ -157,60 +247,102 @@
         <Filename Value="headers\sdl2\sdlscancode.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="3"/>
+<<<<<<< HEAD
         <UsageCount Value="10"/>
+=======
+        <UsageCount Value="1"/>
+>>>>>>> origin/master
       </Unit17>
       <Unit18>
         <Filename Value="headers\sdl2\sdlevents.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="279"/>
         <CursorPos X="18" Y="291"/>
+<<<<<<< HEAD
         <UsageCount Value="6"/>
+=======
+        <UsageCount Value="7"/>
+>>>>>>> origin/master
       </Unit18>
       <Unit19>
         <Filename Value="headers\sdl2\sdlblendmode.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="12"/>
+<<<<<<< HEAD
         <UsageCount Value="10"/>
+=======
+        <UsageCount Value="1"/>
+>>>>>>> origin/master
       </Unit19>
       <Unit20>
         <Filename Value="C:\lazarus\fpc\2.6.4\source\rtl\objpas\classes\classesh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="288"/>
         <CursorPos X="3" Y="304"/>
+<<<<<<< HEAD
         <UsageCount Value="5"/>
+=======
+        <UsageCount Value="6"/>
+>>>>>>> origin/master
       </Unit20>
       <Unit21>
         <Filename Value="C:\lazarus\fpc\2.6.4\source\rtl\objpas\classes\lists.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="689"/>
         <CursorPos Y="706"/>
+<<<<<<< HEAD
         <UsageCount Value="5"/>
+=======
+        <UsageCount Value="6"/>
+>>>>>>> origin/master
       </Unit21>
       <Unit22>
         <Filename Value="C:\lazarus\fpc\2.6.4\source\rtl\objpas\math.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="8"/>
         <CursorPos X="6" Y="28"/>
+<<<<<<< HEAD
         <UsageCount Value="8"/>
+=======
+        <UsageCount Value="9"/>
+>>>>>>> origin/master
       </Unit22>
       <Unit23>
         <Filename Value="units\sdlGameEngine.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="21"/>
         <CursorPos X="3" Y="34"/>
+<<<<<<< HEAD
         <UsageCount Value="11"/>
+=======
+        <UsageCount Value="12"/>
+>>>>>>> origin/master
       </Unit23>
       <Unit24>
         <Filename Value="units\engine\sdlGameEngine.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="5" Y="84"/>
+<<<<<<< HEAD
         <UsageCount Value="41"/>
       </Unit24>
       <Unit25>
+=======
+        <UsageCount Value="42"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="C:\lazarus\fpc\2.6.4\source\rtl\inc\objpash.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="179"/>
+        <CursorPos X="23" Y="192"/>
+        <UsageCount Value="10"/>
+      </Unit25>
+      <Unit26>
+>>>>>>> origin/master
         <Filename Value="headers\sdl2\sdlrenderer.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="640"/>
         <CursorPos X="22" Y="661"/>
+<<<<<<< HEAD
         <UsageCount Value="3"/>
       </Unit25>
       <Unit26>
@@ -219,8 +351,50 @@
         <TopLine Value="146"/>
         <CursorPos X="45" Y="159"/>
         <UsageCount Value="12"/>
+=======
+        <UsageCount Value="4"/>
+>>>>>>> origin/master
       </Unit26>
+      <Unit27>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="sdlParticles"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="77"/>
+        <CursorPos X="5" Y="87"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="headers\sdl2\sdl2.pas"/>
+        <UnitName Value="SDL2"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="10"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="C:\lazarus\fpc\2.6.4\source\rtl\inc\mathh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="57"/>
+        <CursorPos X="14" Y="69"/>
+        <UsageCount Value="10"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="C:\lazarus\fpc\2.6.4\source\rtl\objpas\fgl.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="50"/>
+        <CursorPos X="35" Y="65"/>
+        <UsageCount Value="10"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="headers\sdl2\sdlrect.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="16"/>
+        <CursorPos X="3" Y="28"/>
+        <UsageCount Value="10"/>
+      </Unit31>
     </Units>
+<<<<<<< HEAD
     <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="units\scenes\scnMainMenu.pas"/>
@@ -338,6 +512,129 @@
         <Filename Value="units\siGame.pas"/>
         <Caret Line="103" Column="3" TopLine="86"/>
       </Position29>
+=======
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="41" Column="23" TopLine="21"/>
+      </Position1>
+      <Position2>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="21" Column="44" TopLine="14"/>
+      </Position2>
+      <Position3>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="19" Column="21" TopLine="15"/>
+      </Position3>
+      <Position4>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="26" Column="91" TopLine="11"/>
+      </Position4>
+      <Position5>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="49" Column="13" TopLine="29"/>
+      </Position5>
+      <Position6>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="26" Column="52" TopLine="14"/>
+      </Position6>
+      <Position7>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="46" Column="57" TopLine="31"/>
+      </Position7>
+      <Position8>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="26" Column="56" TopLine="14"/>
+      </Position8>
+      <Position9>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="46" TopLine="24"/>
+      </Position9>
+      <Position10>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="26" Column="34" TopLine="13"/>
+      </Position10>
+      <Position11>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="48" Column="3" TopLine="29"/>
+      </Position11>
+      <Position12>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="26" Column="26" TopLine="14"/>
+      </Position12>
+      <Position13>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="53" TopLine="29"/>
+      </Position13>
+      <Position14>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="48" Column="19" TopLine="29"/>
+      </Position14>
+      <Position15>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="26" Column="79" TopLine="14"/>
+      </Position15>
+      <Position16>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="27" Column="6" TopLine="14"/>
+      </Position16>
+      <Position17>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="50" Column="3" TopLine="34"/>
+      </Position17>
+      <Position18>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="26" Column="17" TopLine="14"/>
+      </Position18>
+      <Position19>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="35" Column="48" TopLine="14"/>
+      </Position19>
+      <Position20>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="50" Column="19" TopLine="42"/>
+      </Position20>
+      <Position21>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="29" Column="55" TopLine="13"/>
+      </Position21>
+      <Position22>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="79" Column="30" TopLine="58"/>
+      </Position22>
+      <Position23>
+        <Filename Value="units\engine\sdlScene.pas"/>
+        <Caret Line="63" Column="52" TopLine="51"/>
+      </Position23>
+      <Position24>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="40" Column="31" TopLine="19"/>
+      </Position24>
+      <Position25>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="58" Column="17" TopLine="41"/>
+      </Position25>
+      <Position26>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="60" Column="23" TopLine="46"/>
+      </Position26>
+      <Position27>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="59" Column="34" TopLine="49"/>
+      </Position27>
+      <Position28>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="75" Column="34" TopLine="67"/>
+      </Position28>
+      <Position29>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="58" Column="28" TopLine="46"/>
+      </Position29>
+      <Position30>
+        <Filename Value="units\engine\sdlparticles.pas"/>
+        <Caret Line="61" Column="55" TopLine="43"/>
+      </Position30>
+>>>>>>> origin/master
     </JumpHistory>
   </ProjectSession>
   <Debugging>

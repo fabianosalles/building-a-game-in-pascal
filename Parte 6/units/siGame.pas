@@ -4,6 +4,7 @@ unit siGame;
   {$mode objfpc}{$H+}
 {$ENDIF}
 
+
 interface
 
 uses
@@ -28,6 +29,9 @@ type
     SCENE_GAME_PLAY = 'gamePlay';
     SCENE_MAIN_MENU = 'mainMenu';
   var
+    fSceneInto: integer;
+    fSceneGamePLay: integer;
+    fSceneMainMenu: integer;
     fPlayer : TPlayer;
   private
     procedure CreateScenes;
@@ -53,6 +57,7 @@ var
   intro    : TIntroScene;
 begin
   gamePlay := TGamePlayScene.Create(fPlayer);
+
   gamePlay.Name:= SCENE_GAME_PLAY;
   Scenes.Add(gamePlay);
 
@@ -77,7 +82,6 @@ begin
 
 
   Scenes.Current := intro;
-  //Scenes.Current := menu;
 end;
 
 procedure TSpaceInvadersGame.doOnSceneQuit(sender: TObject);

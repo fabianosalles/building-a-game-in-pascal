@@ -3,6 +3,7 @@ unit sdlGameSound;
 interface
 
 uses
+
 {$IFDEF FPC}
   fgl,
 {$ELSE}
@@ -21,6 +22,7 @@ type
       sndGameResume,
       sndGameOver
     );
+
 
   {$IFDEF FPC}
   TGSoundList = specialize TFPGList<PMix_Chunk>;
@@ -68,6 +70,7 @@ var
 begin
   for sound := low(TSound) to High(TSound) do
   case sound of
+
     sndEnemyBullet  : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(path + 'EnemyBullet.wav'))));
     sndEnemyHit     : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(path + 'EnemyHit.wav'))));
     sndPlayerBullet : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(path + 'PlayerBullet.wav'))));

@@ -99,6 +99,7 @@ type
   TGGameObjectList = TObjectList<TGameObject>;
   {$ENDIF}
 
+
   { TGameObjectList }
 
   TGameObjectList = class (TGGameObjectList)

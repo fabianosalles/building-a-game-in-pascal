@@ -22,6 +22,7 @@ type
     procedure Assign( pTexure: TTexture );
   end;
 
+
   {$IFDEF FPC}
   TGTextureList = specialize TFPGObjectList<TTexture>;
   {$ELSE}
@@ -35,7 +36,6 @@ type
     fList : TGTextureList;
     function GetItems(i: integer): TTexture;
     procedure SetItems(i: integer; AValue: TTexture);
-
     function LoadPNGTexture( const fileName: AnsiString ) : TTexture;
   public
     constructor Create;

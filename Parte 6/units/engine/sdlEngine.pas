@@ -28,7 +28,6 @@ const
   SOUND_DIR   = AnsiString(ASSETS_DIR + 'sounds\');
   IMAGE_DIR   = AnsiString(ASSETS_DIR + 'images\');
 
-
 type
 
   { TEngine }
@@ -59,9 +58,8 @@ type
     procedure doCheckDevices;
     procedure doCheckCollisions;
   public
-    class function GetInstance: TEngine;
-
     constructor Create;
+    class function GetInstance: TEngine;
 
     procedure Initialize(const width: integer; const height: integer; const title: string);
     procedure ToggleFullScreen;

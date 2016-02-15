@@ -4,6 +4,7 @@
   {$mode objfpc}{$H+}
 {$ENDIF}
 
+
 interface
 
 uses
@@ -244,6 +245,7 @@ var
   deltaY : real;
   limitY : real;
 
+
   procedure CalcXParams( aDirection : TEnemyMoveDirection );
   begin
     deltaX := Abs(Position.X - fMovementOrigin.X);
@@ -253,11 +255,13 @@ var
     end;
   end;
 
+
   procedure CalcYParams;
   begin
     deltaY := Abs(Position.Y - fMovementOrigin.Y);
     limitY := fMovementOrigin.Y + OFFSET_Y;
   end;
+
 
   procedure ChangeDirection( aDirection : TEnemyMoveDirection );
   begin
@@ -307,7 +311,6 @@ begin
           begin
              CalcXParams( TEnemyMoveDirection.Right );
              Position.X := Position.X + ( fSpeed * deltaTime );
-
              if ( Position.X > limitX ) then
                 Position.X := limitX;
 
@@ -323,7 +326,6 @@ begin
           begin
              CalcYParams;
              Position.Y := Position.Y + ( fSpeed * deltaTime );
-
              if ( Position.Y > limitY ) then
                 Position.Y := limitY;
 

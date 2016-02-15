@@ -1,5 +1,6 @@
 unit sdlGameUtils;
 
+
 {$IFDEF PFC}
   {$mode objfpc}{$H+}
 {$ENDIF}
