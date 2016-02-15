@@ -164,7 +164,7 @@ begin
   if ( result <> 0 ) then
     raise SDLTTFException.Create( TTF_GetError );
 
-  result := Mix_OpenAudio(44100 div 2, MIX_DEFAULT_FORMAT, 2, 2048);
+  result := Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
   if result < 0 then
      raise SDLMixerException.Create( Mix_GetError );
 
@@ -815,7 +815,18 @@ procedure TGame.doOnShotCollided(Sender, Suspect: TGameObject; var StopChecking:
 var
   shot       : TShot;
   enemy      : TEnemy;
-  explostion : TExplosion;
+
+  procedure CreateExplosion(Position: TPoint);
+  var
+    explostion : TExplosion;
+  begin
+    explostion := TExplosion.Create(fRenderer);
+    explostion.Sprite.Texture.Assign(fTextures[Ord(TSpriteKind.Explosion)]);
+    explostion.Sprite.InitFrames(1,1);
+    explostion.Position := Position;
+    fExplosions.Add(explostion);
+  end;
+
 begin
   if ( Sender is TShot )  then
   begin
@@ -831,11 +842,7 @@ begin
       else
         begin
          Inc(fScore, 100);
-         explostion := TExplosion.Create(fRenderer);
-         explostion.Sprite.Texture.Assign(fTextures[Ord(TSpriteKind.Explosion)]);
-         explostion.Sprite.InitFrames(1,1);
-         explostion.Position := enemy.Position;
-         fExplosions.Add(explostion);
+         CreateExplosion(enemy.Position);
         end;
       fShots.Remove( shot );
       StopChecking := true;
@@ -845,11 +852,7 @@ begin
    if ( Suspect is TPlayer ) then
    begin
      fPlayer.Hit( 1 );
-     explostion := TExplosion.Create(fRenderer);
-     explostion.Sprite.Texture.Assign(fTextures[Ord(TSpriteKind.Explosion)]);
-     explostion.Sprite.InitFrames(1,1);
-     explostion.Position := TPlayer(Suspect).Position;
-     fExplosions.Add(explostion);
+     CreateExplosion(TPlayer(Suspect).Position);
      Mix_PlayChannel(-1, fSounds[ Ord(TSoundKind.sndEnemyHit) ], 0);
      fShots.Remove( shot );
    end;

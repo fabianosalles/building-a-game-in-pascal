@@ -1,6 +1,8 @@
 unit siGame;
 
-{$mode objfpc}{$H+}
+{$IFDEF FPC}
+  {$mode objfpc}{$H+}
+{$ENDIF}
 
 interface
 
@@ -52,23 +54,30 @@ var
 begin
   gamePlay := TGamePlayScene.Create(fPlayer);
   gamePlay.Name:= SCENE_GAME_PLAY;
-  gamePlay.OnQuit := @doOnSceneQuit;
   Scenes.Add(gamePlay);
 
   intro := TIntroScene.Create;
   intro.Name := SCENE_INTRO;
-  intro.OnQuit:= @doOnSceneQuit;
   Scenes.Add(intro);
 
 
   menu := TMainMenuScene.Create;
   menu.Name:= SCENE_MAIN_MENU;
-  menu.OnQuit:= @doOnSceneQuit;
   Scenes.Add(menu);
 
+  {$IFDEF FPC}
+  gamePlay.OnQuit := @doOnSceneQuit;
+  intro.OnQuit    := @doOnSceneQuit;
+  menu.OnQuit     := @doOnSceneQuit;
+  {$ELSE}
+  gamePlay.OnQuit := doOnSceneQuit;
+  intro.OnQuit    := doOnSceneQuit;
+  menu.OnQuit     := doOnSceneQuit;
+  {$ENDIF}
 
-  //Scenes.Current := intro;
-  Scenes.Current := menu;
+
+  Scenes.Current := intro;
+  //Scenes.Current := menu;
 end;
 
 procedure TSpaceInvadersGame.doOnSceneQuit(sender: TObject);
