@@ -3,20 +3,24 @@ program space_invaders;
 {$APPTYPE CONSOLE}
 
 uses
-  sdlEngine,
-  siGame,
-  scnGamePlay in '..\..\units\scenes\scnGamePlay.pas',
-  scnIntro in '..\..\units\scenes\scnIntro.pas',
-  scnMainMenu in '..\..\units\scenes\scnMainMenu.pas',
-  scnParticles in '..\..\units\scenes\scnParticles.pas',
   sdlGameEnemies in '..\..\units\sdlGameEnemies.pas',
-  sdlGameObjects in '..\..\units\sdlGameObjects.pas',
   sdlGamePlayer in '..\..\units\sdlGamePlayer.pas',
   sdlGameSound in '..\..\units\sdlGameSound.pas',
   sdlGameText in '..\..\units\sdlGameText.pas',
   sdlGameTexture in '..\..\units\sdlGameTexture.pas',
   sdlGameTypes in '..\..\units\sdlGameTypes.pas',
-  sdlGameUtils in '..\..\units\sdlGameUtils.pas';
+  sdlGameUtils in '..\..\units\sdlGameUtils.pas',
+  sdlGame in '..\..\units\engine\sdlGame.pas',
+  sdlParticles in '..\..\units\engine\sdlParticles.pas',
+  sdlScene in '..\..\units\engine\sdlScene.pas',
+  Shots in '..\..\units\game\objects\Shots.pas',
+  sdlGameObjects in '..\..\units\engine\sdlGameObjects.pas',
+  scnGamePlay in '..\..\units\game\scenes\scnGamePlay.pas',
+  scnIntro in '..\..\units\game\scenes\scnIntro.pas',
+  scnMainMenu in '..\..\units\game\scenes\scnMainMenu.pas',
+  scnParticles in '..\..\units\game\scenes\scnParticles.pas',
+  sdlEngine in '..\..\units\engine\sdlEngine.pas',
+  siGame in '..\..\units\game\siGame.pas';
 
 var
   Engine: TEngine;

@@ -39,6 +39,16 @@ type
   TJoyAxisMotionEvent = procedure(axis: UInt8; value: SInt32) of object;
 
 
+  IUpdatable = interface
+    procedure Update(const deltaTime : real);
+  end;
+
+  IDrawable = interface
+    procedure Draw;
+  end;
+
+
+
 implementation
 
 

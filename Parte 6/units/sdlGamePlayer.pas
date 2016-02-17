@@ -45,6 +45,7 @@ type
     procedure SetInput(index: integer; AValue: boolean);
   public
     constructor Create; override;
+    destructor Destroy; override;
     procedure Draw; override;
     procedure Update(const deltaTime : real); override;
     procedure Hit( aDamage: byte );
@@ -75,13 +76,9 @@ begin
 end;
 
 function TPlayer.GetShotSpawnPoint: TVector;
-var
-  pos : TVector;
 begin
-  pos := Self.Position;
-
-  fShotSpawnPoint.X := pos.X + ( Sprite.CurrentFrame.Rect.w / 2 );
-  fShotSpawnPoint.Y := pos.Y-2;
+  fShotSpawnPoint.X := fPosition.X + ( Sprite.CurrentFrame.Rect.w / 2 );
+  fShotSpawnPoint.Y := fPosition.Y-2;
   result := fShotSpawnPoint;
 end;
 
@@ -97,6 +94,7 @@ var
   i : integer;
 begin
   inherited;
+  fShotSpawnPoint := TVector.Create;
   fSpeed    := DEFAULT_SPEED;
   fCooldown := DEFAULT_COOLDOWN;
   fCooldownCounter:= 0;
@@ -106,6 +104,12 @@ begin
 end;
 
 
+destructor TPlayer.Destroy;
+begin
+  fShotSpawnPoint.Free;
+  inherited;
+end;
+
 procedure TPlayer.Draw;
 var
   source, destination : TSDL_Rect;
@@ -114,8 +118,8 @@ begin
   begin
     source := Sprite.CurrentFrame.Rect;
 
-    destination.x := trunc(self.Position.X);
-    destination.y := trunc(self.Position.Y);
+    destination.x := trunc(fPosition.X);
+    destination.y := trunc(fPosition.Y);
     destination.w := 26;
     destination.h := 16;
 

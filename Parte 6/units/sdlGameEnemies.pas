@@ -55,6 +55,7 @@ type
   protected
     procedure InitFields; override;
   public
+    destructor Destroy; override;
     procedure Update(const deltaTime : real); override;
     procedure Draw; override;
     procedure Hit( aDamage: byte =  1);
@@ -214,13 +215,10 @@ begin
 end;
 
 function TEnemy.GetShotSpawnPoint: TVector;
-var
-  pos : TVector;
 begin
-  pos := Self.Position;
-
-  result.X := pos.X + ( Sprite.CurrentFrame.Rect.w / 2 );
-  result.Y := pos.Y-2;
+  result := TVector.Create;
+  result.X := fPosition.X + ( Sprite.CurrentFrame.Rect.w / 2 );
+  result.Y := fPosition.Y-2;
 end;
 
 procedure TEnemy.InitFields;
@@ -229,7 +227,8 @@ begin
   fSpeed  := 10;
   fMoveDirection     := TEnemyMoveDirection.None;
   fOldMoveDirection  := TEnemyMoveDirection.None;
-  fMovementOrigin    := Position;
+  fMovementOrigin    := TVector.Create;
+  fMovementOrigin.Assign(fPosition);
   fLastShotIteration := 0;
   fCanShot           := false;
 end;
@@ -302,7 +301,7 @@ begin
 
              if ( deltaX = OFFSET_X ) then
              begin
-               fMovementOrigin := Position;
+               fMovementOrigin.Assign(fPosition);
                ChangeDirection( TEnemyMoveDirection.Down );
              end;
           end;
@@ -316,7 +315,7 @@ begin
 
              if ( deltaX = OFFSET_X ) then
              begin
-               fMovementOrigin := Position;
+               fMovementOrigin.Assign(Position);
                ChangeDirection( TEnemyMoveDirection.Down );
              end;
 
@@ -331,7 +330,7 @@ begin
 
              if ( deltaY = OFFSET_Y ) then
              begin
-               fMovementOrigin := Position;
+               fMovementOrigin.Assign(fPosition);
                if ( fOldMoveDirection = TEnemyMoveDirection.Left ) then
                   ChangeDirection( TEnemyMoveDirection.Right )
                else
@@ -344,6 +343,12 @@ begin
 
 end;
 
+
+destructor TEnemy.Destroy;
+begin
+  fMovementOrigin.Free;
+  inherited;
+end;
 
 procedure TEnemy.Draw;
 var
@@ -383,7 +388,7 @@ end;
 
 procedure TEnemy.StartMoving;
 begin
-  fMovementOrigin := Position;
+  fMovementOrigin.Assign(fPosition);
   fMoveDirection  := TEnemyMoveDirection.Right;
 end;
 

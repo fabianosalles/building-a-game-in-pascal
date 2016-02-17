@@ -14,6 +14,7 @@ uses
    Generics.Collections,
 {$ENDIF}
   SDL2,
+  sdlEngine,
   sdlGameObjects,
   sdlGameTypes;
 
@@ -67,8 +68,8 @@ type
 
 
   { TEmmiter }
-
-  TEmitter = class
+  PEmitter = ^TEmitter;
+  TEmitter = class(TInterfacedObject, IUpdatable, IDrawable)
   strict private
   const
     POOL_SIZE = 1024 * 4;
@@ -89,18 +90,20 @@ type
     fLifeSpan      : TRangeReal;
     fEmissionRate  : Integer;
     fMaxCount      : integer;
+    fRenderer      : PSDL_Renderer;
 
     fOnAllParticleDied : TNotifyEvent;
 
     procedure CreateNewParticle;
-    procedure doOnAllParticleDied;
     procedure UpdateParticles(const deltaTime: real);
     procedure SpawnParticles(const deltaTime: real);
+  protected
+     procedure doOnAllParticleDied; virtual;
   public
-    constructor Create;
+    constructor Create(renderer: PSDL_Renderer);
     destructor Destroy; override;
     procedure Update(const deltaTime: real);
-    procedure Render(renderer: PSDL_Renderer);
+    procedure Draw;
 
     procedure Start;
     procedure Stop;
@@ -123,15 +126,25 @@ type
   end;
 
   {$IFDEF FPC}
-  TEmitterList = specialize TFPGObjectList<TEmitter>;
+  TGEmitterList = specialize TFPGObjectList<TEmitter>;
   {$ELSE}
-  TEmitterList = TObjectList<TEmitter>;
+  TGEmitterList = TObjectList<TEmitter>;
   {$ENDIF}
+
+  TEmitterList = class(TGEmitterList)
+  public
+    procedure Draw;
+    procedure Update(const deltaTime: real);
+    procedure Start;
+    procedure Stop;
+  end;
+
+
 
 
   TEmitterFactory  = class
-    class function NewSmokeOneShot    : TEmitter;
-    class function NewSmokeContinuous : TEmitter;
+    class function NewSmokeOneShot: TEmitter;
+    class function NewSmokeContinuous: TEmitter;
   end;
 
 
@@ -139,8 +152,9 @@ implementation
 
 { TEmmiter }
 
-constructor TEmitter.Create;
+constructor TEmitter.Create(renderer: PSDL_Renderer);
 begin
+  fRenderer      := renderer;
   fAngle         := TRangeReal.Create;
   fSpeed         := TRangeReal.Create;
   fWidth         := TRangeReal.Create;
@@ -148,7 +162,6 @@ begin
   fLifeSpan      := TRangeReal.Create;
   fGravity       := TVector.Create;
   fBounds        := TRect.Create;
-
 
   Kind := ekContinuous;
   fParticles := TParticleList.Create(true);
@@ -186,6 +199,28 @@ begin
      fOnAllParticleDied(Self);
 end;
 
+procedure TEmitter.Draw;
+var
+  i: integer;
+  p: TParticle;
+  r: TSDL_Rect;
+begin
+  SDL_SetRenderDrawBlendMode(fRenderer, SDL_BLENDMODE_ADD);
+  for i :=0 to fParticles.Count-1 do
+  begin
+    p := Particles[i];
+    if p.Alive then begin
+      r.x := round(p.Position.X);
+      r.y := round(p.Position.Y);
+      r.w := round(p.Width);
+      r.h := round(p.Height);
+
+      SDL_SetRenderDrawColor(fRenderer, p.Color.r, p.Color.g, p.Color.b, p.Color.a);
+      SDL_RenderFillRect(fRenderer, PSDL_Rect(@r));
+    end;
+  end;
+end;
+
 procedure TEmitter.CreateNewParticle;
 var
   lParticle : TParticle;
@@ -201,9 +236,9 @@ begin
   lLife     := fLifeSpan.Min + Random(Round(fLifeSpan.Max));
   lAngle    := fAngle.Min + (random * (fAngle.Max - fAngle.Min));
   lSpeed    := fSpeed.Min + (random * (fSpeed.Max - fSpeed.Min));
-  lColor.r := $EE;
-  lColor.g := $EE;
-  lColor.b := $EE;
+  lColor.r := $FF;
+  lColor.g := $FF;
+  lColor.b := $AA;
   lColor.a := $FF;
 
   lParticle := TParticle.Create(lPosition, lLife, lAngle, lSpeed);
@@ -225,41 +260,18 @@ begin
   inherited;
 end;
 
-procedure TEmitter.Render(renderer: PSDL_Renderer);
-var
-  i: integer;
-  p: TParticle;
-  r: TSDL_Rect;
-begin
-  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
-  for i :=0 to Particles.Count-1 do
-  begin
-    p := Particles[i];
-    if p.Alive then begin
-      r.x := round(p.Position.X);
-      r.y := round(p.Position.Y);
-      r.w := round(p.Width);
-      r.h := round(p.Height);
-
-      SDL_SetRenderDrawColor(renderer, p.Color.r, p.Color.g, p.Color.b, p.Color.a);
-      SDL_RenderFillRect(renderer, PSDL_Rect(@r));
-    end;
-  end;
-end;
 
 procedure TEmitter.SpawnParticles(const deltaTime: real);
 begin
-  if fActive then begin
-    case fKind of
-      ekContinuous:
+  case fKind of
+    ekContinuous:
+      begin
+        if (fTimeAccum >= fSpawnFrequency) and (fParticles.Count < fMaxCount) then
         begin
-          if (fTimeAccum >= fSpawnFrequency) and (fParticles.Count < fMaxCount) then
-          begin
-            CreateNewParticle;
-            fTimeAccum := fTimeAccum - fSpawnFrequency;
-          end;
+          CreateNewParticle;
+          fTimeAccum := fTimeAccum - fSpawnFrequency;
         end;
-    end;
+      end;
   end;
 end;
 
@@ -291,7 +303,10 @@ end;
 procedure TEmitter.Update(const deltaTime: real);
 begin
   fTimeAccum := fTimeAccum + deltaTime;
-  SpawnParticles(deltaTime);
+
+  if fActive then
+    SpawnParticles(deltaTime);
+
   UpdateParticles(deltaTime);
 end;
 
@@ -305,7 +320,7 @@ begin
   listChanged := false;
   for i:= Particles.Count-1 downto 0 do
   begin
-     p := Particles[i];
+     p := fParticles[i];
      p.Life := p.Life - deltaTime;
      if p.Alive then begin
         p.Position.X := p.Position.X + (p.Velocity.X * deltaTime) + (fGravity.X * deltaTime);
@@ -319,7 +334,7 @@ begin
         p.Color := color;
      end
      else begin
-        Particles.Remove(p);
+        fParticles.Remove(p);
         listChanged := true;
      end;
   end;
@@ -387,13 +402,15 @@ var
 begin
   result := NewSmokeOneShot;
   result.Kind := ekContinuous;
+  result.LifeSpan.Min := 0.2;
+  result.LifeSpan.Max := 0.5;
   result.MaxCount := 500;
   result.EmissionRate := 30;
 end;
 
 class function TEmitterFactory.NewSmokeOneShot: TEmitter;
 begin
-  result := TEmitter.Create;
+  result := TEmitter.Create(TEngine.GetInstance.Renderer);
   result.Kind := ekOneShot;
 
   result.Bounds.x := 300;
@@ -401,11 +418,11 @@ begin
   result.Bounds.w := 5;
   result.Bounds.h := 10;
 
-  result.Width.Min := 3;
-  result.Width.Max := 3;
+  result.Width.Min := 2;
+  result.Width.Max := 2;
 
-  result.Height.Min := 3;
-  result.Height.Max := 3;
+  result.Height.Min := 1;
+  result.Height.Max := 2;
 
   result.LifeSpan.Min := 1;
   result.LifeSpan.Max := 2;
@@ -417,6 +434,41 @@ begin
   result.Angle.Max := 270+30;
 
   result.MaxCount := 10;
+end;
+
+
+
+procedure TEmitterList.Draw;
+var
+  i : integer;
+begin
+  for i:=0 to Count-1 do
+    Items[i].Draw;
+end;
+
+procedure TEmitterList.Start;
+var
+  i : integer;
+begin
+  for i:=0 to Count-1 do
+    Items[i].Start
+end;
+
+procedure TEmitterList.Stop;
+var
+  i : integer;
+begin
+  for i:=0 to Count-1 do
+    Items[i].Stop;
+end;
+
+
+procedure TEmitterList.Update(const deltaTime: real);
+var
+  i : integer;
+begin
+  for i:=0 to Count-1 do
+    Items[i].Update(deltaTime);
 end;
 
 end.
