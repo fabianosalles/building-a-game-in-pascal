@@ -71,8 +71,6 @@ type
   PEmitter = ^TEmitter;
   TEmitter = class(TInterfacedObject, IUpdatable, IDrawable)
   strict private
-  const
-    POOL_SIZE = 1024 * 4;
   var
     fParticles : TParticleList;
     fKind      : TEmitterKind;
@@ -165,7 +163,7 @@ begin
 
   Kind := ekContinuous;
   fParticles := TParticleList.Create(true);
-  fParticles.Capacity:= POOL_SIZE;
+  fParticles.Capacity:= 50;
   fActive := false;
 
   fGravity.X := 1;
@@ -257,6 +255,7 @@ begin
   fLifeSpan.Free;
   fGravity.Free;
   fBounds.Free;
+  fParticles.Free;
   inherited;
 end;
 

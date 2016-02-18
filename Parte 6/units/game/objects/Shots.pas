@@ -39,11 +39,11 @@ type
     fShowSmoke       : boolean;
     fSmokeEmitter    : TEmitter;
     fOnSmokeVanished : TNotifyEvent;
+    fActive: boolean;
 
-    procedure dOnAllParticleDied(Sender: TObject);
+    procedure doOnAllParticleDied(Sender: TObject);
     procedure DrawShot;
     procedure DrawSmoke;
-
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -54,6 +54,7 @@ type
     procedure StopEmitSmoke;
     procedure StartEmitSmoke;
 
+    property Active    : boolean read fActive write fActive;
     property Direction : TShotDirection read fDirection write fDirection;
     property Speed     : real read fSpeed write fSpeed;
     property ShowSmoke : boolean read fShowSmoke write fShowSmoke;
@@ -224,7 +225,8 @@ begin
   fVisible   := true;
   fShowSmoke := false;
   fSmokeEmitter     := TEmitterFactory.NewSmokeContinuous;
-  fSmokeEmitter.OnAllParticleDied := dOnAllParticleDied;
+  fSmokeEmitter.OnAllParticleDied := doOnAllParticleDied;
+  fActive    := True;
 end;
 
 
@@ -284,19 +286,27 @@ begin
 end;
 
 procedure TShot.Update(const deltaTime: real);
+var
+  insideScreen: boolean;
 begin
-  if fVisible then
+  if fActive then
   begin
     case fDirection of
       TShotDirection.Up   : fPosition.Y := fPosition.Y - (fSpeed * deltaTime);
       TShotDirection.Down : fPosition.Y := fPosition.Y + (fSpeed * deltaTime);
     end;
-    fSmokeEmitter.Bounds.X := Round(fPosition.X);
-    fSmokeEmitter.Bounds.W := fSprite.CurrentFrame.Rect.w;
-    fSmokeEmitter.Bounds.Y := Round(fPosition.Y + fSprite.CurrentFrame.Rect.h);
-    fVisible := isInsideScreen;
   end;
+  fSmokeEmitter.Bounds.X := Round(fPosition.X);
+  fSmokeEmitter.Bounds.W := fSprite.CurrentFrame.Rect.w;
+  fSmokeEmitter.Bounds.Y := Round(fPosition.Y + fSprite.CurrentFrame.Rect.h);
   fSmokeEmitter.Update(deltaTime);
+
+  insideScreen := isInsideScreen;
+  if fVisible then
+     fVisible := insideScreen;
+  if (not insideScreen and fSmokeEmitter.Active) then
+     StopEmitSmoke;
+
 end;
 
 function TShot.isInsideScreen: boolean;
@@ -317,7 +327,7 @@ begin
   fSmokeEmitter.Stop;
 end;
 
-procedure TShot.dOnAllParticleDied(Sender: TObject);
+procedure TShot.doOnAllParticleDied(Sender: TObject);
 begin
   if (Sender = fSmokeEmitter) and (Assigned(fOnSmokeVanished)) then
     fOnSmokeVanished(Self);

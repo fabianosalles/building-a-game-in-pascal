@@ -4,6 +4,11 @@ interface
 
 uses
   SDL2,
+  {$IFDEF FPC}
+  fgl,
+  {$ELSE}
+  Generics.Collections,
+  {$ENDIF}
   sdlScene,
   sdlGameTypes,
   sdlGamePlayer,
@@ -13,6 +18,7 @@ uses
   sdlGameObjects,
   sdlParticles,
   Shots;
+
 
 type
 
@@ -51,6 +57,8 @@ type
     procedure doOnShot(Sender: TGameObject);
     procedure doOnShotCollided(Sender, Suspect: TGameObject; var StopChecking: boolean);
     procedure doOnShotSmokeVanished(Sender: TObject);
+    procedure doOnListNotify(Sender: TObject; const Item: TGameObject; Action: TCollectionNotification);
+    procedure ClearInvalidShots;
   protected
     procedure doLoadTextures; override;
     procedure doOnCheckCollitions; override;
@@ -117,8 +125,9 @@ begin
 
   fPlayer.Sprite.Texture.Assign( textures[ integer(TSpriteKind.Player)] );
   fPlayer.Sprite.InitFrames(1,1);
-  fPlayer.OnShot:= {$IFDEF FPC}@{$ENDIF}doOnShot;
-  fShots      := TShotList.Create(true);
+  fPlayer.OnShot  := {$IFDEF FPC}@{$ENDIF}doOnShot;
+  fShots          := TShotList.Create(true);
+  fShots.OnNotify := {$IFDEF FPC}@{$ENDIF}doOnListNotify;
   fExplosions := TExplosionList.Create(true);
 end;
 
@@ -245,7 +254,6 @@ begin
     engine.Sounds.Play(sndEnemyBullet);
   end;
   fShots.Add( shot );
-
 end;
 
 procedure TGamePlayScene.doOnShotCollided(Sender, Suspect: TGameObject;
@@ -279,6 +287,7 @@ begin
          fExplosions.Add(explostion);
         end;
       shot.Visible := false;
+      shot.Active  := false;
       shot.StopEmitSmoke;
       StopChecking := true;
       exit;
@@ -307,6 +316,19 @@ begin
   begin
     shot := TShot(Sender);
     fShots.Remove( shot )
+  end;
+end;
+
+procedure TGamePlayScene.doOnListNotify(Sender: TObject; const Item: TGameObject;
+  Action: TCollectionNotification);
+begin
+  if Sender = fShots then
+  begin
+     case Action of
+       cnAdded    : WriteLn('Shot added. Count: ', fShots.Count);
+       cnRemoved  : WriteLn('Shot removed. Count: ', fShots.Count);
+       cnExtracted: WriteLn('Shot extracted. Count: ', fShots.Count);
+     end;
   end;
 end;
 
@@ -391,6 +413,7 @@ begin
         fPlayer.Update( deltaTime );
         fEnemies.Update( deltaTime );
         fShots.Update( deltaTime );
+        ClearInvalidShots;
         fExplosions.Update( deltaTime );
         if ( fPlayer.Lifes <=0)  then
         begin
@@ -418,6 +441,24 @@ begin
   Reset;
 end;
 
+
+procedure TGamePlayScene.ClearInvalidShots;
+var
+  i    : integer;
+  shot : TShot;
+begin
+  for i := fShots.Count-1 downto 0 do begin
+    shot := TShot(fShots[i]);
+    case shot.Direction of
+      TShotDirection.Up  : ;
+      TShotDirection.Down:
+        begin
+          if not shot.IsInsideScreen then
+            fShots.Remove(shot);
+        end;
+    end;
+  end;
+end;
 
 constructor TGamePlayScene.Create(APlayer: TPlayer);
 begin
