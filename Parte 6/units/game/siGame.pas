@@ -91,8 +91,8 @@ begin
   particles.OnQuit := doOnSceneQuit;
   {$ENDIF}
 
-  Scenes.Current := gamePlay;
-  //Scenes.Current := particles;
+  //Scenes.Current := gamePlay;
+  Scenes.Current := particles;
 end;
 
 procedure TSpaceInvadersGame.doOnSceneQuit(sender: TObject);

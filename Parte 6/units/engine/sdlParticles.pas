@@ -88,6 +88,7 @@ type
     fLifeSpan      : TRangeReal;
     fEmissionRate  : Integer;
     fMaxCount      : integer;
+    fColor         : TSDL_Color;
     fRenderer      : PSDL_Renderer;
 
     fOnAllParticleDied : TNotifyEvent;
@@ -109,6 +110,7 @@ type
     property Particles : TParticleList read fParticles;
     property Kind      : TEmitterKind read fKind write fKind;
     property Bounds    : TRect read fBounds write fBounds;
+    property Color     : TSDL_Color read fColor write fColor;
 
     property Active       : boolean read fActive;
     property Angle        : TRangeReal read fAngle write fAngle;
@@ -188,6 +190,12 @@ begin
   fHeight.Min := 6;
   fHeight.Max := 8;
 
+  //default color for all particles
+  fColor.r := $FF;
+  fColor.g := $FF;
+  fColor.b := $AA;
+  fColor.a := $FF;
+
   fTimeAccum := 0;
 end;
 
@@ -226,7 +234,6 @@ var
   lLife     : Real;
   lAngle    : Real;
   lSpeed    : Real;
-  lColor    : TSDL_Color;
 begin
   lPosition := TVector.Create((fBounds.x) + Random(fBounds.w),
                               (fBounds.y) + Random(fBounds.h));
@@ -234,13 +241,9 @@ begin
   lLife     := fLifeSpan.Min + Random(Round(fLifeSpan.Max));
   lAngle    := fAngle.Min + (random * (fAngle.Max - fAngle.Min));
   lSpeed    := fSpeed.Min + (random * (fSpeed.Max - fSpeed.Min));
-  lColor.r := $FF;
-  lColor.g := $FF;
-  lColor.b := $AA;
-  lColor.a := $FF;
 
   lParticle := TParticle.Create(lPosition, lLife, lAngle, lSpeed);
-  lParticle.Color  := lColor;
+  lParticle.Color  := fColor;
   lParticle.Width  := Round(fWidth.Min + random * (fWidth.Max - fWidth.Min));
   lParticle.Height := Round(fHeight.Min + random * (fHeight.Max - Height.Min));
   fParticles.Add(lParticle);
@@ -403,7 +406,7 @@ begin
   result.Kind := ekContinuous;
   result.LifeSpan.Min := 0.2;
   result.LifeSpan.Max := 0.5;
-  result.MaxCount := 500;
+  result.MaxCount := 600;
   result.EmissionRate := 30;
 end;
 

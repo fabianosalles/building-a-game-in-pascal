@@ -43,7 +43,6 @@ type
 
     procedure doOnAllParticleDied(Sender: TObject);
     procedure DrawShot;
-    procedure DrawSmoke;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -242,7 +241,7 @@ begin
      DrawShot;
 
   if fShowSmoke then
-     DrawSmoke;
+     fSmokeEmitter.Draw;
 end;
 
 procedure TShot.DrawShot;
@@ -280,10 +279,6 @@ begin
 
 end;
 
-procedure TShot.DrawSmoke;
-begin
-  fSmokeEmitter.Draw;
-end;
 
 procedure TShot.Update(const deltaTime: real);
 var
@@ -298,7 +293,10 @@ begin
   end;
   fSmokeEmitter.Bounds.X := Round(fPosition.X);
   fSmokeEmitter.Bounds.W := fSprite.CurrentFrame.Rect.w;
-  fSmokeEmitter.Bounds.Y := Round(fPosition.Y + fSprite.CurrentFrame.Rect.h);
+  case fDirection of
+    Up   : fSmokeEmitter.Bounds.Y := Round(fPosition.Y + fSprite.CurrentFrame.Rect.h);
+    Down : fSmokeEmitter.Bounds.Y := Round(fPosition.Y - fSprite.CurrentFrame.Rect.h);
+  end;
   fSmokeEmitter.Update(deltaTime);
 
   insideScreen := isInsideScreen;

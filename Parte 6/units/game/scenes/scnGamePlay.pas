@@ -45,6 +45,7 @@ type
     fState      : TSceneState;
     fPlayer     : TPlayer;
     fExplosions : TExplosionList;
+    fSparks     : TEmitterList;
     fShots      : TShotList;
     fEnemies    : TEnemyList;
     fRenderer   : PSDL_Renderer;
@@ -59,6 +60,7 @@ type
     procedure doOnShotSmokeVanished(Sender: TObject);
     procedure doOnListNotify(Sender: TObject; const Item: TGameObject; Action: TCollectionNotification);
     procedure ClearInvalidShots;
+    function SpawnNewSparkAt( enemy : TEnemy ): TEmitter;
   protected
     procedure doLoadTextures; override;
     procedure doOnCheckCollitions; override;
@@ -128,7 +130,8 @@ begin
   fPlayer.OnShot  := {$IFDEF FPC}@{$ENDIF}doOnShot;
   fShots          := TShotList.Create(true);
   fShots.OnNotify := {$IFDEF FPC}@{$ENDIF}doOnListNotify;
-  fExplosions := TExplosionList.Create(true);
+  fExplosions     := TExplosionList.Create(true);
+  fSparks         := TEmitterList.Create(true);
 end;
 
 procedure TGamePlayScene.DrawGameObjects;
@@ -137,6 +140,7 @@ begin
   fEnemies.Draw;
   fShots.Draw;
   fExplosions.Draw;
+  fSparks.Draw;
 end;
 
 procedure TGamePlayScene.DrawUI;
@@ -251,6 +255,8 @@ begin
     shot.Direction:= TShotDirection.Down;
     shot.Position.Assign(enemy.ShotSpawnPoint);
     shot.Position.X := shot.Position.X - (shot.Sprite.CurrentFrame.Rect.w / 2);
+    shot.ShowSmoke := true;
+    shot.StartEmitSmoke;
     engine.Sounds.Play(sndEnemyBullet);
   end;
   fShots.Add( shot );
@@ -285,6 +291,7 @@ begin
          explostion.Sprite.InitFrames(1,1);
          explostion.Position.Assign(enemy.Position);
          fExplosions.Add(explostion);
+         fSparks.Add(SpawnNewSparkAt(enemy));
         end;
       shot.Visible := false;
       shot.Active  := false;
@@ -415,6 +422,7 @@ begin
         fShots.Update( deltaTime );
         ClearInvalidShots;
         fExplosions.Update( deltaTime );
+        fSparks.Update( deltaTime );
         if ( fPlayer.Lifes <=0)  then
         begin
          fState := GameOver;
@@ -502,5 +510,20 @@ begin
   fState := TSceneState.Playing;
 end;
 
+
+function TGamePlayScene.SpawnNewSparkAt(enemy: TEnemy): TEmitter;
+var
+  lColor : TSDL_Color;
+begin
+  result := TEmitterFactory.NewSmokeOneShot;
+  result.Bounds.X  := round((enemy.Position.X));// + (enemy.Sprite.Texture.W div 2));
+  result.Bounds.Y  := round(enemy.Position.Y);
+  result.MaxCount  := Random(30) + 30;
+  result.Angle.Min := 0;
+  result.Angle.Max := 380;
+  result.Gravity.X := 0;
+  result.Gravity.Y := 0;
+  result.Start;
+end;
 
 end.
