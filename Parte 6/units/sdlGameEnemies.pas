@@ -47,6 +47,7 @@ type
     fMoveDirection : TEnemyMoveDirection;
     fMovementOrigin: TVector;
     fOnShot : TGameObjectNotifyEvent;
+    fColorModulation : TSDL_Color;
   private
     fCanShot: boolean;
     fHP : integer;
@@ -54,6 +55,7 @@ type
     function GetShotSpawnPoint: TVector;
   protected
     procedure InitFields; override;
+    function GetColorModulation: TSDL_Color; virtual;
   public
     destructor Destroy; override;
     procedure Update(const deltaTime : real); override;
@@ -66,6 +68,7 @@ type
     property Alive: boolean read GetAlive;
     property CanShot: boolean read fCanShot write fCanShot;
     property ShotSpawnPoint : TVector read GetShotSpawnPoint;
+    property ColorModulation : TSDL_Color read GetColorModulation;
 
     property OnShot : TGameObjectNotifyEvent read fOnShot write fOnShot;
   end;
@@ -92,6 +95,7 @@ type
   TEnemyB = class( TEnemy )
   protected
     procedure InitFields; override;
+    function GetColorModulation: TSDL_Color; override;
   end;
 
 
@@ -100,6 +104,7 @@ type
   TEnemyC = class( TEnemy )
   protected
     procedure InitFields; override;
+    function GetColorModulation: TSDL_Color; override;
   end;
 
 
@@ -177,6 +182,18 @@ end;
 
 { TEnemyC }
 
+function TEnemyC.GetColorModulation: TSDL_Color;
+begin
+  result.g := 0;
+  result.b := 0;
+  case HP of
+    2 : result.r := 200;
+    1,0 : result.r := 255;
+    else
+      result := inherited GetColorModulation;
+  end;
+end;
+
 procedure TEnemyC.InitFields;
 begin
   inherited InitFields;
@@ -184,6 +201,17 @@ begin
 end;
 
 { TEnemyB }
+
+function TEnemyB.GetColorModulation: TSDL_Color;
+begin
+  result.g := 0;
+  result.b := 0;
+  case HP of
+    1,0 : result.r := 200;
+    else
+      result := inherited GetColorModulation;
+  end;
+end;
 
 procedure TEnemyB.InitFields;
 begin
@@ -212,6 +240,14 @@ end;
 function TEnemy.GetAlive: boolean;
 begin
   result := fHP > 0;
+end;
+
+function TEnemy.GetColorModulation: TSDL_Color;
+begin
+  result.r := 255;
+  result.g := 255;
+  result.b := 255;
+  result.a := 255;
 end;
 
 function TEnemy.GetShotSpawnPoint: TVector;
@@ -360,18 +396,11 @@ begin
   SDL_SetTextureColorMod( fSprite.Texture.Data, 255, 255, 255);
   if ( HP > 0 ) and ( fSprite.Texture.Data <> nil ) then
   begin
-    if self is TEnemyB then
-      case HP of
-        1 : SDL_SetTextureColorMod( fSprite.Texture.Data, 255, 0, 0);
-      end;
-
-    if self is TEnemyC then
-    case HP of
-      2 : SDL_SetTextureColorMod( fSprite.Texture.Data, 255, 0, 0);
-      1 : SDL_SetTextureColorMod( fSprite.Texture.Data, 200, 0, 0);
-    end;
+    SDL_SetTextureColorMod( fSprite.Texture.Data,
+      Self.ColorModulation.r,
+      Self.ColorModulation.g,
+      Self.ColorModulation.b);
     SDL_RenderCopy( fRenderer, fSprite.Texture.Data, @source, @destination) ;
-
     if fDrawMode = TDrawMode.Debug then
     begin
         SDL_SetRenderDrawColor( fRenderer, 0, 255, 0, 255 );

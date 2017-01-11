@@ -9,6 +9,7 @@ uses
   {$ELSE}
   Generics.Collections,
   {$ENDIF}
+  Math,
   sdlScene,
   sdlGameTypes,
   sdlGamePlayer,
@@ -17,7 +18,8 @@ uses
   sdlGameTexture,
   sdlGameObjects,
   sdlParticles,
-  Shots;
+  Shots,
+  StartField;
 
 
 type
@@ -47,11 +49,13 @@ type
     fExplosions : TExplosionList;
     fSparks     : TEmitterList;
     fShots      : TShotList;
+    fStartField : TStarField;
     fEnemies    : TEnemyList;
     fRenderer   : PSDL_Renderer;
   private
     procedure CreateGameObjects;
 
+    procedure DrawBackGround;
     procedure DrawGameObjects;
     procedure DrawUI;
     procedure doOnReturnPressed;
@@ -132,6 +136,11 @@ begin
   fShots.OnNotify := {$IFDEF FPC}@{$ENDIF}doOnListNotify;
   fExplosions     := TExplosionList.Create(true);
   fSparks         := TEmitterList.Create(true);
+end;
+
+procedure TGamePlayScene.DrawBackGround;
+begin
+  fStartField.Draw;
 end;
 
 procedure TGamePlayScene.DrawGameObjects;
@@ -280,7 +289,7 @@ begin
       enemy := TEnemy(Suspect);
       enemy.Hit( 1 );
       engine.Sounds.Play(sndEnemyHit);
-
+      fSparks.Add(SpawnNewSparkAt(enemy));
       if enemy.Alive then
          fPlayer.Score :=  fPlayer.Score + 10
       else
@@ -291,7 +300,6 @@ begin
          explostion.Sprite.InitFrames(1,1);
          explostion.Position.Assign(enemy.Position);
          fExplosions.Add(explostion);
-         fSparks.Add(SpawnNewSparkAt(enemy));
         end;
       shot.Visible := false;
       shot.Active  := false;
@@ -408,6 +416,7 @@ end;
 procedure TGamePlayScene.doOnRender(renderer: PSDL_Renderer);
 begin
   fRenderer := renderer;
+  DrawBackground;
   DrawGameObjects;
   DrawUI;
 end;
@@ -420,6 +429,7 @@ begin
         fPlayer.Update( deltaTime );
         fEnemies.Update( deltaTime );
         fShots.Update( deltaTime );
+        fStartField.Update( deltaTime );
         ClearInvalidShots;
         fExplosions.Update( deltaTime );
         fSparks.Update( deltaTime );
@@ -475,6 +485,7 @@ begin
   fExplosions := TExplosionList.Create;
   fShots      := TShotList.Create;
   fEnemies    := TEnemyList.Create;
+  fStartField := TStarField.Create;
   TEngine.GetInstance.HideCursor;
 end;
 
@@ -484,6 +495,7 @@ begin
   fShots.Free;
   fEnemies.Clear;
   fEnemies.Free;
+  fStartField.Free;
   inherited Destroy;
 end;
 
@@ -516,13 +528,32 @@ var
   lColor : TSDL_Color;
 begin
   result := TEmitterFactory.NewSmokeOneShot;
-  result.Bounds.X  := round((enemy.Position.X));// + (enemy.Sprite.Texture.W div 2));
+  result.Bounds.X  := round((enemy.Position.X));
   result.Bounds.Y  := round(enemy.Position.Y);
-  result.MaxCount  := Random(30) + 30;
+  result.Bounds.W  := round(enemy.SpriteRect.w);
+  result.Bounds.H  := round(enemy.SpriteRect.h);
   result.Angle.Min := 0;
   result.Angle.Max := 380;
   result.Gravity.X := 0;
-  result.Gravity.Y := 0;
+  result.Gravity.Y := 5;
+  case enemy.HP of
+    0 : result.MaxCount  := RandomRange(60, 80);
+    1 : result.MaxCount  := RandomRange(8, 20);
+    2 : result.MaxCount  := RandomRange(3, 8);
+  end;
+  if enemy is TEnemyB then
+  begin
+    result.MaxCount := result.MaxCount + 20;
+  end;
+  if enemy is TEnemyC then
+  begin
+    result.MaxCount := result.MaxCount + 50;
+    result.Bounds.X := result.Bounds.X - 5;
+    result.Bounds.Y := result.Bounds.Y + 5;
+    result.Bounds.W := result.Bounds.W + 5;
+    result.Bounds.H := result.Bounds.H + 5;
+  end;
+  result.Color := enemy.ColorModulation;
   result.Start;
 end;
 

@@ -112,6 +112,7 @@
         <DCCReference Include="..\..\units\game\scenes\scnParticles.pas"/>
         <DCCReference Include="..\..\units\engine\sdlEngine.pas"/>
         <DCCReference Include="..\..\units\game\siGame.pas"/>
+        <DCCReference Include="..\..\units\game\objects\StartField.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

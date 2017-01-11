@@ -38,16 +38,28 @@ type
   { TVector }
 
   TVector = class
-  strict private
+  protected
     fX : real;
     fY : real;
   public
     constructor Create; overload;
     constructor Create(const x, y : real); overload;
-    procedure Assign(const Source: TVector);
+    procedure Assign(const Source: TVector); virtual;
 
     property X: Real read fX write fX;
     property Y: Real read fY write fY;
+  end;
+
+  TVector3D = class( TVector )
+  protected
+    fZ : Real;
+  public
+    constructor Create; overload;
+    constructor Create(const x, y, z : real); overload;
+
+    procedure Assign(const Source: TVector); overload; override;
+    procedure Assign(const Source: TVector3D); overload;
+    property Z: Real read fZ write fZ;
   end;
 
   { TRange }
@@ -459,6 +471,34 @@ begin
   result.y := y;
   result.w := w;
   result.h := h;
+end;
+
+{ TVector3D }
+
+procedure TVector3D.Assign(const Source: TVector3D);
+begin
+  inherited Assign(TVector(Source));
+  fZ := Source.Z;
+end;
+
+constructor TVector3D.Create;
+begin
+  fx := 0.0;
+  fy := 0.0;
+  fz := 0.0;
+end;
+
+procedure TVector3D.Assign(const Source: TVector);
+begin
+  inherited Assign(TVector(Source));
+  fZ := 0;
+end;
+
+constructor TVector3D.Create(const x, y, z: real);
+begin
+  fx := x;
+  fy := y;
+  fz := z;
 end;
 
 end.
