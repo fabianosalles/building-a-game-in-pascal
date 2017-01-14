@@ -195,6 +195,20 @@ type
   end;
 
 
+  TFaderState = (fsIdle, fsFadingIn, fsFadingOut);
+  TFader = class(TInterfacedObject, IUpdatable)
+  private
+    fValue: byte;
+    fState: TFaderState;
+    fElapsedMS : real;
+    fDelay     : double;
+    fFadeTime  : double;
+  public
+    procedure FadeIn(delay, fadeTime: double);
+    procedure FadeOut(delay, fadeTime: double);
+    procedure Update(const deltaTime: Real);
+    property Value: byte read fValue;
+  end;
 
 
 implementation
@@ -499,6 +513,68 @@ begin
   fx := x;
   fy := y;
   fz := z;
+end;
+
+{ TFader }
+
+procedure TFader.FadeIn(delay, fadeTime: double);
+begin
+  fElapsedMS := 0;
+  fValue     := 0;
+  fDelay     := delay;
+  fFadeTime  := fadeTime;
+  fState     := fsFadingIn;
+end;
+
+procedure TFader.FadeOut(delay, fadeTime: double);
+begin
+  fElapsedMS := 0;
+  fValue     := $FF;
+  fDelay     := delay;
+  fFadeTime  := fadeTime;
+  fState     := fsFadingOut;
+
+end;
+
+procedure TFader.Update(const deltaTime: Real);
+var
+  delta: Double;
+begin
+  if (fState = fsIdle) then exit;
+
+  fElapsedMS := fElapsedMS + (deltaTime * 1000);
+  delta      := fElapsedMS-fDelay;
+
+  case fState of
+    fsFadingIn:
+      begin
+        if ( delta > fDelay ) then
+        begin
+          if ( delta < fFadeTime ) then
+              fValue:= round($FF * (delta/fFadeTime))
+          else begin
+            fValue := $FF;
+            fState := fsIdle;
+          end;
+        end;
+      end;
+
+    fsFadingOut :
+      begin
+        if ( delta > fDelay ) then
+        begin
+          if ( delta <= fFadeTime ) then
+              fValue:= $FF - round($FF * (delta/fFadeTime))
+          else begin
+            fValue := 0;
+            fState := fsIdle;
+          end;
+        end;
+      end;
+  end;
+  {$IFDEF CONSOLE}
+  Writeln('Fader Value : ', fValue);
+  {$ENDIF}
 end;
 
 end.

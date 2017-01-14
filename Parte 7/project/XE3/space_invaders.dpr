@@ -10,6 +10,8 @@ program space_invaders;
 *)
 
 {$APPTYPE GUI}
+//{$APPTYPE CONSOLE}
+//{$DEFINE CONSOLE}
 
 uses
   sdlGameEnemies in '..\..\units\sdlGameEnemies.pas',

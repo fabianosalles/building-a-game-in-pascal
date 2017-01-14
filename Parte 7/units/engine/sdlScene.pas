@@ -48,9 +48,12 @@ type
     procedure doOnCheckCollitions; virtual;
     procedure WireUpEvents;
 
+    procedure doLoadSounds; virtual;
+    procedure doFreeSounds; virtual;
     procedure doLoadTextures; virtual;
     procedure doFreeTextures; virtual;
     procedure doBeforeStart; virtual;
+    procedure doBeforeQuit; virtual;
     procedure doQuit(quitType: TQuitType; exitCode: integer); overload;
     procedure doQuit; overload;
   public
@@ -120,6 +123,8 @@ end;
 procedure TScene.doQuit;
 begin
   fQuitting:= true;
+  doBeforeQuit;
+
   if Assigned(fOnQuit) then
      fOnQuit(self, qtQuitCurrentScene, 0);
 end;
@@ -177,7 +182,17 @@ begin
 {$ENDIF}
 end;
 
+procedure TScene.doLoadSounds;
+begin
+
+end;
+
 procedure TScene.doLoadTextures;
+begin
+
+end;
+
+procedure TScene.doFreeSounds;
 begin
 
 end;
@@ -187,14 +202,21 @@ begin
   TEngine.GetInstance.Textures.Clear;
 end;
 
+procedure TScene.doBeforeQuit;
+begin
+
+end;
+
 procedure TScene.doBeforeStart;
 begin
   doLoadTextures;
+  doLoadSounds;
 end;
 
 procedure TScene.doQuit(quitType: TQuitType; exitCode: integer);
 begin
   fQuitting:= true;
+  doBeforeQuit;
   if Assigned(fOnQuit) then
      fOnQuit(self, quitType, exitCode);
 end;
@@ -208,6 +230,8 @@ end;
 destructor TScene.Destroy;
 begin
   doFreeTextures;
+  doFreeSounds;
+  inherited;
 end;
 
 procedure TScene.Start;

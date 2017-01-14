@@ -5,6 +5,7 @@ interface
 uses
   SDL2,
   sdlScene,
+  sdlGameObjects,
   StartField;
 
 type
@@ -25,15 +26,16 @@ type
     procedure SelectNext(const amount: integer);
   end;
 
+  TSceneState = ( stFadingIn, stNormal, stFadingOut );
 
   { TMainMenuScene }
 
   TMainMenuScene = class(TScene)
   private
   const
-    FADE_IN   = 2000;
+    FADE_IN   = 6000;
     FADE_OUT  = 2000;
-    FADE_DELAY = 2000;
+    MENU_MUSIC = 'menu.mp3';
   var
     TEXTURE_LOGO : integer;
     TEXTURE_PAWN : integer;
@@ -43,9 +45,18 @@ type
     fMenu  : TMenu;
     fAlpha : UInt8;
     fStars : TStarField;
+    fState : TSceneState;
+    fFader : TFader;
+    fMenuMusic : integer;
+
+    procedure expandToWindow( r : PSDL_Rect );
   protected
     procedure doOnKeyUp(key: TSDL_KeyCode); override;
     procedure doLoadTextures; override;
+    procedure doLoadSounds; override;
+    procedure doFreeSounds; override;
+    procedure doBeforeStart; override;
+    procedure doBeforeQuit; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -126,6 +137,30 @@ begin
   end;
 end;
 
+procedure TMainMenuScene.doBeforeQuit;
+begin
+  inherited;
+  TEngine.GetInstance.Sounds.StopMusic( fMenuMusic );
+end;
+
+procedure TMainMenuScene.doBeforeStart;
+begin
+  inherited;
+  TEngine.GetInstance.Sounds.PlayMusic( fMenuMusic, 1 );
+  fFader.FadeIn(0, FADE_IN);
+  fState := stFadingIn;
+end;
+
+procedure TMainMenuScene.doFreeSounds;
+begin
+  TEngine.GetInstance.Sounds.FreeMusic(fMenuMusic);
+end;
+
+procedure TMainMenuScene.doLoadSounds;
+begin
+  fMenuMusic := TEngine.GetInstance.Sounds.LoadMusic(MENU_MUSIC);
+end;
+
 procedure TMainMenuScene.doLoadTextures;
 var
   engine : TEngine;
@@ -144,12 +179,14 @@ begin
   fMenu := TMenu.Create;
   fAlpha:= 0;
   fStars := TStarField.Create(400);;
+  fFader := TFader.Create;
 end;
 
 destructor TMainMenuScene.Destroy;
 begin
   fMenu.Free;
   fStars.Free;
+  fFader.Free;
   inherited Destroy;
 end;
 
@@ -211,13 +248,35 @@ begin
   dest.w := 40;
   SDL_RenderCopy(renderer, engine.Textures[TEXTURE_LOGO].Data, @src, @dest);
 
+  case fState of
+    stFadingIn, stFadingOut :
+      begin
+        expandToWindow(@dest);
+        if fState = stFadingIn then
+           SDL_SetRenderDrawColor(renderer, 0, 0, 0, $FF- fFader.Value)
+        else
+           SDL_SetRenderDrawColor(renderer, 0, 0, 0, fFader.Value);
+        SDL_SetRenderDrawBlendMode(engine.Renderer, SDL_BLENDMODE_BLEND);
+        SDL_RenderFillRect(renderer, @dest);
+      end;
+  end;
+
 end;
 
 procedure TMainMenuScene.doOnUpdate(const deltaTime: real);
 begin
   inherited doOnUpdate(deltaTime);
   fAngle := fAngle + 25 * deltaTime;
-  fStars.Update(deltaTime);
+  fStars.Update( deltaTime );
+  fFader.Update( deltaTime );
+end;
+
+procedure TMainMenuScene.expandToWindow(r: PSDL_Rect);
+begin
+  r^.x :=0;
+  r^.y :=0;
+  r^.w := TEngine.GetInstance.Window.w;
+  r^.h := TEngine.GetInstance.Window.h;
 end;
 
 end.

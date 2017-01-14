@@ -27,13 +27,10 @@ uses
 type
   TStar = class
   private
-    const
-      DEFAULT_RADIUS = 3.0;
-    var
-      fPosition : TVector3D;
-      fRadius   : Real;
-      fLife     : Real;
-      fStartLife: Real;
+    fPosition : TVector3D;
+    fRadius   : Real;
+    fLife     : Real;
+    fStartLife: Real;
   public
     constructor Create;
     destructor Destroy;
@@ -68,9 +65,7 @@ var
 begin
   inherited;
   for i := 0 to Pred(STARS_COUNT) do
-  begin
     fStars[i] := TStar.Create;
-  end;
   RandomizeStarts;
 end;
 
@@ -110,7 +105,6 @@ begin
 
     SDL_RenderFillRect(renderer, @rect);
   end;
-
 end;
 
 procedure TStarField.RandomizeStarts;

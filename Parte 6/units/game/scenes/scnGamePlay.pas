@@ -524,8 +524,6 @@ end;
 
 
 function TGamePlayScene.SpawnNewSparkAt(enemy: TEnemy): TEmitter;
-var
-  lColor : TSDL_Color;
 begin
   result := TEmitterFactory.NewSmokeOneShot;
   result.Bounds.X  := round((enemy.Position.X));
@@ -542,9 +540,8 @@ begin
     2 : result.MaxCount  := RandomRange(3, 8);
   end;
   if enemy is TEnemyB then
-  begin
-    result.MaxCount := result.MaxCount + 20;
-  end;
+    result.MaxCount := result.MaxCount + 20
+  else
   if enemy is TEnemyC then
   begin
     result.MaxCount := result.MaxCount + 50;
