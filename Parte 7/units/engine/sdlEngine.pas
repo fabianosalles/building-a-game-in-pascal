@@ -29,6 +29,8 @@ const
   IMAGE_DIR   = AnsiString(ASSETS_DIR + 'images\');
 
 type
+  TTimerCallback = TSDL_TimerCallback;
+  TTimerID       = TSDL_TimerID;
 
   { TEngine }
 
@@ -51,6 +53,7 @@ type
 
     function GetWindow: TSDL_Window;
     procedure OnFPSCounterUpdated(Sender: TFPSCounter; Counted: word);
+    procedure HandleUserEvent(pEvent: PSDL_Event);
   protected
     procedure doUpdate(deltaTime: real);
     procedure doRender;
@@ -140,6 +143,8 @@ var
 begin
   while SDL_PollEvent( @event ) = 1 do
     case event.type_ of
+      SDL_USEREVENT : HandleUserEvent( @event );
+
       SDL_QUITEV  : fRunning := false;
 
       SDL_KEYDOWN : if Assigned(fActiveScene.OnKeyDown) then fActiveScene.OnKeyDown(event.key.keysym.sym);
@@ -312,6 +317,14 @@ procedure TEngine.SetActiveScene(scene: TScene);
 begin
   fActiveScene:= scene;
   scene.Start;
+end;
+
+procedure TEngine.HandleUserEvent(pEvent: PSDL_Event);
+begin
+  if pEvent^.user.data1 <> nil then
+  begin
+    TProc<Pointer>(pEvent^.user.data1)(pEvent^.user.data2);
+  end;
 end;
 
 procedure TEngine.HideCursor;

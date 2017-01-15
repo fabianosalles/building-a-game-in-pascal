@@ -19,6 +19,12 @@ type
     qtQuitGame
   );
   TSceneQuitEvent = procedure(sender: TScene; quitType: TQuitType; exitCode: integer) of object;
+  TSceneMethod = procedure of object;
+  TMethodSchedule = record
+    when    : UInt32;
+    method  : TSceneMethod;
+  end;
+  TProcSchedlue = TList<TMethodSchedule>;
 
   { TScene }
 
@@ -35,6 +41,7 @@ type
     fOnCheckCollisions: TEvent;
     fTJoyButtonEvent: TJoyButtonEvent;
     fOnQuit: TSceneQuitEvent;
+    fMethods : TProcSchedlue;
   protected
     fQuitting : boolean;
 
@@ -56,12 +63,14 @@ type
     procedure doBeforeQuit; virtual;
     procedure doQuit(quitType: TQuitType; exitCode: integer); overload;
     procedure doQuit; overload;
+
   public
     constructor Create;
     destructor Destroy; override;
 
     procedure Start;
     procedure Stop;
+    procedure ExecuteDelayed(const delay: UInt32; method: TSceneMethod);
 
     property Name: string read fName write fName;
 
@@ -116,8 +125,18 @@ begin
 end;
 
 procedure TScene.doOnUpdate(const deltaTime: real);
+var
+  x, i : UInt32;
 begin
-
+  if (fMethods.Count > 0) then begin
+    x := SDL_GetTicks;
+    for i := fMethods.Count-1 downto 0 do
+      if fMethods[i].when <= x then
+      begin
+        fMethods[i].method();
+        fMethods.Delete(i);
+      end;
+  end;
 end;
 
 procedure TScene.doQuit;
@@ -127,6 +146,15 @@ begin
 
   if Assigned(fOnQuit) then
      fOnQuit(self, qtQuitCurrentScene, 0);
+end;
+
+procedure TScene.ExecuteDelayed(const delay: UInt32; method: TSceneMethod);
+var
+  schedule : TMethodSchedule;
+begin
+  schedule.when := SDL_GetTicks + delay;
+  schedule.method := method;
+  fMethods.Add(schedule);
 end;
 
 procedure TScene.doOnKeyUp(key: TSDL_KeyCode);
@@ -170,6 +198,7 @@ begin
   fOnJoyButtonUp     := @doOnJoyButtonUp;
   fOnJoyAxisMotion   := @doOnJoyAxisMotion;
   fOnCheckCollisions := @doOnCheckCollitions;
+  fOnUpdate          := @doOnUpdate;
 {$ELSE}
   fOnRender          := doOnRender;
   fOnUpdate          := doOnUpdate;
@@ -179,6 +208,7 @@ begin
   fOnJoyButtonUp     := doOnJoyButtonUp;
   fOnJoyAxisMotion   := doOnJoyAxisMotion;
   fOnCheckCollisions := doOnCheckCollitions;
+  fOnUpdate          := doOnUpdate;
 {$ENDIF}
 end;
 
@@ -224,6 +254,7 @@ end;
 constructor TScene.Create;
 begin
   fQuitting:= false;
+  fMethods := TProcSchedlue.Create;
   WireUpEvents;
 end;
 
@@ -231,6 +262,8 @@ destructor TScene.Destroy;
 begin
   doFreeTextures;
   doFreeSounds;
+  fMethods.Clear;
+  fMethods.free;
   inherited;
 end;
 

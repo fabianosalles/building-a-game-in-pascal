@@ -40,7 +40,9 @@ type
     TEXTURE_LOGO : integer;
     TEXTURE_PAWN : integer;
     TEXTURE_GEAR : integer;
+    TEXTURE_MOON : integer;
 
+    fInputEnabled: boolean;
     fAngle : double;
     fMenu  : TMenu;
     fAlpha : UInt8;
@@ -50,6 +52,7 @@ type
     fMenuMusic : integer;
 
     procedure expandToWindow( r : PSDL_Rect );
+    procedure gotoNewGame;
   protected
     procedure doOnKeyUp(key: TSDL_KeyCode); override;
     procedure doLoadTextures; override;
@@ -100,6 +103,7 @@ end;
 
 procedure TMenu.SelectNext(const amount: integer);
 begin
+  TEngine.GetInstance.Sounds.Play(sndMenu);
   selected:= TMenuOption(Ord(selected) + amount);
   if Ord(selected) < 0 then
      selected:= TMenuOption(0);
@@ -113,28 +117,40 @@ end;
 procedure TMainMenuScene.doOnKeyUp(key: TSDL_KeyCode);
 begin
   inherited doOnKeyUp(key);
-  case key of
-    SDLK_UP   :
-      begin
-        TEngine.GetInstance.Sounds.Play(sndPlayerBullet);
-        fMenu.SelectNext(-1);
-      end;
-
-    SDLK_DOWN :
-      begin
-        TEngine.GetInstance.Sounds.Play(sndPlayerBullet);
-        fMenu.SelectNext(+1);
-      end;
-    SDLK_RETURN:
-      begin
-        TEngine.GetInstance.Sounds.Play(sndEnemyHit);
-        case fMenu.selected of
-          moNewGame   : doQuit(qtQuitCurrentScene, 0);
-          moHighScore : doQuit(qtQuitCurrentScene, 1);
-          moExit      : doQuit(qtQuitGame, 0);
+  if fInputEnabled then
+    case key of
+      SDLK_UP   :
+        begin
+          fMenu.SelectNext(-1);
         end;
-      end;
-  end;
+
+      SDLK_DOWN :
+        begin
+          fMenu.SelectNext(+1);
+        end;
+      SDLK_RETURN:
+        begin
+          case fMenu.selected of
+            moNewGame   :
+              begin
+                fInputEnabled := false;
+                TEngine.GetInstance.Sounds.Play(sndNewGame);
+                fFader.FadeOut(0, FADE_OUT);
+                ExecuteDelayed(FADE_OUT, gotoNewGame);
+              end;
+            moHighScore:
+              begin
+                TEngine.GetInstance.Sounds.Play(sndPlayerHit);
+                //doQuit(qtQuitCurrentScene, 1);
+              end;
+            moExit :
+              begin
+                //TEngine.GetInstance.Sounds.Play(sndEnemyHit);
+                doQuit(qtQuitGame, 0);
+              end;
+          end;
+        end;
+    end;
 end;
 
 procedure TMainMenuScene.doBeforeQuit;
@@ -171,6 +187,7 @@ begin
   TEXTURE_LOGO    := engine.Textures.Load('aeonsoft-small.png');
   TEXTURE_PAWN    := engine.Textures.Load('paw-small.png');
   TEXTURE_GEAR    := engine.Textures.Load('gear-small.png');
+  TEXTURE_MOON    := engine.Textures.Load('moon.png');
 end;
 
 constructor TMainMenuScene.Create;
@@ -180,6 +197,7 @@ begin
   fAlpha:= 0;
   fStars := TStarField.Create(400);;
   fFader := TFader.Create;
+  fInputEnabled := true;
 end;
 
 destructor TMainMenuScene.Destroy;
@@ -203,6 +221,24 @@ begin
   fStars.Draw;
   fMenu.Draw;
 
+  src.x := 0;
+  src.y := 0;
+
+
+  //draw  moon
+  src.w := engine.Textures[TEXTURE_MOON].W;
+  src.h := engine.Textures[TEXTURE_MOON].h;
+
+  dest.x := 500;
+  dest.y := 76;
+  dest.w := src.w;
+  dest.h := src.h;
+  SDL_SetTextureBlendMode(engine.Textures[TEXTURE_LOGO].Data, SDL_BLENDMODE_BLEND);
+  SDL_SetTextureAlphaMod(engine.Textures[TEXTURE_MOON].Data, $FF);
+  SDL_RenderCopy(renderer, engine.Textures[TEXTURE_MOON].Data, @src, @dest);
+
+
+
   //divider line
   SDL_SetRenderDrawColor(renderer, $FF, $FF, $FF, $FF);
   SDL_RenderDrawLine(renderer, 0, DIVIDER_Y, engine.Window.w, DIVIDER_Y);
@@ -212,8 +248,6 @@ begin
   engine.Text.Draw('SPACE-INVADERS', 280, 347, engine.Fonts.GUILarge, $FF);
   engine.Text.Draw('Aeonsoft 2017 - An open source tribute to Taito''s classic', 280, 395, engine.Fonts.DebugNormal, 80);
 
-  src.x := 0;
-  src.y := 0;
   SDL_SetTextureBlendMode(engine.Textures[TEXTURE_LOGO].Data, SDL_BLENDMODE_BLEND);
   SDL_SetTextureAlphaMod(engine.Textures[TEXTURE_LOGO].Data, $FF);
 
@@ -277,6 +311,12 @@ begin
   r^.y :=0;
   r^.w := TEngine.GetInstance.Window.w;
   r^.h := TEngine.GetInstance.Window.h;
+end;
+
+procedure TMainMenuScene.gotoNewGame;
+begin
+  doQuit(qtQuitCurrentScene, 0);
+  fInputEnabled := true;
 end;
 
 end.

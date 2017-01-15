@@ -268,6 +268,7 @@ begin
             end;
           moQuit  :
             begin
+              doQuit(qtQuitCurrentScene, Ord(fMenu.Selected));
             end;
         end;
       end;
@@ -848,6 +849,7 @@ end;
 
 procedure TMenu.SelectNext(const amount: integer);
 begin
+  TEngine.GetInstance.Sounds.Play(sndMenu);
   fSelected:= TMenuOption(Ord(selected) + amount);
   if Ord(selected) < 0 then
      fSelected:= TMenuOption(0);

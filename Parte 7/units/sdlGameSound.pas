@@ -21,7 +21,8 @@ type
       sndGamePause,
       sndGameResume,
       sndGameOver,
-      sndNewGame
+      sndNewGame,
+      sndMenu
     );
 
 
@@ -128,6 +129,7 @@ begin
     sndGameResume   : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(fPath + 'GameResume.wav'))));
     sndGameOver     : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(fPath + 'GameOver.wav'))));
     sndNewGame      : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(fPath + 'NewGame.wav'))));
+    sndMenu         : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(fPath + 'MenuNavigate.wav'))));
   end;
 end;
 
