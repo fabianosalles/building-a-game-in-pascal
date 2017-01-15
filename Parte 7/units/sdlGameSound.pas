@@ -20,7 +20,8 @@ type
       sndPlayerHit,
       sndGamePause,
       sndGameResume,
-      sndGameOver
+      sndGameOver,
+      sndNewGame
     );
 
 
@@ -90,8 +91,10 @@ end;
 
 procedure TSoundManager.FreeMusic(music: integer);
 begin
-  Mix_FreeMusic(fMusics[music]);
-  fMusics.Delete(music);
+  if (fMusics.Count < music) then begin
+    Mix_FreeMusic(fMusics[music]);
+    fMusics.Delete(music);
+  end;
 end;
 
 function TSoundManager.LoadMusic(const name: string): integer;
@@ -124,6 +127,7 @@ begin
     sndGamePause    : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(fPath + 'GamePause.wav'))));
     sndGameResume   : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(fPath + 'GameResume.wav'))));
     sndGameOver     : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(fPath + 'GameOver.wav'))));
+    sndNewGame      : fChunks.Add(Mix_LoadWAV(PAnsiChar(AnsiString(fPath + 'NewGame.wav'))));
   end;
 end;
 

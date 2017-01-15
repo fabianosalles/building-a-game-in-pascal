@@ -37,18 +37,23 @@ type
     Leds
   );
 
+  TGamePlayScene = class;
   TMenuOption = (moResume, moQuit);
-  TPauseMenu = class(TGameObject)
+  TMenu = class(TGameObject)
   private
+  const
+    DIVIDER_Y = 388;
+    TEXT_LEFT = 280;  //540
+    YOFFSET = 30;
   var
     TEXTURE_GEAR : integer;
     TEXTURE_ICO : Integer;
     fAngle : double;
     fSelected :TMenuOption;
-    fPlayer: TPlayer;
+    fOwner: TGamePlayScene;
     function GetAlpha(option: TMenuOption): byte;
   public
-    constructor Create(Player: TPlayer);
+    constructor Create(Owner: TGamePlayScene);
     procedure LoadTextures;
     procedure Update(const deltaTime: Real); override;
     procedure Draw; override;
@@ -71,7 +76,8 @@ type
     fStartField : TStarField;
     fEnemies    : TEnemyList;
     fRenderer   : PSDL_Renderer;
-    fPauseMenu  : TPauseMenu;
+    fMenu       : TMenu;
+    fGOSmoke    : TEmitter;
   private
     procedure CreateGameObjects;
 
@@ -84,7 +90,8 @@ type
     procedure doOnShotSmokeVanished(Sender: TObject);
     procedure doOnListNotify(Sender: TObject; const Item: TGameObject; Action: TCollectionNotification);
     procedure ClearInvalidShots;
-    function SpawnNewSparkAt( enemy : TEnemy ): TEmitter;
+    function SpawnNewSparkAt( obj: TGameObject ): TEmitter;
+    procedure SpawnGOSmoke;
   protected
     procedure doLoadTextures; override;
     procedure doOnCheckCollitions; override;
@@ -107,6 +114,7 @@ type
     procedure Reset;
 
     property Player : TPlayer read fPlayer;
+    property State  : TSceneState read fState;
   end;
 
 
@@ -223,19 +231,6 @@ begin
 
     GameOver :
       begin
-        //obsfuscates the game stage
-        rect.x := 0;
-        rect.y := 0;
-        rect.h := SCREEN_HEIGHT - rect.y;
-        rect.w:= SCREEN_WIDTH;
-        SDL_SetRenderDrawColor(engine.Renderer, 50, 0, 0, 200);
-        SDL_RenderFillRect( engine.Renderer, @rect );
-
-        engine.Text.DrawModulated( '***[ GAME OVER ]***' ,  105, SCREEN_HALF_HEIGHT-24, engine.Fonts.GUILarge, 255,0,0  );
-        if SDL_NumJoysticks = 0 then
-           engine.Text.Draw( 'press <enter> to start a new game', 285, SCREEN_HALF_HEIGHT+25, engine.Fonts.DebugNormal  )
-        else
-           engine.Text.Draw( 'press <start> to start a new game', 285, SCREEN_HALF_HEIGHT+25, engine.Fonts.DebugNormal  );
       end;
   end;
 end;
@@ -246,7 +241,7 @@ begin
   case fState of
     Paused:
       begin
-      case fPauseMenu.Selected of
+      case fMenu.Selected of
         moResume:
           begin
             fState := TSceneState.Playing;
@@ -254,7 +249,7 @@ begin
           end;
         moQuit :
           begin
-            doQuit(qtQuitCurrentScene, Ord(fPauseMenu.Selected));
+            doQuit(qtQuitCurrentScene, Ord(fMenu.Selected));
           end;
       end;
       end;
@@ -265,7 +260,16 @@ begin
       end;
     GameOver:
       begin
-        Reset;
+        case fMenu.Selected of
+          moResume: //new game
+            begin
+              TEngine.GetInstance.Sounds.Play(sndNewGame);
+              Reset;
+            end;
+          moQuit  :
+            begin
+            end;
+        end;
       end;
   end;
 end;
@@ -351,6 +355,7 @@ begin
      fExplosions.Add( explostion );
      engine.Sounds.Play( sndEnemyHit );
      fShots.Remove( shot );
+     fSparks.Add(SpawnNewSparkAt(Suspect));
    end;
   end;
 
@@ -399,7 +404,7 @@ begin
   engine.Textures.Load( 'shot_a.png' );
   engine.Textures.Load( 'leds.png' );
 
-  fPauseMenu.LoadTextures;
+  fMenu.LoadTextures;
 end;
 
 
@@ -490,11 +495,16 @@ begin
     SDLK_SPACE  : fPlayer.Input[Ord(TPlayerInput.Shot)] := false;
     SDLK_RETURN : doOnReturnPressed;
     SDLK_UP     :
-      if fState = TSceneState.Paused then
-          fPauseMenu.SelectNext(-1);
+      if fState in [Paused, GameOver] then
+          fMenu.SelectNext(-1);
     SDLK_DOWN   :
-      if fState = TSceneState.Paused then
-          fPauseMenu.SelectNext(1);
+      if fState in [Paused, GameOver] then
+          fMenu.SelectNext(1);
+
+    {$IFDEF DEBUG}
+    SDLK_g : fState := TSceneState.GameOver;
+    SDLK_p : fState := TSceneState.Paused;
+    {$ENDIF}
   end;
 end;
 
@@ -506,8 +516,13 @@ begin
   DrawUI;
   case fState of
     Playing  : ;
-    Paused   : fPauseMenu.Draw;
-    GameOver : ;
+    Paused   : fMenu.Draw;
+    GameOver :
+      begin
+        fMenu.Draw;
+        if (fGOSmoke <> nil) then
+           fGOSmoke.Draw;
+      end;
   end;
 end;
 
@@ -523,21 +538,24 @@ begin
         ClearInvalidShots;
         fExplosions.Update( deltaTime );
         fSparks.Update( deltaTime );
-        if ( fPlayer.Lifes <=0)  then
+        if ( fPlayer.Lifes <= 0)  then
         begin
          fState := GameOver;
+         SpawnGOSmoke;
          TEngine.GetInstance.Sounds.Play( sndGameOver );
         end;
       end;
 
     Paused  :
       begin
-        fPauseMenu.Update(deltaTime);
+        fMenu.Update(deltaTime);
       end;
 
     GameOver:
       begin
-
+        fMenu.Update(deltaTime);
+        if (fGOSmoke <> nil) then
+            fGOSmoke.Update( deltaTime );
       end;
   end;
 end;
@@ -576,7 +594,7 @@ begin
   fShots      := TShotList.Create;
   fEnemies    := TEnemyList.Create;
   fStartField := TStarField.Create;
-  fPauseMenu  := TPauseMenu.Create(fPlayer);;
+  fMenu  := TMenu.Create(Self);
   TEngine.GetInstance.HideCursor;
 end;
 
@@ -587,7 +605,7 @@ begin
   fEnemies.Clear;
   fEnemies.Free;
   fStartField.Free;
-  fPauseMenu.Free;
+  fMenu.Free;
   inherited Destroy;
 end;
 
@@ -599,7 +617,6 @@ begin
   fPlayer.Lifes := 3;
   fPlayer.Position.X := trunc( SCREEN_HALF_WIDTH - ( fPlayer.Sprite.Texture.W / 2 ));
   fPlayer.Position.Y := (DEBUG_CELL_SIZE * 18) - fPlayer.Sprite.CurrentFrame.Rect.h;
-
   for i:=0 to Pred(fEnemies.Count) do
   begin
     enemy := TEnemy(fEnemies.Items[i]);
@@ -611,78 +628,128 @@ begin
     enemy.StartMoving;
   end;
   fShots.Clear;
-  fPauseMenu.Selected := moResume;
+  fMenu.Selected := moResume;
+  fSparks.Clear;
+  fGOSmoke := nil;
   fState := TSceneState.Playing;
 end;
 
 
-function TGamePlayScene.SpawnNewSparkAt(enemy: TEnemy): TEmitter;
+procedure TGamePlayScene.SpawnGOSmoke;
+var
+  color : TSDL_Color;
+begin
+  if fGOSmoke = nil then
+  begin
+    fGOSmoke := TEmitterFactory.NewSmokeContinuous;
+    color.r := 255;
+    color.g := 0;
+    color.b := 0;
+    color.a := 200;
+    fGOSmoke.Color := color;
+    fGOSmoke.MaxCount := 300;
+    fGOSmoke.Bounds.W := fPlayer.Sprite.Texture.W-1;
+    fGOSmoke.Bounds.H := fPlayer.Sprite.Texture.H-1;
+    fGOSmoke.Bounds.X := Round(fPlayer.Position.X+1);
+    fGOSmoke.Bounds.Y := Round(fPlayer.Position.Y+1);
+    fGOSmoke.Angle.Min := 0.0;
+    fGOSmoke.Angle.Max := 360.0;
+    fGOSmoke.EmissionRate := 200;
+    fGOSmoke.Gravity.X := 0;
+    fGOSmoke.Gravity.Y:= 0;
+    fGOSmoke.LifeSpan.Min := 3;
+    fGOSmoke.LifeSpan.Max := 10;
+    fGOSmoke.Speed.Min := 10;
+    fGOSmoke.Speed.Max := 20;
+    fSparks.Add(fGOSmoke);
+    fGOSmoke.Start;
+  end;
+end;
+
+function TGamePlayScene.SpawnNewSparkAt(obj: TGameObject): TEmitter;
+var
+ color : TSDL_Color;
 begin
   result := TEmitterFactory.NewSmokeOneShot;
-  result.Bounds.X  := round((enemy.Position.X));
-  result.Bounds.Y  := round(enemy.Position.Y);
-  result.Bounds.W  := round(enemy.SpriteRect.w);
-  result.Bounds.H  := round(enemy.SpriteRect.h);
+  result.Bounds.X  := round((obj.Position.X));
+  result.Bounds.Y  := round(obj.Position.Y);
+  result.Bounds.W  := round(obj.SpriteRect.w);
+  result.Bounds.H  := round(obj.SpriteRect.h);
   result.Angle.Min := 0;
   result.Angle.Max := 380;
   result.Gravity.X := 0;
   result.Gravity.Y := 5;
-  case enemy.HP of
-    0 : result.MaxCount  := RandomRange(60, 80);
-    1 : result.MaxCount  := RandomRange(8, 20);
-    2 : result.MaxCount  := RandomRange(3, 8);
+  if obj is TEnemy then begin
+    case TEnemy(obj).HP of
+      0 : result.MaxCount  := RandomRange(60, 80);
+      1 : result.MaxCount  := RandomRange(8, 20);
+      2 : result.MaxCount  := RandomRange(3, 8);
+    end;
+    if obj is TEnemyB then
+      result.MaxCount := result.MaxCount + 20
+    else
+    if obj is TEnemyC then
+    begin
+      result.MaxCount := result.MaxCount + 50;
+      result.Bounds.X := result.Bounds.X - 5;
+      result.Bounds.Y := result.Bounds.Y + 5;
+      result.Bounds.W := result.Bounds.W + 5;
+      result.Bounds.H := result.Bounds.H + 5;
+    end;
+    result.Color := TEnemy(obj).ColorModulation;
   end;
-  if enemy is TEnemyB then
-    result.MaxCount := result.MaxCount + 20
-  else
-  if enemy is TEnemyC then
+  if obj is TPlayer then
   begin
-    result.MaxCount := result.MaxCount + 50;
-    result.Bounds.X := result.Bounds.X - 5;
-    result.Bounds.Y := result.Bounds.Y + 5;
-    result.Bounds.W := result.Bounds.W + 5;
-    result.Bounds.H := result.Bounds.H + 5;
+    color.r := $FF;
+    color.g := 0;
+    color.b := 0;
+    color.a := 200;
+    result.Color := color;
+    result.MaxCount  := RandomRange(70, 100);
   end;
-  result.Color := enemy.ColorModulation;
   result.Start;
 end;
 
 { TPauseMenu }
 
-constructor TPauseMenu.Create(Player: TPlayer);
+constructor TMenu.Create(Owner: TGamePlayScene);
 begin
   inherited create;
   fAngle := 0;
   fSelected := moResume;
-  fPlayer := Player;
+  fOwner := Owner;
 end;
 
-procedure TPauseMenu.Draw;
-const
-  DIVIDER_Y = 388;
-  TEXT_LEFT = 280;  //540
-  YOFFSET = 30;
+procedure TMenu.Draw;
 var
-  src, dest, pauseIco : TSDL_Rect;
+  src, dest, ico : TSDL_Rect;
   engine : TEngine;
   renderer: PSDL_Renderer;
 begin
   inherited;
+  if fOwner.State = Playing then exit;
+
   engine   := TEngine.GetInstance;
   renderer := engine.Renderer;
 
+  //obsfuscates the game stage
+  src.x := 0;
+  src.y := 0;
+  src.h := SCREEN_HEIGHT - src.y;
+  src.w:= SCREEN_WIDTH;
+  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+  case fOwner.State of
+    Paused   : SDL_SetRenderDrawColor(engine.Renderer, 00, 00, 255, 25);
+    GameOver : SDL_SetRenderDrawColor(engine.Renderer, 100, 00, 00, 65);
+  end;
+  SDL_RenderFillRect( engine.Renderer, @src );
+
  //divider line
-  SDL_SetRenderDrawColor(renderer, $FF, $FF, $FF, $FF);
+  case fOwner.State of
+    Paused   : SDL_SetRenderDrawColor(renderer, $FF, $FF, $FF, $FF);
+    GameOver : SDL_SetRenderDrawColor(renderer, $FF, 0, 0, $FF);
+  end;
   SDL_RenderDrawLine(renderer, 0, DIVIDER_Y, engine.Window.w, DIVIDER_Y);
-
-  engine.Text.Draw('game', TEXT_LEFT, DIVIDER_Y-81, engine.Fonts.GUILarge, $FF);
-  engine.Text.Draw('PAUSED', TEXT_LEFT, DIVIDER_Y-41, engine.Fonts.GUILarge, $FF);
-  engine.Text.Draw(Format('Current Score %.6d', [fPlayer.Score]),
-      TEXT_LEFT,  DIVIDER_Y+ 5, engine.Fonts.DebugNormal, 80);
-
-
-  engine.Text.Draw('resume',  TEXT_LEFT + 260, DIVIDER_Y + 60, engine.Fonts.MainMenu, GetAlpha(moResume));
-  engine.Text.Draw('quit', TEXT_LEFT + 260, DIVIDER_Y + 60 + YOFFSET, engine.Fonts.MainMenu, GetAlpha(moQuit));
 
   src.x := 0;
   src.y := 0;
@@ -699,14 +766,54 @@ begin
   SDL_RenderCopyEx(renderer, engine.Textures[TEXTURE_GEAR].Data,
       @src, @dest, fAngle, nil, SDL_FLIP_NONE);
 
-  //paused icon
-  pauseIco.x := dest.x + 34;
-  pauseIco.y := dest.y + 40;
-  pauseIco.w := 10;
-  pauseIco.h := 25;
-  SDL_RenderFillRect(renderer, @pauseIco);
-  pauseIco.x := pauseIco.x + pauseIco.w + 4;
-  SDL_RenderFillRect(renderer, @pauseIco);
+
+  case  fOwner.State of
+    Paused  :
+      begin
+        engine.Text.Draw('game', TEXT_LEFT, DIVIDER_Y-81, engine.Fonts.GUILarge, $FF);
+        engine.Text.Draw('PAUSED', TEXT_LEFT, DIVIDER_Y-41, engine.Fonts.GUILarge, $FF);
+        engine.Text.Draw(Format('Current Score %.6d', [fOwner.Player.Score]),
+            TEXT_LEFT,  DIVIDER_Y+ 5, engine.Fonts.DebugNormal, 80);
+        engine.Text.Draw('resume',  TEXT_LEFT + 260, DIVIDER_Y + 60, engine.Fonts.MainMenu, GetAlpha(moResume));
+        engine.Text.Draw('quit', TEXT_LEFT + 260, DIVIDER_Y + 60 + YOFFSET, engine.Fonts.MainMenu, GetAlpha(moQuit));
+
+        //paused icon
+        ico.x := dest.x + 34;
+        ico.y := dest.y + 40;
+        ico.w := 10;
+        ico.h := 25;
+        SDL_SetRenderDrawColor(renderer, $FF, $FF, $FF, $FF);
+        SDL_RenderFillRect(renderer, @ico);
+        ico.x := ico.x + ico.w + 4;
+        SDL_RenderFillRect(renderer, @ico);
+      end;
+
+    GameOver:
+      begin
+        engine.Text.Draw('game', TEXT_LEFT, DIVIDER_Y-81, engine.Fonts.GUILarge, $FF);
+        engine.Text.Draw('OVER!', TEXT_LEFT, DIVIDER_Y-41, engine.Fonts.GUILarge, $FF);
+        engine.Text.Draw(Format('Final Score %.6d', [fOwner.Player.Score]),
+            TEXT_LEFT,  DIVIDER_Y+ 5, engine.Fonts.DebugNormal, 80);
+
+        engine.Text.Draw('new game',  TEXT_LEFT + 260, DIVIDER_Y + 60, engine.Fonts.MainMenu, GetAlpha(moResume));
+        engine.Text.Draw('quit', TEXT_LEFT + 260, DIVIDER_Y + 60 + YOFFSET, engine.Fonts.MainMenu, GetAlpha(moQuit));
+
+        //exclamation
+        ico.x := dest.x + 39;
+        ico.y := dest.y + 35;
+        ico.w := 15;
+        ico.h := 22;
+        SDL_SetRenderDrawColor(renderer, $FF, $FF, $FF, $FF);
+        SDL_RenderFillRect(renderer, @ico);
+
+        ico.y := ico.y + ico.h + 5;
+        ico.h := 5;
+
+        SDL_RenderFillRect(renderer, @ico);
+      end;
+  end;
+
+
 
   //game ico
   src.w := engine.Textures[TEXTURE_ICO].W;
@@ -715,11 +822,17 @@ begin
   dest.y := DIVIDER_Y - 25;
   dest.h := src.h;
   dest.w := src.w;
+  if fOwner.State = GameOver then begin
+     SDL_SetTextureColorMod(engine.Textures[TEXTURE_ICO].Data, $FF,0,0);
+  end
+  else begin
+    SDL_SetTextureColorMod(engine.Textures[TEXTURE_ICO].Data, 255,255,255);
+  end;
+  SDL_SetTextureBlendMode(engine.Textures[TEXTURE_ICO].Data, SDL_BLENDMODE_BLEND);
   SDL_RenderCopy(renderer, engine.Textures[TEXTURE_ICO].Data, @src, @dest);
-
 end;
 
-function TPauseMenu.GetAlpha(option: TMenuOption): byte;
+function TMenu.GetAlpha(option: TMenuOption): byte;
 begin
   if fSelected = option then
      result := 255
@@ -727,13 +840,13 @@ begin
     result := 60;
 end;
 
-procedure TPauseMenu.LoadTextures;
+procedure TMenu.LoadTextures;
 begin
   TEXTURE_GEAR := TEngine.GetInstance.Textures.Load( 'gear-small.png' );
   TEXTURE_ICO := TEngine.GetInstance.Textures.Load( 'ico-small.png' );
 end;
 
-procedure TPauseMenu.SelectNext(const amount: integer);
+procedure TMenu.SelectNext(const amount: integer);
 begin
   fSelected:= TMenuOption(Ord(selected) + amount);
   if Ord(selected) < 0 then
@@ -742,7 +855,7 @@ begin
      fSelected := TMenuOption(High(TMenuOption));
 end;
 
-procedure TPauseMenu.Update(const deltaTime: Real);
+procedure TMenu.Update(const deltaTime: Real);
 begin
   inherited;
   fAngle := fAngle + 25 * deltaTime;
