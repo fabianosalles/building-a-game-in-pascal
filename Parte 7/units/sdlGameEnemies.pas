@@ -51,6 +51,7 @@ type
   private
     fCanShot: boolean;
     fHP : integer;
+    fOnHit: TGameObjectNotifyEvent;
     function GetAlive: boolean;
     function GetShotSpawnPoint: TVector;
   protected
@@ -71,15 +72,24 @@ type
     property ColorModulation : TSDL_Color read GetColorModulation;
 
     property OnShot : TGameObjectNotifyEvent read fOnShot write fOnShot;
+    property OnHit  : TGameObjectNotifyEvent read fOnHit write fOnHit;
   end;
 
 
   { TEnemyList }
 
   TEnemyList = class(TGameObjectList)
+  private
+    fAliveCount: integer;
+    procedure doOnEnemyHit(Sender: TGameObject);
   public
+    constructor Create(AOwnsObjects : boolean = true);
+    function Add(const Value: TGameObject): integer;
     procedure Update(const deltaTime: real); override;
     function FilterByLife( aAlive: boolean ): TEnemyList;
+    function GetMaxY : real;
+
+    property AliveCount: integer read fAliveCount;
   end;
 
 
@@ -125,18 +135,22 @@ procedure TEnemyList.Update(const deltaTime: real);
 var
   i: integer;
   enemy : TEnemy;
-  linha: integer;
+  line: integer;
 begin
   inherited Update(deltaTime);
 
   //só pode atirar se não houver nenhum outro inimigo na linha de tiro
+  fAliveCount := 0;
   for i:=0 to Pred(Self.Count) do
   begin
     enemy:= TEnemy(Self.Items[i]);
-    linha := i div 20;
-    enemy.CanShot := linha = 5;
-    if linha < 5 then
-       case linha of
+    if (enemy.Alive) then
+        inc(fAliveCount);
+
+    line := i div 20;
+    enemy.CanShot := line = 5;
+    if line < 5 then
+       case line of
          0: enemy.CanShot := (not TEnemy(Self.Items[i+20]).Alive) and
                              (not TEnemy(Self.Items[i+40]).Alive) and
                              (not TEnemy(Self.Items[i+60]).Alive) and
@@ -162,6 +176,36 @@ begin
 
 end;
 
+
+function TEnemyList.Add(const Value: TGameObject): integer;
+begin
+  if not(Value is TEnemy) then
+    raise EInvalidOperation.Create('TEnemyList only accepts TEnemy instances');
+
+  result := inherited Add(Value);
+  if Self.OwnsObjects then
+  begin
+    TEnemy(Value).OnHit := doOnEnemyHit;
+
+  if TEnemy(Value).Alive then
+     Inc(fAliveCount);
+  end;
+end;
+
+
+constructor TEnemyList.Create( AOwnsObjects : boolean );
+begin
+  inherited Create( AOwnsObjects );
+  fAliveCount := 0;
+end;
+
+
+procedure TEnemyList.doOnEnemyHit(Sender: TGameObject);
+begin
+  if not TEnemy(Sender).Alive then
+    Dec(fAliveCount);
+end;
+
 function TEnemyList.FilterByLife(aAlive: boolean): TEnemyList;
 var
   i : integer;
@@ -178,6 +222,18 @@ begin
       if enemy.HP <= 0 then
          result.Add( enemy );
   end;
+end;
+
+
+
+function TEnemyList.GetMaxY: real;
+var
+  i: integer;
+begin
+  result := -1;
+  for i:=0 to Pred(Count) do
+    if TEnemy(Items[i]).Position.Y > result then
+       Result := TEnemy(Items[i]).Position.Y;
 end;
 
 { TEnemyC }
@@ -413,6 +469,8 @@ end;
 procedure TEnemy.Hit(aDamage: byte);
 begin
   fHP := fHP - aDamage;
+  if Assigned(fOnHit) then
+    fOnHit(Self);
 end;
 
 procedure TEnemy.StartMoving;

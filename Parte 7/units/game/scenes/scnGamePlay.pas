@@ -67,6 +67,9 @@ type
   strict private
   type
     TSceneState = ( Playing, Paused, GameOver );
+  const
+    ENEMY_START_SPPED = 10.0;
+    ENEMY_WAVE_ACCEL  = 3.0;
   var
     fState      : TSceneState;
     fPlayer     : TPlayer;
@@ -78,6 +81,7 @@ type
     fRenderer   : PSDL_Renderer;
     fMenu       : TMenu;
     fGOSmoke    : TEmitter;
+    fCurrentWave: Integer;
   private
     procedure CreateGameObjects;
 
@@ -90,6 +94,8 @@ type
     procedure doOnShotSmokeVanished(Sender: TObject);
     procedure doOnListNotify(Sender: TObject; const Item: TGameObject; Action: TCollectionNotification);
     procedure ClearInvalidShots;
+    procedure SpawnEnemyWave;
+    procedure KillAllEnemies;
     function SpawnNewSparkAt( obj: TGameObject ): TEmitter;
     procedure SpawnGOSmoke;
   protected
@@ -158,7 +164,7 @@ begin
           enemy.Sprite.InitFrames(1, 2);
         end;
     end;
-    enemy.OnShot := {$IFDEF FPC}@{$ENDIF}doOnShot;
+    enemy.OnShot   := {$IFDEF FPC}@{$ENDIF}doOnShot;
     fEnemies.Add( enemy );
   end;
 
@@ -215,18 +221,18 @@ begin
       rect.w:= SCREEN_WIDTH;
       SDL_SetRenderDrawColor(engine.Renderer, 255, 0, 0, 80);
       SDL_RenderFillRect( engine.Renderer, @rect );
-      engine.Text.Draw( Format('SCORE %.6d', [fPlayer.Score]),  290, 12, engine.Fonts.GUI  );
+
+      engine.Text.Draw( Format('WAVE %d', [fCurrentWave+1]),  DEBUG_CELL_SIZE, 12, engine.Fonts.GUI  );
+      engine.Text.Draw( Format('SCORE %.8d', [fPlayer.Score]),  290, 12, engine.Fonts.GUI  );
+      engine.Text.Draw( Format('%.2d', [fPlayer.Lifes]),  738, 12, engine.Fonts.GUI  );
 
       rect.x:= 710;
       rect.y:= 18;
       rect.h:= 2 *fPlayer.Sprite.Texture.H div 3;
       rect.w:= 2 *fPlayer.Sprite.Texture.W div 3;
+      SDL_RenderCopy(engine.Renderer, fPlayer.Sprite.Texture.Data, @fPlayer.Sprite.CurrentFrame.Rect, @rect);
 
-      SDL_RenderCopy(engine.Renderer,
-                       fPlayer.Sprite.Texture.Data,
-                       @fPlayer.Sprite.CurrentFrame.Rect,
-                       @rect);
-      engine.Text.Draw( Format('%.2d', [fPlayer.Lifes]),  738, 12, engine.Fonts.GUI  );
+
     end;
 
     GameOver :
@@ -235,6 +241,18 @@ begin
   end;
 end;
 
+
+procedure TGamePlayScene.KillAllEnemies;
+var
+  i : integer;
+  e : TEnemy;
+begin
+  for i:= 0 to Pred(fEnemies.Count) do
+  begin
+    if TEnemy(fEnemies[i]).Alive then
+        TEnemy(fEnemies[i]).Hit(10);
+  end;
+end;
 
 procedure TGamePlayScene.doOnReturnPressed;
 begin
@@ -329,10 +347,10 @@ begin
       engine.Sounds.Play(sndEnemyHit);
       fSparks.Add(SpawnNewSparkAt(enemy));
       if enemy.Alive then
-         fPlayer.Score :=  fPlayer.Score + 10
+         fPlayer.Score :=  fPlayer.Score + fCurrentWave + 1
       else
         begin
-         fPlayer.Score :=  fPlayer.Score + 100;
+         fPlayer.Score :=  fPlayer.Score + 10 + (fCurrentWave * 2);
          explostion := TExplosion.Create();
          explostion.Sprite.Texture.Assign(engine.Textures[Ord(TSpriteKind.Explosion)]);
          explostion.Sprite.InitFrames(1,1);
@@ -437,6 +455,7 @@ begin
   end;
 end;
 
+
 procedure TGamePlayScene.doOnJoyAxisMotion(axis: Byte; value: Integer);
 begin
   inherited;
@@ -505,6 +524,7 @@ begin
     {$IFDEF DEBUG}
     SDLK_g : fState := TSceneState.GameOver;
     SDLK_p : fState := TSceneState.Paused;
+    SDLK_k : KillAllEnemies;
     {$ENDIF}
   end;
 end;
@@ -539,12 +559,28 @@ begin
         ClearInvalidShots;
         fExplosions.Update( deltaTime );
         fSparks.Update( deltaTime );
+
         if ( fPlayer.Lifes <= 0)  then
         begin
          fState := GameOver;
          SpawnGOSmoke;
          TEngine.GetInstance.Sounds.Play( sndGameOver );
+         exit;
         end;
+
+        if ( fEnemies.GetMaxY > TEngine.GetInstance.Window.h) then
+        begin
+          fState := GameOver;
+          TEngine.GetInstance.Sounds.Play( sndGameOver );
+          exit;
+        end;
+
+        if (fEnemies.AliveCount = 0) then
+        begin
+           Inc(fCurrentWave);
+           SpawnEnemyWave;
+        end;
+
       end;
 
     Paused  :
@@ -611,23 +647,13 @@ begin
 end;
 
 procedure TGamePlayScene.Reset;
-var
-  i: integer;
-  enemy : TEnemy;
 begin
   fPlayer.Lifes := 3;
   fPlayer.Position.X := trunc( SCREEN_HALF_WIDTH - ( fPlayer.Sprite.Texture.W / 2 ));
   fPlayer.Position.Y := (DEBUG_CELL_SIZE * 18) - fPlayer.Sprite.CurrentFrame.Rect.h;
-  for i:=0 to Pred(fEnemies.Count) do
-  begin
-    enemy := TEnemy(fEnemies.Items[i]);
-    enemy.Position.X := DEBUG_CELL_SIZE + ( i mod 20 ) * DEBUG_CELL_SIZE ;
-    enemy.Position.Y := 2 * DEBUG_CELL_SIZE + ( i div 20 ) * DEBUG_CELL_SIZE ;
-    if enemy is TEnemyA then enemy.HP := 1;
-    if enemy is TEnemyB then enemy.HP := 2;
-    if enemy is TEnemyC then enemy.HP := 3;
-    enemy.StartMoving;
-  end;
+  fPlayer.Score := 0;
+  fCurrentWave := 0;
+  SpawnEnemyWave;
   fShots.Clear;
   fMenu.Selected := moResume;
   fSparks.Clear;
@@ -635,6 +661,24 @@ begin
   fState := TSceneState.Playing;
 end;
 
+
+procedure TGamePlayScene.SpawnEnemyWave;
+var
+  i : integer;
+  enemy : TEnemy;
+begin
+  for i:=0 to Pred(fEnemies.Count) do
+  begin
+    enemy := TEnemy(fEnemies.Items[i]);
+    enemy.Position.X := DEBUG_CELL_SIZE + ( i mod 20 ) * DEBUG_CELL_SIZE ;
+    enemy.Position.Y := 2 * DEBUG_CELL_SIZE + ( i div 20 ) * DEBUG_CELL_SIZE ;
+    enemy.Speed := ENEMY_START_SPPED + (fCurrentWave * ENEMY_WAVE_ACCEL);
+    if enemy is TEnemyA then enemy.HP := 1;
+    if enemy is TEnemyB then enemy.HP := 2;
+    if enemy is TEnemyC then enemy.HP := 3;
+    enemy.StartMoving;
+  end;
+end;
 
 procedure TGamePlayScene.SpawnGOSmoke;
 var
@@ -741,7 +785,8 @@ begin
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
   case fOwner.State of
     Paused   : SDL_SetRenderDrawColor(engine.Renderer, 00, 00, 255, 25);
-    GameOver : SDL_SetRenderDrawColor(engine.Renderer, 100, 00, 00, 65);
+    //GameOver : SDL_SetRenderDrawColor(engine.Renderer, 100, 00, 00, 65);
+    GameOver : SDL_SetRenderDrawColor(renderer, 30, 5, 5, 210);
   end;
   SDL_RenderFillRect( engine.Renderer, @src );
 
@@ -795,7 +840,6 @@ begin
         engine.Text.Draw('OVER!', TEXT_LEFT, DIVIDER_Y-41, engine.Fonts.GUILarge, $FF);
         engine.Text.Draw(Format('Final Score %.6d', [fOwner.Player.Score]),
             TEXT_LEFT,  DIVIDER_Y+ 5, engine.Fonts.DebugNormal, 80);
-
         engine.Text.Draw('new game',  TEXT_LEFT + 260, DIVIDER_Y + 60, engine.Fonts.MainMenu, GetAlpha(moResume));
         engine.Text.Draw('quit', TEXT_LEFT + 260, DIVIDER_Y + 60 + YOFFSET, engine.Fonts.MainMenu, GetAlpha(moQuit));
 

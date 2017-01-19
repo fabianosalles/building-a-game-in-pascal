@@ -93,8 +93,8 @@ begin
   {$ENDIF}
 
   {$IFDEF DEBUG}
-  Scenes.Current := menu;
-//  Scenes.Current := gamePlay;
+//  Scenes.Current := menu;
+  Scenes.Current := gamePlay;
   //Scenes.Current := particles;
   {$ELSE}
   Scenes.Current := intro;

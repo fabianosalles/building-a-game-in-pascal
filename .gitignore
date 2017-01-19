@@ -3,7 +3,5 @@
 *.o
 *.ppu
 *.compiled
-*.exe
 *.~*
-*.exe
 *.identcache
