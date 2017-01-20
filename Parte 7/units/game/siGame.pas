@@ -34,7 +34,6 @@ type
     fSceneInto     : integer;
     fSceneGamePLay : integer;
     fSceneMainMenu : integer;
-    fSceneParticle : integer;
     fPlayer : TPlayer;
   private
     procedure CreateScenes;

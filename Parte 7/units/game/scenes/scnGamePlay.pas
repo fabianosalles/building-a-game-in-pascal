@@ -92,7 +92,9 @@ type
     procedure doOnShot(Sender: TGameObject);
     procedure doOnShotCollided(Sender, Suspect: TGameObject; var StopChecking: boolean);
     procedure doOnShotSmokeVanished(Sender: TObject);
+    {$IFNDEF FPC}
     procedure doOnListNotify(Sender: TObject; const Item: TGameObject; Action: TCollectionNotification);
+    {$ENDIF}
     procedure ClearInvalidShots;
     procedure SpawnEnemyWave;
     procedure KillAllEnemies;
@@ -172,7 +174,9 @@ begin
   fPlayer.Sprite.InitFrames(1,1);
   fPlayer.OnShot  := {$IFDEF FPC}@{$ENDIF}doOnShot;
   fShots          := TShotList.Create(true);
+  {$IFNDEF FPC}
   fShots.OnNotify := {$IFDEF FPC}@{$ENDIF}doOnListNotify;
+  {$ENDIF}
   fExplosions     := TExplosionList.Create(true);
   fSparks         := TEmitterList.Create(true);
 end;
@@ -391,6 +395,7 @@ begin
   end;
 end;
 
+{$IFNDEF FPC}
 procedure TGamePlayScene.doOnListNotify(Sender: TObject; const Item: TGameObject;
   Action: TCollectionNotification);
 begin
@@ -405,6 +410,7 @@ begin
   end;
   {$ENDIF}
 end;
+{$ENDIF}
 
 procedure TGamePlayScene.doLoadTextures;
 var
@@ -771,7 +777,6 @@ var
   engine : TEngine;
   renderer: PSDL_Renderer;
 begin
-  inherited;
   if fOwner.State = Playing then exit;
 
   engine   := TEngine.GetInstance;
@@ -903,7 +908,6 @@ end;
 
 procedure TMenu.Update(const deltaTime: Real);
 begin
-  inherited;
   fAngle := fAngle + 25 * deltaTime;
 end;
 

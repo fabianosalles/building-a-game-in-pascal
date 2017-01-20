@@ -78,15 +78,12 @@ type
     START_FADE  = 100;
   var
     fCreatedTicks: UInt32;
-    fVisible : boolean;
     fOpacity: UInt8;
   protected
     procedure InitFields; override;
   public
     procedure Draw; override;
     procedure Update(const deltaTime : real); override;
-
-    property Visible: boolean read fVisible;
   end;
 
   { TExplosionList }
@@ -224,7 +221,7 @@ begin
   fVisible   := true;
   fShowSmoke := false;
   fSmokeEmitter     := TEmitterFactory.NewSmokeContinuous;
-  fSmokeEmitter.OnAllParticleDied := doOnAllParticleDied;
+  fSmokeEmitter.OnAllParticleDied := {$IFDEF FPC}@{$ENDIF}doOnAllParticleDied;
   fActive    := True;
 end;
 

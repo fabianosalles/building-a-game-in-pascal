@@ -183,13 +183,11 @@ begin
     raise EInvalidOperation.Create('TEnemyList only accepts TEnemy instances');
 
   result := inherited Add(Value);
-  if Self.OwnsObjects then
-  begin
-    TEnemy(Value).OnHit := doOnEnemyHit;
+  TEnemy(Value).OnHit := {$IFDEF FPC}@{$ENDIF}doOnEnemyHit;
 
   if TEnemy(Value).Alive then
      Inc(fAliveCount);
-  end;
+
 end;
 
 

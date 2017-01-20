@@ -136,7 +136,7 @@ begin
                 fInputEnabled := false;
                 TEngine.GetInstance.Sounds.Play(sndNewGame);
                 fFader.FadeOut(0, FADE_OUT);
-                ExecuteDelayed(FADE_OUT, gotoNewGame);
+                ExecuteDelayed(FADE_OUT, {$IFDEF FPC}@{$ENDIF}gotoNewGame);
               end;
             moHighScore:
               begin

@@ -55,7 +55,7 @@ type
     fZ : Real;
   public
     constructor Create; overload;
-    constructor Create(const x, y, z : real); overload;
+    constructor Create(const ax, ay, az : real); overload;
 
     procedure Assign(const Source: TVector); overload; override;
     procedure Assign(const Source: TVector3D); overload;
@@ -508,11 +508,11 @@ begin
   fZ := 0;
 end;
 
-constructor TVector3D.Create(const x, y, z: real);
+constructor TVector3D.Create(const ax, ay, az: real);
 begin
-  fx := x;
-  fy := y;
-  fz := z;
+  fx := ax;
+  fy := ay;
+  fz := az;
 end;
 
 { TFader }

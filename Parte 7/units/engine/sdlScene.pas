@@ -1,5 +1,10 @@
 unit sdlScene;
 
+{$IFDEF FPC}
+  {$mode objfpc}{$H+}
+	{$modeswitch advancedrecords}
+{$ENDIF}
+
 interface
 
 uses
@@ -20,11 +25,25 @@ type
   );
   TSceneQuitEvent = procedure(sender: TScene; quitType: TQuitType; exitCode: integer) of object;
   TSceneMethod = procedure of object;
+
+  { TMethodSchedule }
+
   TMethodSchedule = record
     when    : UInt32;
     method  : TSceneMethod;
+    {$IFDEF FPC}
+    class operator = (a, b: TMethodSchedule) : boolean;
+    {$ENDIF}
   end;
-  TProcSchedlue = TList<TMethodSchedule>;
+  //
+
+
+  {$IFDEF FPC}
+  TGProcSchedlue = specialize TFPGList<TMethodSchedule>;
+  {$ELSE}
+  TGProcSchedlue = TList<TMethodSchedule>;
+  {$ENDIF}
+  TProcSchedlue = TGProcSchedlue;
 
   { TScene }
 
@@ -116,6 +135,17 @@ implementation
 
 uses
   sdlEngine;
+
+{ TMethodSchedule }
+
+{$IFDEF FPC}
+class operator TMethodSchedule.=(a, b: TMethodSchedule): boolean;
+begin
+	result := (Addr(a)-Addr(b) = 0);
+end;
+{$ENDIF}
+
+
 
 { TScene }
 

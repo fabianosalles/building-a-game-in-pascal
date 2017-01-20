@@ -148,7 +148,7 @@ begin
     lSurface := TTF_RenderUTF8_Blended( aFont.Font, PAnsiChar(UTF8String(aText)), aFont.Color );
     fList[fCount].Textture := SDL_CreateTextureFromSurface( fRenderer, lSurface );
     if fList[fCount].Textture = nil then
-       raise GameFontException.Create( SDL_GetError );
+       raise GameFontException.Create( PAnsiChar(SDL_GetError) );
     fList[fCount].Text := aText;
     fList[fCount].Font := aFont;
     fList[fCount].Width := lSurface^.w;

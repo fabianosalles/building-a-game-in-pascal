@@ -37,7 +37,7 @@ type
     function GetAngleInRadians: real; inline;
     function GetVelocity: TVector;
   public
-    constructor Create(aPosition: TVector; life, angle, speed: real);
+    constructor Create(aPosition: TVector; life, angle, speed: real); reintroduce;
     destructor Destroy; override;
 
     procedure Update(const deltaTime: real); override;
@@ -316,7 +316,7 @@ procedure TEmitter.UpdateParticles(const deltaTime: real);
 var
   i: integer;
   p: TParticle;
-  color: TSDL_Color;
+  lColor: TSDL_Color;
   listChanged: boolean;
 begin
   listChanged := false;
@@ -328,11 +328,11 @@ begin
         p.Position.X := p.Position.X + (p.Velocity.X * deltaTime) + (fGravity.X * deltaTime);
         p.Position.Y := p.Position.Y + (p.Velocity.Y * deltaTime) + (fGravity.Y * deltaTime);
 
-        color := p.Color;
+        lColor := p.Color;
         if p.InitialLife <= 0 then
-           color.a := 0
+           lColor.a := 0
         else
-           color.a := round(255 * (p.Life / p.InitialLife));
+           lColor.a := round(255 * (p.Life / p.InitialLife));
         p.Color := color;
      end
      else begin
