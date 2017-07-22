@@ -27,11 +27,11 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value=".\bin\space_invaders"/>
+            <Filename Value=".\bin\space_invaders_$(TargetOS)_$(TargetCPU)"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="units;headers\sdl2;units\engine;units\scenes"/>
+            <OtherUnitFiles Value="units;units\engine;headers\sdl2;units\game;units\game\scenes;units\game\objects;..\include\generics"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -60,11 +60,11 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="space_invaders"/>
+            <Filename Value=".\bin\space_invaders_$(TargetOS)_$(TargetCPU)"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="units;units\engine;units\scenes"/>
+            <OtherUnitFiles Value="units;units\engine;headers\sdl2;units\game;units\game\scenes;units\game\objects;..\include\generics"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -93,11 +93,11 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="space_invaders"/>
+            <Filename Value=".\bin\space_invaders_$(TargetOS)_$(TargetCPU)"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="units;units\engine;units\scenes"/>
+            <OtherUnitFiles Value="units;units\engine;headers\sdl2;units\game;units\game\scenes;units\game\objects;..\include\generics"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -126,11 +126,11 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="space_invaders"/>
+            <Filename Value=".\bin\space_invaders_$(TargetOS)_$(TargetCPU)"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="units;units\engine;units\scenes"/>
+            <OtherUnitFiles Value="units;units\engine;headers\sdl2;units\game;units\game\scenes;units\game\objects;..\include\generics"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -271,11 +271,11 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value=".\bin\space_invaders"/>
+      <Filename Value=".\bin\space_invaders_$(TargetOS)_$(TargetCPU)"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="headers\SDL2;units;units\engine;units\scenes"/>
+      <OtherUnitFiles Value="units;units\engine;headers\sdl2;units\game;units\game\scenes;units\game\objects;..\include\generics"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>

@@ -15,11 +15,8 @@ uses
 
   sysutils,
   classes,
-  {$IFDEF FPC}
   fgl,
-  {$ELSE}
-  Generics.Collections,
-  {$ENDIF}
+  generics.collections,
   math;
 
 type
@@ -55,7 +52,7 @@ type
     fZ : Real;
   public
     constructor Create; overload;
-    constructor Create(const x, y, z : real); overload;
+    constructor Create(const ax, ay, az : real); overload;
 
     procedure Assign(const Source: TVector); overload; override;
     procedure Assign(const Source: TVector3D); overload;
@@ -145,11 +142,7 @@ type
     function GetPositionedRect( position : TVector ) : TSDL_Rect; inline;
   end;
 
-  {$IFDEF FPC}
-  TGGameObjectList = specialize TFPGObjectList<TGameObject>;
-  {$ELSE}
-  TGGameObjectList = TObjectList<TGameObject>;
-  {$ENDIF}
+  TGGameObjectList = specialize TObjectList<TGameObject>;
 
 
   { TGameObjectList }
@@ -494,11 +487,11 @@ begin
   fZ := 0;
 end;
 
-constructor TVector3D.Create(const x, y, z: real);
+constructor TVector3D.Create(const ax, ay, az: real);
 begin
-  fx := x;
-  fy := y;
-  fz := z;
+  fx := ax;
+  fy := ay;
+  fz := az;
 end;
 
 end.

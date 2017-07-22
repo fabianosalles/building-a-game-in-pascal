@@ -316,7 +316,7 @@ procedure TEmitter.UpdateParticles(const deltaTime: real);
 var
   i: integer;
   p: TParticle;
-  color: TSDL_Color;
+  c: TSDL_Color;
   listChanged: boolean;
 begin
   listChanged := false;
@@ -328,11 +328,11 @@ begin
         p.Position.X := p.Position.X + (p.Velocity.X * deltaTime) + (fGravity.X * deltaTime);
         p.Position.Y := p.Position.Y + (p.Velocity.Y * deltaTime) + (fGravity.Y * deltaTime);
 
-        color := p.Color;
+        c := p.Color;
         if p.InitialLife <= 0 then
-           color.a := 0
+           c.a := 0
         else
-           color.a := round(255 * (p.Life / p.InitialLife));
+           c.a := round(255 * (p.Life / p.InitialLife));
         p.Color := color;
      end
      else begin

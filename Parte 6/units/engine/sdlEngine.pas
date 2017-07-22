@@ -9,9 +9,9 @@ interface
 uses
   sdl2,
   sdlGameUtils,
-  sdl2_image,
+  SDL2_image,
   SDL2_mixer,
-  sdl2_ttf,
+  SDL2_ttf,
 
   sdlGameText,
   sdlGameTypes,
@@ -23,10 +23,11 @@ uses
   sysutils;
 
 const
-  ASSETS_DIR  = AnsiString('.\assets\');
-  FONTS_DIR   = AnsiString(ASSETS_DIR + 'fonts\');
-  SOUND_DIR   = AnsiString(ASSETS_DIR + 'sounds\');
-  IMAGE_DIR   = AnsiString(ASSETS_DIR + 'images\');
+  ASSETS_DIR  = '.' + PathDelim + 'assets' + PathDelim;
+  FONTS_DIR   = ASSETS_DIR + 'fonts' + PathDelim;
+  SOUND_DIR   = ASSETS_DIR + 'sounds' + PathDelim;
+  IMAGE_DIR   = ASSETS_DIR + 'images' + PathDelim;
+
 
 type
 

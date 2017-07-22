@@ -4,11 +4,7 @@ interface
 
 uses
   SDL2,
-  {$IFDEF FPC}
-  fgl,
-  {$ELSE}
-  Generics.Collections,
-  {$ENDIF}
+  generics.collections,
   Math,
   sdlScene,
   sdlGameTypes,
@@ -62,7 +58,7 @@ type
     procedure doOnShot(Sender: TGameObject);
     procedure doOnShotCollided(Sender, Suspect: TGameObject; var StopChecking: boolean);
     procedure doOnShotSmokeVanished(Sender: TObject);
-    procedure doOnListNotify(Sender: TObject; const Item: TGameObject; Action: TCollectionNotification);
+    procedure doOnListNotify(Sender: TObject; constref Item: TGameObject; Action: TCollectionNotification);
     procedure ClearInvalidShots;
     function SpawnNewSparkAt( enemy : TEnemy ): TEmitter;
   protected
@@ -334,7 +330,7 @@ begin
   end;
 end;
 
-procedure TGamePlayScene.doOnListNotify(Sender: TObject; const Item: TGameObject;
+procedure TGamePlayScene.doOnListNotify(Sender: TObject; constref Item: TGameObject;
   Action: TCollectionNotification);
 begin
   if Sender = fShots then
