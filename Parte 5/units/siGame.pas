@@ -61,13 +61,7 @@ begin
   menu := TMainMenuScene.Create;
   menu.OnQuit:= @doOnSceneQuit;
   fSceneMainMenu:= Scenes.Add(menu);
-
-<<<<<<< HEAD
-  //Scenes.Current := intro;
   Scenes.Current := menu;
-=======
-  Scenes.Current := intro;
->>>>>>> origin/master
 end;
 
 procedure TSpaceInvadersGame.doOnSceneQuit(sender: TObject);
