@@ -27,7 +27,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value=".\bin\space_invaders"/>
+            <Filename Value=".\bin\space_invaders_$(TargetOS)_$(TargetCPU)"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -60,7 +60,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="space_invaders"/>
+            <Filename Value=".\bin\space_invaders_$(TargetOS)_$(TargetCPU)"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -93,7 +93,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="space_invaders"/>
+            <Filename Value=".\bin\space_invaders_$(TargetOS)_$(TargetCPU)"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -126,7 +126,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="bin\\space_invaders_$(TargetOS)_$(TargetCPU)"/>
+            <Filename Value=".\bin\space_invaders_$(TargetOS)_$(TargetCPU)"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -272,7 +272,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value=".\bin\space_invaders"/>
+      <Filename Value=".\bin\space_invaders_$(TargetOS)_$(TargetCPU)_debug"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

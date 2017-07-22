@@ -76,8 +76,7 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="10"/>
-        <CursorPos X="51" Y="27"/>
+        <CursorPos X="3" Y="8"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
       </Unit8>
@@ -103,9 +102,9 @@
         <Filename Value="units\siGame.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="48"/>
-        <CursorPos X="37" Y="63"/>
-        <UsageCount Value="149"/>
+        <TopLine Value="69"/>
+        <CursorPos X="40" Y="80"/>
+        <UsageCount Value="150"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -113,7 +112,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="6"/>
         <TopLine Value="22"/>
-        <UsageCount Value="148"/>
+        <UsageCount Value="149"/>
         <Loaded Value="True"/>
       </Unit12>
       <Unit13>
@@ -121,7 +120,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="13"/>
         <CursorPos X="3" Y="14"/>
-        <UsageCount Value="145"/>
+        <UsageCount Value="146"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -130,7 +129,7 @@
         <EditorIndex Value="11"/>
         <TopLine Value="168"/>
         <CursorPos X="21" Y="180"/>
-        <UsageCount Value="140"/>
+        <UsageCount Value="141"/>
         <Loaded Value="True"/>
       </Unit14>
       <Unit15>
@@ -139,7 +138,7 @@
         <EditorIndex Value="12"/>
         <TopLine Value="70"/>
         <CursorPos X="20" Y="110"/>
-        <UsageCount Value="47"/>
+        <UsageCount Value="48"/>
         <Loaded Value="True"/>
       </Unit15>
       <Unit16>
@@ -149,7 +148,7 @@
         <EditorIndex Value="7"/>
         <TopLine Value="77"/>
         <CursorPos X="5" Y="87"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
       </Unit16>
       <Unit17>
@@ -259,124 +258,124 @@
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="units\scenes\scnGamePlay.pas"/>
-        <Caret Line="415" Column="33" TopLine="266"/>
+        <Filename Value="units\engine\sdlGame.pas"/>
+        <Caret Line="12" Column="3" TopLine="4"/>
       </Position1>
       <Position2>
-        <Filename Value="space_invaders.lpr"/>
-        <Caret Line="20"/>
-      </Position2>
-      <Position3>
-        <Filename Value="units\siGame.pas"/>
-        <Caret Line="22" Column="3" TopLine="16"/>
-      </Position3>
-      <Position4>
-        <Filename Value="units\engine\sdlGame.pas"/>
-        <Caret Line="12" Column="3" TopLine="4"/>
-      </Position4>
-      <Position5>
-        <Filename Value="units\engine\sdlScene.pas"/>
-        <Caret Line="79" Column="17" TopLine="73"/>
-      </Position5>
-      <Position6>
-        <Filename Value="units\engine\sdlGame.pas"/>
-        <Caret Line="12" Column="3" TopLine="4"/>
-      </Position6>
-      <Position7>
         <Filename Value="units\engine\sdlScene.pas"/>
         <Caret Line="80" Column="36" TopLine="64"/>
-      </Position7>
-      <Position8>
+      </Position2>
+      <Position3>
         <Filename Value="space_invaders.lpr"/>
         <Caret Line="20"/>
+      </Position3>
+      <Position4>
+        <Filename Value="units\engine\sdlEngine.pas"/>
+        <Caret Line="72" Column="15" TopLine="57"/>
+      </Position4>
+      <Position5>
+        <Filename Value="units\engine\sdlEngine.pas"/>
+        <Caret Line="78" Column="18" TopLine="57"/>
+      </Position5>
+      <Position6>
+        <Filename Value="units\engine\sdlEngine.pas"/>
+        <Caret Line="78" Column="18" TopLine="57"/>
+      </Position6>
+      <Position7>
+        <Filename Value="units\engine\sdlEngine.pas"/>
+        <Caret Line="74" Column="20" TopLine="57"/>
+      </Position7>
+      <Position8>
+        <Filename Value="units\sdlGameSound.pas"/>
+        <Caret Line="26" Column="3" TopLine="13"/>
       </Position8>
       <Position9>
         <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="72" Column="15" TopLine="57"/>
+        <Caret Line="74" Column="20" TopLine="57"/>
       </Position9>
       <Position10>
-        <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="78" Column="18" TopLine="57"/>
+        <Filename Value="units\sdlGameTexture.pas"/>
+        <Caret Line="36" Column="17" TopLine="12"/>
       </Position10>
       <Position11>
-        <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="78" Column="18" TopLine="57"/>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="20"/>
       </Position11>
       <Position12>
-        <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="74" Column="20" TopLine="57"/>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="16" Column="35"/>
       </Position12>
       <Position13>
-        <Filename Value="units\sdlGameSound.pas"/>
-        <Caret Line="26" Column="3" TopLine="13"/>
+        <Filename Value="units\siGame.pas"/>
+        <Caret Line="103" Column="3" TopLine="86"/>
       </Position13>
       <Position14>
         <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="74" Column="20" TopLine="57"/>
+        <Caret Line="316" Column="3" TopLine="301"/>
       </Position14>
       <Position15>
-        <Filename Value="units\sdlGameTexture.pas"/>
-        <Caret Line="36" Column="17" TopLine="12"/>
+        <Filename Value="units\engine\sdlEngine.pas"/>
+        <Caret Line="8" Column="3"/>
       </Position15>
       <Position16>
-        <Filename Value="space_invaders.lpr"/>
-        <Caret Line="20"/>
+        <Filename Value="units\engine\sdlEngine.pas"/>
+        <Caret Line="9" Column="3"/>
       </Position16>
       <Position17>
-        <Filename Value="space_invaders.lpr"/>
-        <Caret Line="16" Column="35"/>
+        <Filename Value="units\engine\sdlEngine.pas"/>
+        <Caret Line="8" Column="3"/>
       </Position17>
       <Position18>
         <Filename Value="units\siGame.pas"/>
-        <Caret Line="103" Column="3" TopLine="86"/>
+        <Caret Line="71" Column="2" TopLine="47"/>
       </Position18>
       <Position19>
         <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="316" Column="3" TopLine="301"/>
+        <Caret Line="12" Column="6"/>
       </Position19>
       <Position20>
         <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="8" Column="3"/>
+        <Caret Line="10" Column="13"/>
       </Position20>
       <Position21>
         <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="9" Column="3"/>
+        <Caret Line="29" Column="49" TopLine="7"/>
       </Position21>
       <Position22>
-        <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="8" Column="3"/>
+        <Filename Value="space_invaders.lpr"/>
+        <Caret Line="16" Column="35"/>
       </Position22>
       <Position23>
-        <Filename Value="units\siGame.pas"/>
-        <Caret Line="71" Column="2" TopLine="47"/>
+        <Filename Value="units\sdlGameText.pas"/>
+        <Caret Line="84" Column="38" TopLine="56"/>
       </Position23>
       <Position24>
         <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="12" Column="6"/>
+        <Caret Line="8" Column="3"/>
       </Position24>
       <Position25>
         <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="10" Column="13"/>
+        <Caret Line="217" Column="45" TopLine="201"/>
       </Position25>
       <Position26>
         <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="29" Column="49" TopLine="7"/>
+        <Caret Line="27" Column="51" TopLine="10"/>
       </Position26>
       <Position27>
-        <Filename Value="space_invaders.lpr"/>
-        <Caret Line="16" Column="35"/>
+        <Filename Value="units\engine\sdlEngine.pas"/>
+        <Caret Line="24" Column="43" TopLine="9"/>
       </Position27>
       <Position28>
-        <Filename Value="units\sdlGameText.pas"/>
-        <Caret Line="84" Column="38" TopLine="56"/>
+        <Filename Value="units\siGame.pas"/>
+        <Caret Line="63" Column="37" TopLine="48"/>
       </Position28>
       <Position29>
         <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="8" Column="3"/>
+        <Caret Line="27" Column="15" TopLine="10"/>
       </Position29>
       <Position30>
         <Filename Value="units\engine\sdlEngine.pas"/>
-        <Caret Line="217" Column="45" TopLine="201"/>
+        <Caret Line="16" Column="37" TopLine="49"/>
       </Position30>
     </JumpHistory>
   </ProjectSession>
