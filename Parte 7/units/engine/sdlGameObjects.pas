@@ -572,9 +572,6 @@ begin
         end;
       end;
   end;
-  {$IFDEF CONSOLE}
-  Writeln('Fader Value : ', fValue);
-  {$ENDIF}
 end;
 
 end.

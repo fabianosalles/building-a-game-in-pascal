@@ -3,9 +3,8 @@ program space_invaders;
 {$mode objfpc}{$H+}
 
 uses
-  Shots,
-  scnParticles,
-  StartField, siGame, sdlEngine;
+  sdlEngine,
+  siGame;
 
 var
   Engine: TEngine;
