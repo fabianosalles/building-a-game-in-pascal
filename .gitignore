@@ -6,3 +6,6 @@
 *.~*
 *.identcache
 *.exe
+*.dcu
+*.local
+*.stat

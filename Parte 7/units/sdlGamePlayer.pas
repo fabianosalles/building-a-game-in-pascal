@@ -30,12 +30,14 @@ type
   private
     fLifes: integer;
   const
-    DEFAULT_SPEED    = 200.0;
-    DEFAULT_COOLDOWN = 300;
+    DEFAULT_PLAYER_NAME = 'Player 1';
+    DEFAULT_SPEED       = 200.0;
+    DEFAULT_COOLDOWN    = 300;
   var
     fSpeed           : real;
     fCooldown        : integer;
     fCooldownCounter : integer;
+    fName            : string;
     fShotSpawnPoint  : TVector;
     fScore           : integer;
     fInput           : array[0..2] of boolean;
@@ -50,6 +52,7 @@ type
     procedure Update(const deltaTime : real); override;
     procedure Hit( aDamage: byte );
 
+    property Name: string read fName write fName;
     property Input[index: integer] : boolean read GetInput write SetInput;
     property Speed : real read fSpeed write fSpeed;  //em pixels por segund
     property Cooldown: integer read fCooldown write fCooldown;
@@ -94,6 +97,7 @@ var
   i : integer;
 begin
   inherited;
+  fName     := DEFAULT_PLAYER_NAME;
   fShotSpawnPoint := TVector.Create;
   fSpeed    := DEFAULT_SPEED;
   fCooldown := DEFAULT_COOLDOWN;

@@ -790,7 +790,6 @@ begin
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
   case fOwner.State of
     Paused   : SDL_SetRenderDrawColor(engine.Renderer, 00, 00, 255, 25);
-    //GameOver : SDL_SetRenderDrawColor(engine.Renderer, 100, 00, 00, 65);
     GameOver : SDL_SetRenderDrawColor(renderer, 30, 5, 5, 210);
   end;
   SDL_RenderFillRect( engine.Renderer, @src );
@@ -844,7 +843,7 @@ begin
         engine.Text.Draw('game', TEXT_LEFT, DIVIDER_Y-81, engine.Fonts.GUILarge, $FF);
         engine.Text.Draw('OVER!', TEXT_LEFT, DIVIDER_Y-41, engine.Fonts.GUILarge, $FF);
         engine.Text.Draw(Format('Final Score %.6d', [fOwner.Player.Score]),
-            TEXT_LEFT,  DIVIDER_Y+ 5, engine.Fonts.DebugNormal, 80);
+            TEXT_LEFT,  DIVIDER_Y+ 5, engine.Fonts.GUI, $FF);
         engine.Text.Draw('new game',  TEXT_LEFT + 260, DIVIDER_Y + 60, engine.Fonts.MainMenu, GetAlpha(moResume));
         engine.Text.Draw('quit', TEXT_LEFT + 260, DIVIDER_Y + 60 + YOFFSET, engine.Fonts.MainMenu, GetAlpha(moQuit));
 
