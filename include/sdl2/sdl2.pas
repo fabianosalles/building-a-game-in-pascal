@@ -172,6 +172,12 @@ const
     {$ENDIF}
   {$ENDIF}
 
+  {$IFNDEF FPC}
+    {$IFDEF VER320}
+      {$DEFINE Has_Int64}
+    {$ENDIF}
+  {$ENDIF}
+
 {$I sdltype.inc}
 {$I sdlversion.inc}
 {$I sdlerror.inc}
