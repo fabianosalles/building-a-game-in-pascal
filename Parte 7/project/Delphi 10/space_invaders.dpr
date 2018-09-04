@@ -32,7 +32,8 @@ uses
   scnParticles in '..\..\units\game\scenes\scnParticles.pas',
   sdlEngine in '..\..\units\engine\sdlEngine.pas',
   siGame in '..\..\units\game\siGame.pas',
-  StartField in '..\..\units\game\objects\StartField.pas';
+  StartField in '..\..\units\game\objects\StartField.pas',
+  sdlGameHigSocre in '..\..\units\sdlGameHigSocre.pas';
 
 var
   Engine: TEngine;
