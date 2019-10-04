@@ -101,8 +101,10 @@ begin
     end;
 
     stOpenSourceTribute: begin
-      engine.Text.Draw('an open souce tribute to Taito''s', 400-230, 270, engine.Fonts.DebugNormal, fAlpha);
-      engine.Text.Draw('SPACE-INVADRES', 400-230, 280, engine.Fonts.GUILarge, fAlpha);
+      dest.x:= ((TEngine.GetInstance.Window.w - dest.w) div 2)-200;
+      dest.y:= 300 ;
+      engine.Text.Draw('an open souce tribute to Taito''s', dest.x+100, dest.y, engine.Fonts.DebugNormal, fAlpha);
+      engine.Text.Draw('SPACE-INVADRES', dest.x, dest.y + 12, engine.Fonts.GUILarge, fAlpha);
    end;
 
     stLogoLazarus: begin

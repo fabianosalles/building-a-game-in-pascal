@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -17,9 +17,6 @@
     <i18n>
       <EnableI18N LFM="False"/>
     </i18n>
-    <VersionInfo>
-      <StringTable ProductVersion=""/>
-    </VersionInfo>
     <BuildModes Count="6">
       <Item1 Name="Win32 Debug" Default="True"/>
       <Item2 Name="Win32 Release">
@@ -163,7 +160,6 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="units;units\engine;units\scenes"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -192,79 +188,100 @@
       <Version Value="2"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <FormatVersion Value="1"/>
-      </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default"/>
+      </Modes>
     </RunParams>
-    <Units Count="17">
+    <Units Count="22">
       <Unit0>
         <Filename Value="space_invaders.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="units\sdlGameText.pas"/>
+        <Filename Value="..\..\units\engine\sdlEngine.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="units\sdlGameObjects.pas"/>
+        <Filename Value="..\..\units\engine\sdlGameObjects.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit2>
       <Unit3>
-        <Filename Value="units\sdlGameUtils.pas"/>
+        <Filename Value="..\..\units\game\siGame.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit3>
       <Unit4>
-        <Filename Value="units\sdlGameTypes.pas"/>
+        <Filename Value="..\..\units\sdlGameEnemies.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit4>
       <Unit5>
-        <Filename Value="units\sdlGamePlayer.pas"/>
+        <Filename Value="..\..\units\sdlGameHigSocre.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit5>
       <Unit6>
-        <Filename Value="units\sdlGameEnemies.pas"/>
+        <Filename Value="..\..\units\sdlGamePlayer.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit6>
       <Unit7>
-        <Filename Value="units\sdlGameSound.pas"/>
+        <Filename Value="..\..\units\sdlGameSound.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit7>
       <Unit8>
-        <Filename Value="units\engine\sdlEngine.pas"/>
+        <Filename Value="..\..\units\sdlGameText.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit8>
       <Unit9>
-        <Filename Value="units\engine\sdlGame.pas"/>
+        <Filename Value="..\..\units\sdlGameTexture.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit9>
       <Unit10>
-        <Filename Value="units\engine\sdlScene.pas"/>
+        <Filename Value="..\..\units\sdlGameTypes.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit10>
       <Unit11>
-        <Filename Value="units\siGame.pas"/>
+        <Filename Value="..\..\units\sdlGameUtils.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit11>
       <Unit12>
-        <Filename Value="units\scenes\scnGamePlay.pas"/>
+        <Filename Value="..\..\units\engine\sdlGame.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit12>
       <Unit13>
-        <Filename Value="units\sdlGameTexture.pas"/>
+        <Filename Value="..\..\units\engine\sdlParticles.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit13>
       <Unit14>
-        <Filename Value="units\scenes\scnIntro.pas"/>
+        <Filename Value="..\..\units\engine\sdlScene.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit14>
       <Unit15>
-        <Filename Value="units\scenes\scnMainMenu.pas"/>
+        <Filename Value="..\..\units\game\objects\Shots.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit15>
       <Unit16>
-        <Filename Value="units\engine\sdlParticles.pas"/>
+        <Filename Value="..\..\units\game\objects\StartField.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit16>
+      <Unit17>
+        <Filename Value="..\..\units\game\scenes\scnGameOver.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\..\units\game\scenes\scnGamePlay.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="..\..\units\game\scenes\scnIntro.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="..\..\units\game\scenes\scnMainMenu.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\..\units\game\scenes\scnParticles.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit21>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -275,7 +292,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="..\..\units;..\..\units\game;..\..\units\game\scenes;..\..\units\game\objects;..\..\units\engine;..\..\..\include\generics;..\..\headers\sdl2"/>
+      <OtherUnitFiles Value="..\..\units;..\..\units\game;..\..\units\game\scenes;..\..\units\game\objects;..\..\units\engine;..\..\..\include\generics;..\..\..\include\sdl2"/>
       <UnitOutputDirectory Value="..\..\lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>

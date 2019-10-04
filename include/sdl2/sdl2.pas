@@ -281,7 +281,7 @@ begin
   Result := ctx^.seek(ctx,offset,whence);
 end;
 
-function SDL_RWtell(ctx: PSDL_RWops): SInt64;
+function SDL_RWtell(ctx: PSDL_RWops): Int64;
 begin
   Result := ctx^.seek(ctx, 0, RW_SEEK_CUR);
 end;
@@ -414,9 +414,10 @@ begin
 end;
 
 // from "sdl_timer.h"
-function SDL_TICKS_PASSED(Const A, B:UInt32):Boolean;
+function SDL_TICKS_PASSED(Const A, B: SDL2.UInt32):Boolean;
 begin
-   Result := ((Int64(B) - Int64(A)) <= 0)
+   Result := ((Long(B) - Long(A)) <= 0)
+   //Result := ((SDL2.Int64(B) - SDL2.Int64(A)) <= 0)
 end;
 
 // from "sdl_gamecontroller.h"

@@ -235,7 +235,7 @@ begin
   fFonts.LoadFonts( FONTS_DIR );
 
   fSoundManager := TSoundManager.Create;
-  fSoundManager.LoadSounds(SOUND_DIR);
+  fSoundManager.LoadSounds;
 
 end;
 
